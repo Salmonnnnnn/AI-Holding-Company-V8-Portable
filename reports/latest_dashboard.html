@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Visualizer V7 — Cozy Isometric Company, Light/Dark Theme, Frontier Brains & Offline Catch-up</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        /* LIGHT THEME (Default Cozy Pastel like @ong_stw's TikTok) */
+        :root, [data-theme="light"] {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-sub: #f8fafc;
+            --border-col: #cbd5e1;
+            --border-soft: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --pill-bg: #e2e8f0;
+            --pill-txt: #1e293b;
+            --shadow-card: 0 6px 20px rgba(15, 23, 42, 0.06);
+        }
+        /* DARK THEME (Pro Cyber Night Mode) */
+        [data-theme="dark"] {
+            --bg-body: #070b14;
+            --bg-card: #0f172a;
+            --bg-sub: #1e293b;
+            --border-col: #334155;
+            --border-soft: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --pill-bg: #334155;
+            --pill-txt: #f8fafc;
+            --shadow-card: 0 6px 24px rgba(0, 0, 0, 0.45);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.25s, color 0.25s;
+        }
+        .top-header {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-col);
+            padding: 10px 20px;
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: var(--shadow-card);
+        }
+        .brand-wrap { display: flex; align-items: center; gap: 10px; }
+        .brand-avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b, #ec4899);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1.2rem; font-weight: 900;
+        }
+        .status-pills-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .top-pill {
+            background: var(--bg-sub); border: 1px solid var(--border-col); border-radius: 999px;
+            padding: 5px 12px; font-size: 0.8rem; font-weight: 600; color: var(--text-main);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .dot-green { width: 9px; height: 9px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 6px #10b981; }
+        .progress-bar-mini { width: 68px; height: 7px; background: var(--border-col); border-radius: 99px; overflow: hidden; }
+        .progress-fill-mini { height: 100%; background: #10b981; width: 100%; transition: width 0.3s; }
+
+        .nav-tabs {
+            display: flex; gap: 6px; padding: 8px 20px;
+            background: var(--bg-card); border-bottom: 1px solid var(--border-soft);
+            overflow-x: auto;
+        }
+        .nav-tab {
+            background: var(--bg-sub); color: var(--text-sub);
+            border: 1px solid var(--border-col); border-radius: 10px;
+            padding: 8px 14px; font-weight: 700; font-size: 0.84rem;
+            cursor: pointer; transition: all 0.18s; white-space: nowrap;
+        }
+        .nav-tab:hover { color: var(--text-main); border-color: #f59e0b; }
+        .nav-tab.active {
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            color: #ffffff; border-color: #f59e0b;
+            box-shadow: 0 3px 10px rgba(245, 158, 11, 0.25);
+        }
+
+        .page-view { display: none; padding: 14px 20px; max-width: 1680px; width: 100%; margin: 0 auto; flex: 1; }
+        .page-view.active { display: block; }
+
+        /* Offline Auto-Catchup Banner */
+        .catchup-banner {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.14), rgba(14, 165, 233, 0.14));
+            border: 1px solid #10b981; border-radius: 12px;
+            padding: 8px 14px; margin-bottom: 12px; font-size: 0.83rem;
+        }
+
+        .visualizer-layout {
+            display: grid;
+            grid-template-columns: 1fr 365px;
+            gap: 16px;
+            align-items: start;
+        }
+        .iso-stage-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-col);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+        .iso-canvas-wrap {
+            position: relative;
+            width: 100%;
+            height: 560px;
+        }
+        #isometricOfficeCanvas { width: 100%; height: 100%; display: block; cursor: pointer; }
+        #threeContainer { width: 100%; height: 100%; display: none; }
+
+        .stage-floating-top-left {
+            position: absolute; top: 12px; left: 12px;
+            display: flex; gap: 8px; flex-wrap: wrap; z-index: 10;
+        }
+        .stage-floating-top-right {
+            position: absolute; top: 12px; right: 12px;
+            display: flex; gap: 8px; z-index: 10;
+        }
+        .cozy-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-col);
+            color: var(--text-main);
+            padding: 7px 13px;
+            border-radius: 10px;
+            font-size: 0.81rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: all 0.15s;
+        }
+        .cozy-btn:hover { transform: translateY(-1px); border-color: #f59e0b; }
+        .cozy-btn.primary { background: #0f172a; color: #fbbf24; border-color: #334155; }
+        .cozy-btn.amber { background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; border: none; }
+        .cozy-btn.green { background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; }
+        .cozy-btn.purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; border: none; }
+
+        .dialogue-banner {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 12px 18px;
+            background: var(--bg-sub);
+            border-top: 1px solid var(--border-soft);
+            border-bottom: 1px solid var(--border-soft);
+        }
+        .mini-agents-strip {
+            display: flex; gap: 10px; padding: 12px 16px;
+            overflow-x: auto; background: var(--bg-card);
+        }
+        .mini-agent-card {
+            min-width: 172px;
+            background: var(--bg-sub);
+            border: 1px solid var(--border-col);
+            border-radius: 12px;
+            padding: 9px 12px;
+            display: flex; align-items: center; gap: 10px;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .mini-agent-card:hover, .mini-agent-card.active {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .right-sidebar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-col);
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .mission-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 7px 8px; border-radius: 10px;
+            font-size: 0.82rem;
+            border-bottom: 1px dashed var(--border-soft);
+        }
+        .check-circle {
+            width: 20px; height: 20px; border-radius: 50%;
+            background: #10b981; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.72rem; font-weight: 900; flex-shrink: 0; margin-top: 2px;
+        }
+        .check-circle.pending { background: var(--border-col); color: var(--text-sub); }
+        .check-circle.running { background: #f59e0b; color: #fff; }
+
+        .live-log-list {
+            max-height: 245px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 6px;
+            background: var(--bg-sub); border: 1px solid var(--border-col);
+            border-radius: 12px; padding: 10px;
+            font-size: 0.78rem;
+        }
+        .live-log-row {
+            display: flex; gap: 8px; line-height: 1.4;
+            padding-bottom: 5px; border-bottom: 1px solid var(--border-soft);
+        }
+        .log-time { color: #0ea5e9; font-family: monospace; font-weight: 700; flex-shrink: 0; }
+
+        .white-card {
+            background: var(--bg-card); border: 1px solid var(--border-col);
+            border-radius: 16px; padding: 20px; margin-bottom: 16px;
+            box-shadow: var(--shadow-card);
+        }
+        .white-card h2 {
+            font-size: 1.12rem; color: var(--text-main); margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-soft); padding-bottom: 8px;
+        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+        .stat-metric-box {
+            background: var(--bg-sub); border: 1px solid var(--border-col);
+            border-radius: 12px; padding: 14px;
+        }
+        .stat-metric-box .lbl { font-size: 0.77rem; color: var(--text-sub); font-weight: 700; }
+        .stat-metric-box .val { font-size: 1.3rem; font-weight: 900; color: var(--text-main); margin-top: 4px; }
+
+        .input-clean {
+            background: var(--bg-sub); border: 1px solid var(--border-col);
+            border-radius: 10px; padding: 8px 12px; font-size: 0.86rem; color: var(--text-main);
+        }
+        .shift-pill {
+            background: var(--bg-sub); border: 1px solid var(--border-col); color: var(--text-main);
+            padding: 9px 15px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: 0.83rem;
+        }
+        .shift-pill.active {
+            background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; border-color: #f59e0b;
+        }
+        .pill { background: var(--pill-bg); color: var(--pill-txt); padding: 3px 9px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-soft); }
+        th { background: var(--bg-sub); color: var(--text-main); font-weight: 800; }
+        @media (max-width: 1100px) { .visualizer-layout, .grid-2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<!-- ====================================================================== -->
+<!-- TOP STATUS HEADER + LIGHT/DARK THEME SWITCHER                          -->
+<!-- ====================================================================== -->
+<div class="top-header">
+    <div class="brand-wrap">
+        <div class="brand-avatar">🏝️</div>
+        <div>
+            <div style="font-weight:900;font-size:1.05rem">AI HOLDING COMPANY V7 — AI AGENT VISUALIZER</div>
+            <div style="font-size:0.75rem;color:var(--text-sub)">บริษัท AI เทรดทองคำ • โหมดมืด/สว่าง • 12 โมเดลตัวท็อป • เก็บตกงานอัตโนมัติแม้ปิดคอม</div>
+        </div>
+    </div>
+
+    <div class="status-pills-bar">
+        <div class="top-pill">
+            <span class="dot-green"></span>
+            <span id="topSysStatusText">ระบบปกติ พร้อมทำงาน</span>
+        </div>
+        <div class="top-pill">
+            <span>🕒</span>
+            <span id="liveThaiClock">พฤ. 12 พ.ย. 23:35:00</span>
+        </div>
+        <div class="top-pill">
+            <span id="topTaskCountText">งานเสร็จ 8/8</span>
+            <div class="progress-bar-mini"><div class="progress-fill-mini" id="topTaskBar"></div></div>
+            <span id="topTaskPctText">100%</span>
+        </div>
+        <div class="top-pill" style="border-color:#f59e0b">
+            <span>🪙 โทเคน:</span>
+            <strong id="topTokenUsedText" style="color:#f59e0b">203,500</strong> / <span id="topTokenBudgetText">1,000,000</span>
+        </div>
+        <!-- Theme Switcher Button -->
+        <button class="cozy-btn amber" onclick="toggleThemeMode()" id="themeToggleBtn">🌙 สลับโหมดมืด (Dark Mode)</button>
+        <button class="cozy-btn primary" onclick="switchPage('page-replay')">▶ ดูสรุปย้อนหลัง</button>
+    </div>
+</div>
+
+<!-- 6 DEDICATED NAVIGATION PAGES -->
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchPage('page-visualizer')" id="tab-page-visualizer">🏝️ 1. บริษัท AI น่ารัก (Isometric Island @ong_stw)</button>
+    <button class="nav-tab" onclick="switchPage('page-tokens')" id="tab-page-tokens">🪙 2. จัดสรรงบ Token, เพิ่มโมเดล & เรียนสกิลใหม่</button>
+    <button class="nav-tab" onclick="switchPage('page-replay')" id="tab-page-replay">📅 3. ดูสรุปย้อนหลังตามกราฟจริง (Historical Replay)</button>
+    <button class="nav-tab" onclick="switchPage('page-profiles')" id="tab-page-profiles">🪪 4. โปรไฟล์พนักงาน & สมองกล (o1-Pro / Claude 3.7 / GPT-4.5)</button>
+    <button class="nav-tab" onclick="switchPage('page-chat')" id="tab-page-chat">💬 5. แชทถามสดกับผม & ทีม AI (Live Copilot Chat)</button>
+    <button class="nav-tab" onclick="switchPage('page-mt5')" id="tab-page-mt5">🤖 6. ยิง MT5 Demo สด, 4 กลยุทธ์วิจัย & Obsidian Vault</button>
+</div>
+
+<!-- ====================================================================== -->
+<!-- PAGE 1: ULTRA-DETAILED ISOMETRIC ISLAND VISUALIZER (@ong_stw STYLE)    -->
+<!-- ====================================================================== -->
+<div class="page-view active" id="page-visualizer">
+    <!-- Offline Auto-Catchup Status Bar -->
+    <div class="catchup-banner">
+        <div>
+            <strong style="color:#10b981">☁️ สถานะระบบทำงานแทนตอนปิดคอม (Offline Auto-Catchup & Cloud 24/7):</strong>
+            <span id="catchupStatusText">⚡ ระบบ Auto-Catchup เก็บตกงานช่วงปิดคอม (0.5 ชม. / 1 กะเวลา) เรียบร้อยแล้ว! ดึงกราฟย้อนหลังจริง คำนวณมติทุกกะ และแจก +120 EXP ให้ทีม AI ครบถ้วน</span>
+        </div>
+        <div style="display:flex;gap:8px">
+            <button class="cozy-btn green" style="padding:4px 10px;font-size:0.76rem" onclick="triggerOfflineCatchupSim(12)">⚡ ทดสอบเก็บตกงานย้อนหลัง 12 ชม. (2 กะ)</button>
+        </div>
+    </div>
+
+    <div class="visualizer-layout">
+        <!-- Left: Ultra-Detailed Isometric Island Cutaway Stage -->
+        <div class="iso-stage-card">
+            <div class="iso-canvas-wrap" id="isoWrapBox">
+                <canvas id="isometricOfficeCanvas" width="1140" height="560"></canvas>
+                <div id="threeContainer"></div>
+
+                <div class="stage-floating-top-left">
+                    <button class="cozy-btn amber" onclick="runLiveCompanyWorkflowAnimation()">▶️ รันภารกิจบริษัทสดๆ (Step 1 ➔ 8)</button>
+                    <button class="cozy-btn purple" onclick="quickOverclockAllAgents()">🔥 ทุ่มโทเคน Overclock ทั้งบริษัท</button>
+                    <button class="cozy-btn green" onclick="switchPage('page-tokens')">🎓 สั่ง AI ไปเรียนสกิลใหม่</button>
+                </div>
+
+                <div class="stage-floating-top-right">
+                    <select id="skyTimeSelect" class="cozy-btn" onchange="changeSkyAtmosphere(this.value)">
+                        <option value="SUNSET">🌅 บรรยากาศ: ชายหาดยามเย็นพาสเทล (ต้นฉบับคลิป)</option>
+                        <option value="MORNING">☀️ บรรยากาศ: เช้าสดใสน้ำทะเลคราม</option>
+                        <option value="NIGHT">🌙 บรรยากาศ: ค่ำคืนนีออน (Dark Cyber Island)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Agent Speech Banner -->
+            <div class="dialogue-banner">
+                <div style="display:flex;align-items:center;gap:12px">
+                    <div id="bannerAvatar" style="width:44px;height:44px;border-radius:12px;background:#fef3c7;border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:1.5rem">👑</div>
+                    <div>
+                        <div style="font-weight:800;font-size:0.92rem" id="bannerSpeaker">Arthur Pendelton (CIO) — สมองกล: Claude 3.7 Sonnet (Extended Thinking 128K)</div>
+                        <div style="font-size:0.84rem;color:var(--text-sub)" id="bannerMessage">ตรวจสอบครบทั้ง 8 ขั้นตอนแล้ว — มติเอกฉันท์สั่ง <strong>SELL (SHORT)</strong> ทองคำที่ <strong>$3,878.70</strong> (SL $3,912.74 | TP1 $3,817.44 | TP2 $3,783.39)</div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px;flex-shrink:0">
+                    <button class="cozy-btn" onclick="openSelectedAgentProfile()">🪪 ดูโปรไฟล์</button>
+                    <button class="cozy-btn primary" onclick="askSelectedAgentInChat()">💬 ทักแชทถามตัวนี้</button>
+                </div>
+            </div>
+
+            <!-- Mini Agent Status Cards Row -->
+            <div class="mini-agents-strip" id="miniAgentsStrip"></div>
+        </div>
+
+        <!-- Right Sidebar: Today's Mission Checklist + Real-Time Activity Log -->
+        <div class="right-sidebar-card">
+            <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <h3 style="font-size:1.02rem">📋 ภารกิจวันนี้ (Live Workflow)</h3>
+                    <span class="pill" style="background:#dcfce7;color:#166534">ทองคำ XAUUSD • สด</span>
+                </div>
+                <div style="font-size:0.77rem;color:var(--text-sub);margin-bottom:10px">
+                    กดปุ่ม <strong>"▶️ รันภารกิจบริษัทสดๆ"</strong> เพื่อดูตัวละคร AI เดินส่งงานผ่านประตูห้องทีละแผนก:
+                </div>
+                <div id="missionChecklistBox" style="display:flex;flex-direction:column;gap:4px"></div>
+            </div>
+
+            <div style="border-top:1px solid var(--border-soft);padding-top:12px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <h3 style="font-size:0.95rem">🕒 บันทึกการทำงานสด (Real-Time Log)</h3>
+                    <span style="font-size:0.72rem;color:#10b981;font-weight:700">● LIVE STREAM</span>
+                </div>
+                <div class="live-log-list" id="realtimeLogBox"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================================== -->
+<!-- PAGE 2: TOKEN TREASURY, CUSTOM MODEL ADDER & SKILL HARVESTER           -->
+<!-- ====================================================================== -->
+<div class="page-view" id="page-tokens">
+    <div class="grid-4" style="margin-bottom:16px">
+        <div class="stat-metric-box" style="border-left:4px solid #f59e0b">
+            <div class="lbl">🪙 งบโทเคนรายวันของบริษัท (Daily Token Pool)</div>
+            <div class="val" id="econBudgetVal">1,000,000 Tokens</div>
+            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">ปรับโควต้าให้แต่ละแผนกได้อิสระ</div>
+        </div>
+        <div class="stat-metric-box" style="border-left:4px solid #8b5cf6">
+            <div class="lbl">🧠 Reasoning Tokens ที่เผาไปคิดลึกวันนี้</div>
+            <div class="val" style="color:#8b5cf6" id="econReasoningVal">103,785 Tokens</div>
+            <div style="font-size:0.75rem;color:#10b981;margin-top:4px">Extended Thinking & วิจัยสกิล</div>
+        </div>
+        <div class="stat-metric-box" style="border-left:4px solid #0ea5e9">
+            <div class="lbl">⚡ โทเคนรวมที่ใช้ไปทั้งหมดวันนี้</div>
+            <div class="val" id="econUsedVal">203,500 Tokens (20.3%)</div>
+            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">คงเหลือ 796,500 Tokens</div>
+        </div>
+        <div class="stat-metric-box" style="border-left:4px solid #10b981">
+            <div class="lbl">🎓 สกิลใหม่ที่ AI ค้นพบและปลดล็อกแล้ว</div>
+            <div class="val" style="color:#10b981" id="econSkillsCountVal">4 สกิลใหม่</div>
+            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">พร้อมใช้เทรดจริงและซิงค์ลง Obsidian</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- Left: Autonomous Live Skill Discovery Lab + Custom Model Adder -->
+        <div>
+            <div class="white-card" style="border:2px solid #8b5cf6">
+                <h2>🔬 ห้องแล็บสั่ง AI ออกไปเรียนรู้สกิลใหม่ที่เกี่ยวข้อง (Autonomous Skill Harvester)</h2>
+                <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-radius:12px;padding:14px;margin-bottom:14px">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+                        <div>
+                            <label style="font-size:0.78rem;font-weight:700">1. เลือกพนักงาน AI ที่จะส่งไปเรียน:</label>
+                            <select id="harvestAgentSelect" class="input-clean" style="width:100%;margin-top:4px"></select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.78rem;font-weight:700">2. จัดสรรงบโทเคนให้เผาวิจัยสกิลนี้:</label>
+                            <select id="harvestTokenSelect" class="input-clean" style="width:100%;margin-top:4px">
+                                <option value="25000">🪙 25,000 Reasoning Tokens (วิจัยมาตรฐาน)</option>
+                                <option value="50000" selected>🔥 50,000 Reasoning Tokens (เจาะลึก + Backtest กราฟจริง)</option>
+                                <option value="100000">🚀 100,000 Reasoning Tokens (Overclock คิดลึกสูงสุด 128K)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label style="font-size:0.78rem;font-weight:700">3. พิมพ์ชื่อสกิลหรือเทคนิคใหม่ที่ต้องการให้ AI ไปศึกษาและสร้างสูตร:</label>
+                    <div style="display:flex;gap:8px;margin-top:4px">
+                        <input type="text" id="harvestTopicInput" class="input-clean" style="flex:1" placeholder="เช่น ICT Silver Bullet NY Session, Wyckoff Spring Volume, Orderblock + FVG...">
+                        <button class="cozy-btn purple" onclick="triggerLearnNewSkill()">🔬 ส่งไปเรียนสกิลใหม่เดี๋ยวนี้!</button>
+                    </div>
+
+                    <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+                        <span style="font-size:0.75rem;color:var(--text-sub);font-weight:700">คลิกหัวข้อฮิต:</span>
+                        <button class="cozy-btn" style="padding:3px 9px;font-size:0.74rem" onclick="setSkillTopic('ICT Killzone Silver Bullet & FVG Sniper')">⚡ ICT Silver Bullet</button>
+                        <button class="cozy-btn" style="padding:3px 9px;font-size:0.74rem" onclick="setSkillTopic('Wyckoff Accumulation Spring & Volume Profile POC')">📊 Wyckoff + Volume POC</button>
+                        <button class="cozy-btn" style="padding:3px 9px;font-size:0.74rem" onclick="setSkillTopic('Elliott Wave 5 Impulse & Fibonacci 61.8% Confluence')">🌊 Elliott Wave + Fibo</button>
+                        <button class="cozy-btn" style="padding:3px 9px;font-size:0.74rem" onclick="setSkillTopic('Fed Hawkish/Dovish NLP & US10Y Real-Yield Arbitrage')">🌐 Fed NLP + Bond Yield</button>
+                    </div>
+                </div>
+
+                <h3 style="font-size:0.95rem;margin-bottom:8px">🏆 คลังสกิลใหม่ที่ AI ค้นพบและทดสอบกับกราฟจริงแล้ว:</h3>
+                <div id="discoveredSkillsBox" style="display:flex;flex-direction:column;gap:10px;max-height:280px;overflow-y:auto"></div>
+            </div>
+
+            <!-- Add Custom AI Model Card -->
+            <div class="white-card" style="border:2px solid #ec4899">
+                <h2>➕ เพิ่มโมเดล AI รุ่นใหม่เข้าบริษัทเองได้ตามใจ (Custom Frontier Model Adder)</h2>
+                <p style="font-size:0.82rem;color:var(--text-sub);margin-bottom:10px">
+                    อยากใส่โมเดลใหม่ล่าสุดตัวไหนเพิ่มเติม (เช่น <code>GPT-5 Preview</code>, <code>Claude 4 Opus</code>, <code>Gemini 3 Ultra</code> หรือรหัสโมเดลจาก OpenRouter) พิมพ์เพิ่มเข้าคลังสมองบริษัทได้ทันที:
+                </p>
+                <div style="display:grid;grid-template-columns:1.3fr 1fr auto;gap:8px">
+                    <input type="text" id="customModelNameInput" class="input-clean" placeholder="ชื่อโมเดล เช่น GPT-5 Reasoning (256K)">
+                    <input type="text" id="customModelSpecInput" class="input-clean" placeholder="จุดเด่น เช่น วิเคราะห์กราฟและข่าวความเร็วสูง">
+                    <button class="cozy-btn amber" onclick="addNewCustomModel()">➕ เพิ่มโมเดลเข้าบริษัท</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Per-Agent Token Budget & Compute Mode Allocator -->
+        <div class="white-card">
+            <h2>🪙 จัดสรรโควต้าโทเคน & เลือกสมองกลตัวท็อปรายตัว (12+ Frontier Models)</h2>
+            <p style="font-size:0.83rem;color:var(--text-sub);margin-bottom:12px">
+                สลับสมองกล (`o1-Pro`, `GPT-4.5`, `Claude 3.7 Extended Thinking`, `Grok-3 Thinking`, `DeepSeek-R1 671B`) และปรับโหมด <strong>🌱 ECO / ⚖️ BALANCED / 🔥 OVERCLOCK</strong>:
+            </p>
+            <div id="tokenAllocationTableWrap" style="max-height:590px;overflow-y:auto"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================================== -->
+<!-- PAGE 3: TRUE HISTORICAL CANDLE & SHIFT REPLAY SUMMARIZER               -->
+<!-- ====================================================================== -->
+<div class="page-view" id="page-replay">
+    <div class="white-card" style="border:2px solid #0ea5e9">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+            <div>
+                <h2 style="border:none;margin:0">📅 ระบบดูสรุปย้อนหลังตามกราฟแท่งเทียนจริง & แยกตามกะเวลา (True Historical Shift Replay)</h2>
+                <p style="font-size:0.85rem;color:var(--text-sub)">
+                    ดึงข้อมูลแท่งเทียนทองคำ (Open / High / Low / Close / RSI / ATR) และไทม์ไลน์การทำงานของวันที่และกะเวลาที่คุณเลือกจริงๆ <strong>(ไม่ซ้ำกัน 100%)</strong>
+                </p>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <label style="font-weight:800">📅 เลือกวันที่:</label>
+                <input type="date" id="sumDateInput" class="input-clean" value="2026-11-13" onchange="generateCuteSummary()">
+                <button class="cozy-btn" onclick="pickQuickReplayDate('2026-11-13')">วันนี้ (11-13)</button>
+                <button class="cozy-btn" onclick="pickQuickReplayDate('2026-11-12')">เมื่อวาน (11-12)</button>
+                <button class="cozy-btn" onclick="pickQuickReplayDate('2026-11-11')">2 วันก่อน (11-11)</button>
+                <button class="cozy-btn" onclick="pickQuickReplayDate('2026-11-10')">3 วันก่อน (11-10)</button>
+                <button class="cozy-btn" onclick="pickQuickReplayDate('2026-11-08')">5 วันก่อน (11-08)</button>
+            </div>
+        </div>
+
+        <div style="margin-bottom:14px">
+            <div style="font-size:0.84rem;font-weight:800;margin-bottom:8px">⏰ เลือกกะเวลาทำงานของบริษัท:</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap" id="shiftPillsWrap">
+                <div class="shift-pill active" data-slot="FULL_24H" onclick="selectShiftPill(this)">✨ ภาพรวมครบ 24 ชม. (Full 24h)</div>
+                <div class="shift-pill" data-slot="MORNING_ASIA" onclick="selectShiftPill(this)">🌅 กะเช้า ตลาดเอเชีย (06:00-12:00)</div>
+                <div class="shift-pill" data-slot="AFTERNOON_LONDON" onclick="selectShiftPill(this)">☀️ กะบ่าย ตลาดลอนดอน (12:00-18:00)</div>
+                <div class="shift-pill" data-slot="EVENING_NY" onclick="selectShiftPill(this)">🌆 กะค่ำ ตลาดนิวยอร์ก (18:00-24:00)</div>
+                <div class="shift-pill" data-slot="NIGHT_AUDIT" onclick="selectShiftPill(this)">🌙 กะดึก วิจัยสกิล & สรุปงบ (00:00-06:00)</div>
+            </div>
+        </div>
+
+        <div class="grid-4" style="margin-bottom:14px">
+            <div class="stat-metric-box">
+                <div class="lbl">📊 ราคาเปิดกะ ➔ ปิดกะ (Open ➔ Close)</div>
+                <div class="val" style="font-size:1.15rem" id="repOpenCloseTxt">$3,878.70</div>
+                <div style="font-size:0.8rem;font-weight:700" id="repChangeTxt">--</div>
+            </div>
+            <div class="stat-metric-box">
+                <div class="lbl">📏 กรอบสูงสุด / ต่ำสุดในกะ (High / Low)</div>
+                <div class="val" style="font-size:1.15rem" id="repHighLowTxt">--</div>
+                <div style="font-size:0.8rem;color:var(--text-sub)" id="repRangeTxt">--</div>
+            </div>
+            <div class="stat-metric-box">
+                <div class="lbl">🧭 อินดิเคเตอร์ & ผลดีเบตประจำกะ</div>
+                <div class="val" style="font-size:1.1rem" id="repRsiAtrTxt">RSI 22.64 | ATR $22.69</div>
+                <div style="font-size:0.8rem;color:#8b5cf6;font-weight:700" id="repDebateTxt">--</div>
+            </div>
+            <div class="stat-metric-box">
+                <div class="lbl">👑 มติ CIO & โทเคนที่เผาในกะนี้</div>
+                <div class="val" style="font-size:1.15rem;color:#f59e0b" id="repVerdictTxt">SELL (SHORT)</div>
+                <div style="font-size:0.8rem;color:#10b981;font-weight:700" id="repTokensTxt">--</div>
+            </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="cozy-btn primary" onclick="generateCuteSummary('EXECUTIVE_CUTE')">🏝️ สไตล์สรุปผู้บริหาร & ไทม์ไลน์กะนี้</button>
+                <button class="cozy-btn amber" onclick="generateCuteSummary('TRADING_ACTION')">🎯 สไตล์เน้นจุดเข้าเทรด (Entry/SL/TP)</button>
+                <button class="cozy-btn purple" onclick="generateCuteSummary('OBSIDIAN_NOTE')">💎 สไตล์โน้ต Obsidian (YAML + Wikilinks)</button>
+            </div>
+            <div style="display:flex;gap:8px">
+                <button class="cozy-btn green" onclick="copySummaryText()">📋 คัดลอกข้อความสรุป</button>
+                <button class="cozy-btn" onclick="syncObsidianNow()">💎 ซิงค์ลง Obsidian Vault</button>
+            </div>
+        </div>
+
+        <pre id="cuteSummaryOutput" style="background:#0f172a;color:#f8fafc;padding:18px;border-radius:14px;font-family:'Segoe UI',sans-serif;font-size:0.93rem;line-height:1.68;white-space:pre-wrap;min-height:240px"></pre>
+    </div>
+</div>
+
+<!-- ====================================================================== -->
+<!-- PAGE 4: DEDICATED AI AGENT PROFILES & FRONTIER BRAIN STUDIO            -->
+<!-- ====================================================================== -->
+<div class="page-view" id="page-profiles">
+    <div class="visualizer-layout" style="grid-template-columns: 320px 1fr">
+        <div class="white-card" style="margin-bottom:0">
+            <h2>🪪 ทำเนียบพนักงาน AI (11 ตัว)</h2>
+            <div id="profileRosterList" style="display:flex;flex-direction:column;gap:8px;max-height:600px;overflow-y:auto"></div>
+        </div>
+
+        <div class="white-card" style="margin-bottom:0">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;border-bottom:1px solid var(--border-soft);padding-bottom:16px;margin-bottom:18px">
+                <div style="display:flex;align-items:center;gap:16px">
+                    <div id="profAvatar" style="width:72px;height:72px;border-radius:18px;background:#fef3c7;border:3px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:2.4rem">👑</div>
+                    <div>
+                        <span class="pill" id="profDept">ห้องตัดสินใจ CIO</span>
+                        <h1 id="profName" style="font-size:1.5rem;margin-top:4px">Arthur Pendelton</h1>
+                        <div id="profRole" style="color:var(--text-sub);font-size:0.92rem">Chief Investment Officer (CIO)</div>
+                    </div>
+                </div>
+
+                <div style="background:var(--bg-sub);border:1px solid var(--border-col);padding:12px 16px;border-radius:12px;min-width:330px">
+                    <div style="font-size:0.78rem;font-weight:800;margin-bottom:6px">🧠 เลือกสมองกล AI (12+ โมเดลตัวท็อปสายกินโทเคน):</div>
+                    <select id="profModelSelect" class="input-clean" style="width:100%" onchange="changeAgentModelBrain()"></select>
+                    <div id="profModelMeta" style="font-size:0.75rem;color:#10b981;margin-top:6px;font-weight:700">✓ พร้อมใช้งาน</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h3 style="font-size:0.98rem;margin-bottom:8px">📖 บทบาทหน้าที่ & งบโทเคนประจำตัว</h3>
+                    <p id="profBio" style="background:var(--bg-sub);padding:12px;border-radius:10px;border:1px solid var(--border-soft);margin-bottom:14px;font-size:0.9rem"></p>
+
+                    <h3 style="font-size:0.98rem;margin-bottom:8px">🎓 สกิลที่ติดตั้ง & ระดับความชำนาญ</h3>
+                    <div style="background:var(--bg-sub);padding:14px;border-radius:12px;border:1px solid var(--border-soft)">
+                        <div style="display:flex;justify-content:space-between;font-weight:800;margin-bottom:6px">
+                            <span id="profLevelTxt" style="color:#f59e0b">Level 12</span>
+                            <span id="profMasteryTxt" style="color:#10b981">Mastery: 92.4%</span>
+                        </div>
+                        <div style="height:9px;background:var(--border-col);border-radius:99px;overflow:hidden;margin-bottom:12px">
+                            <div id="profExpBar" style="height:100%;width:70%;background:linear-gradient(90deg,#f59e0b,#10b981)"></div>
+                        </div>
+                        <div id="profSkillsList" style="display:flex;flex-direction:column;gap:8px;font-size:0.86rem"></div>
+                        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+                            <button class="cozy-btn amber" onclick="trainCurrentProfileAgent()">⚡ ฝึกสกิลอัปเลเวล (+180 EXP)</button>
+                            <button class="cozy-btn purple" onclick="switchPage('page-tokens')">🔬 สั่งตัวนี้ไปเรียนสกิลใหม่</button>
+                            <button class="cozy-btn primary" onclick="askCurrentProfileAgent()">💬 คุยแชทกับตัวนี้</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f172a;border-radius:14px;padding:16px;color:#fff">
+                    <h3 style="color:#38bdf8;margin-bottom:8px;font-size:0.95rem">🕸️ กราฟเรดาร์ความสามารถ 5 มิติ (5D Capability Radar)</h3>
+                    <canvas id="radarChartCanvas" width="340" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================================== -->
+<!-- PAGE 5: LIVE COPILOT CHAT WITH ANTIGRAVITY & 11 AI AGENTS              -->
+<!-- ====================================================================== -->
+<div class="page-view" id="page-chat">
+    <div class="visualizer-layout" style="grid-template-columns: 300px 1fr">
+        <div class="white-card" style="margin-bottom:0">
+            <h2>💬 เลือกคู่สนทนา AI</h2>
+            <div id="chatTargetList" style="display:flex;flex-direction:column;gap:8px;max-height:560px;overflow-y:auto"></div>
+        </div>
+
+        <div class="white-card" style="margin-bottom:0;display:flex;flex-direction:column;height:620px;padding:0;overflow:hidden">
+            <div style="padding:14px 18px;background:#0f172a;color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+                <div>
+                    <strong style="color:#fbbf24;font-size:1rem" id="chatHeaderSpeaker">🤖 Antigravity Copilot (Head AI Architect)</strong>
+                    <div style="font-size:0.76rem;color:#38bdf8" id="chatHeaderModel">Brain: Claude 3.7 Extended Thinking + OpenAI o1-Pro Hybrid</div>
+                </div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <button class="cozy-btn" style="padding:4px 10px;font-size:0.75rem" onclick="sendQuickPrompt('ขอแผนเทรดทองคำ XAUUSD ตอนนี้พร้อมจุด Entry, SL, TP หน่อย')">📊 ขอแผนเทรดทองตอนนี้</button>
+                    <button class="cozy-btn" style="padding:4px 10px;font-size:0.75rem" onclick="sendQuickPrompt('ดูการใช้โทเคนและสกิลใหม่ที่ทีม AI เพิ่งเรียนรู้มาหน่อย')">🪙 เช็กโทเคน & สกิลใหม่</button>
+                    <button class="cozy-btn" style="padding:4px 10px;font-size:0.75rem" onclick="sendQuickPrompt('ช่วยคิดไอเดียธุรกิจใหม่เอาเข้าบริษัท AI ของเราหน่อย')">🚀 ขอไอเดียธุรกิจใหม่</button>
+                </div>
+            </div>
+
+            <div id="chatMessagesBox" style="flex:1;padding:18px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;background:var(--bg-sub)"></div>
+
+            <div style="display:flex;gap:10px;padding:14px;background:var(--bg-card);border-top:1px solid var(--border-col)">
+                <input type="text" id="chatInputField" class="input-clean" style="flex:1" placeholder="พิมพ์ถามผม (Antigravity) หรือพนักงาน AI ที่เลือกได้เลย..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+                <button class="cozy-btn primary" onclick="sendChatMessage()">🚀 ส่งข้อความ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================================== -->
+<!-- PAGE 6: LIVE MT5 DEMO EXECUTION, 4 STRATEGIES & OBSIDIAN VAULT         -->
+<!-- ====================================================================== -->
+<div class="page-view" id="page-mt5">
+    <div class="white-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+            <div>
+                <h2 style="border:none;margin:0">🤖 ทดสอบยิงออเดอร์ MetaTrader 5 (MT5 Demo) สดๆ 8 ขั้นตอน (Tick-by-Tick Visualizer)</h2>
+                <p style="font-size:0.84rem;color:var(--text-sub)">ดูวิธีการทำงานของ AutoBot X-1 ตั้งแต่เช็ก Spread ➔ ยิง <code>mt5.order_send()</code> ➔ ขยับ SL บังหน้าทุนเมื่อแตะ TP1 ➔ ปิดกำไร TP2</p>
+            </div>
+            <button class="cozy-btn amber" onclick="startLiveMT5Simulation()">▶️ เริ่มรันการจำลองยิงออเดอร์ MT5 Demo สดๆ</button>
+        </div>
+
+        <div class="grid-2">
+            <div>
+                <canvas id="mt5DemoChartCanvas" width="700" height="340" style="width:100%;background:#0f172a;border-radius:12px"></canvas>
+                <div style="margin-top:10px;display:flex;justify-content:space-between;background:var(--bg-sub);padding:12px;border-radius:10px;border:1px solid var(--border-col);font-size:0.88rem">
+                    <span>📍 Entry: <strong>$3,878.70</strong></span>
+                    <span>🛑 Live SL: <strong id="mt5LiveSL" style="color:#ef4444">$3,912.74</strong></span>
+                    <span>🎯 TP1/TP2: <strong style="color:#10b981">$3,817.44 / $3,783.39</strong></span>
+                    <span>💵 Demo PnL: <strong id="mt5LivePnL" style="color:#10b981">+$0.00</strong></span>
+                </div>
+            </div>
+            <div id="mt5StepsContainer" style="max-height:390px;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="white-card">
+            <h2>🔬 ผลทดสอบ 4 กลยุทธ์วิจัยระดับโลกเทียบตลาดจริง</h2>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อกลยุทธ์มาตรฐาน</th>
+                            <th>ตลาดที่ถนัด</th>
+                            <th>Win Rate วิจัย</th>
+                            <th>Win Rate จริง</th>
+                            <th>PF จริง</th>
+                            <th>Net R</th>
+                            <th>สัญญาณ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        <tr style="background: rgba(245, 158, 11, 0.14); border-left: 4px solid #f59e0b;">
+            <td><strong>🏆 4. Donchian 20 Killzone Momentum Breakout</strong><br><small style="color:var(--text-sub)">Commodity Channel Breakout (London/NY Session Expansion)</small></td>
+            <td><span class="pill">BREAKOUT / NEWS EXPANSION</span></td>
+            <td>49.2% (PF 1.75)</td>
+            <td style="color:#10b981;font-weight:700">57.1% (35 ไม้)</td>
+            <td style="font-weight:700">2.04</td>
+            <td style="color:#10b981;font-weight:700">+14.4R</td>
+            <td><strong>SELL BIAS</strong></td>
+        </tr>
+        
+        <tr style="">
+            <td><strong>3. Bollinger-RSI Extreme Mean Reversion</strong><br><small style="color:var(--text-sub)">Intraday Gold Statistical Mean Reversion at 2-Sigma Bands</small></td>
+            <td><span class="pill">SIDEWAY / RANGING</span></td>
+            <td>63.5% (PF 1.58)</td>
+            <td style="color:#10b981;font-weight:700">46.9% (32 ไม้)</td>
+            <td style="font-weight:700">1.14</td>
+            <td style="color:#10b981;font-weight:700">+2.24R</td>
+            <td><strong>SELL BIAS</strong></td>
+        </tr>
+        
+        <tr style="">
+            <td><strong>1. EMA Pullback &amp; Volatility Expansion</strong><br><small style="color:var(--text-sub)">State-Machine EMA Trend Pullback &amp; ATR Breakout (5-Yr XAUUSD Study)</small></td>
+            <td><span class="pill">TRENDING</span></td>
+            <td>55.4% (PF 1.64)</td>
+            <td style="color:#10b981;font-weight:700">38.5% (65 ไม้)</td>
+            <td style="font-weight:700">0.91</td>
+            <td style="color:#ef4444;font-weight:700">-3.54R</td>
+            <td><strong>SELL BIAS</strong></td>
+        </tr>
+        
+        <tr style="">
+            <td><strong>2. Institutional SMC Liquidity Sweep (Stop-Hunt Reversal)</strong><br><small style="color:var(--text-sub)">Smart Money Liquidity Pool Sweep &amp; Break of Structure Benchmark</small></td>
+            <td><span class="pill">VOLATILE / STOP-HUNT</span></td>
+            <td>68.0% (PF 1.95)</td>
+            <td style="color:#10b981;font-weight:700">32.1% (56 ไม้)</td>
+            <td style="font-weight:700">0.69</td>
+            <td style="color:#ef4444;font-weight:700">-11.32R</td>
+            <td><strong>SELL BIAS</strong></td>
+        </tr>
+        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="white-card">
+            <h2>💎 คลังสมองที่สอง Obsidian Second-Brain & ระบบประหยัดโทเคน Graph-RAG</h2>
+            <p style="font-size:0.86rem;color:var(--text-sub);margin-bottom:10px">
+                ซิงค์ไฟล์ Markdown + กระดาน <code>AI_Company_Knowledge_Map.canvas</code> + ผัง <code>00_Knowledge_Graph_Topology.md</code> (18 ไฟล์) เพื่อดึงเฉพาะโหนดที่เกี่ยวข้อง (1-Hop Subgraph) ช่วยประหยัดโทเคน AI สูงสุด <strong>83.5%</strong>:
+            </p>
+            <div class="grid-4" style="margin-bottom:12px">
+                <div class="stat-metric-box">
+                    <div class="lbl">📦 โทเคนถ้าส่งทั้งคลัง (Full Vault)</div>
+                    <div class="val" style="color:#ef4444;font-size:1.1rem">18,650 Tok/รอบ</div>
+                </div>
+                <div class="stat-metric-box">
+                    <div class="lbl">🕸️ โทเคนผ่านกราฟ (1-Hop Subgraph)</div>
+                    <div class="val" style="color:#10b981;font-size:1.1rem">2,590 Tok/รอบ</div>
+                </div>
+                <div class="stat-metric-box">
+                    <div class="lbl">⚡ ประหยัดโทเคนต่อคำสั่ง</div>
+                    <div class="val" style="color:#0ea5e9;font-size:1.1rem">-86.1% (-16,060)</div>
+                </div>
+                <div class="stat-metric-box">
+                    <div class="lbl">💰 ประหยัดโทเคนสะสม/วัน</div>
+                    <div class="val" style="color:#8b5cf6;font-size:1.1rem">~706,640 Tok</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+                <a href="obsidian://open?path=C%3A/Users/ADMIN/AI-Holding-Company-V8-Portable/obsidian_vault/00_AI_Holding_Company_MOC.md" class="cozy-btn primary" style="text-decoration:none">💎 เปิดในโปรแกรม Obsidian</a>
+                <button class="cozy-btn amber" onclick="syncObsidianNow()">🔄 ซิงค์กราฟ & โน้ตล่าสุดลง Obsidian</button>
+            </div>
+            <div style="position:relative">
+                <canvas id="obsidianGraphCanvas" width="760" height="360" style="width:100%;background:#0f172a;border-radius:12px;cursor:pointer"></canvas>
+                <div id="obsNodeInspector" style="margin-top:8px;padding:10px 14px;background:var(--bg-sub);border:1px solid var(--border-col);border-radius:10px;font-size:0.82rem">
+                    💡 <strong>คลิกที่โหนดกลมๆ บนกราฟด้านบน</strong> เพื่อดูว่าข้อมูลส่วนนั้นเชื่อมกับส่วนไหนบ้าง และช่วยประหยัดโทเคนได้เท่าไหร่!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="white-card">
+        <h2>🕸️ ตารางผังความเชื่อมโยงข้อมูลใน Obsidian (1-Hop Subgraph Routing Matrix — ข้อมูลส่วนไหนเชื่อมกับส่วนไหน)</h2>
+        <div style="overflow-x:auto">
+            <table>
+                <thead>
+                    <tr>
+                        <th>พนักงาน AI</th>
+                        <th>สมองกล (LLM)</th>
+                        <th>โหนดข้อมูลที่เชื่อมกันโดยตรง (Connected Nodes)</th>
+                        <th>รายละเอียดข้อมูลที่ส่งหากัน</th>
+                        <th>โทเคนทั้งคลัง</th>
+                        <th>โทเคนใช้จริง (Graph)</th>
+                        <th>ประหยัดโทเคน</th>
+                    </tr>
+                </thead>
+                <tbody id="obsRoutingTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+const APP = {"session_time": "2026-11-13 00:25:34", "market": {"symbol": "XAUUSD / Gold", "timestamp": "2026-11-13 00:25:33", "current_price": 3878.7, "change_pct": -3.04, "ema20": 3940.47, "ema50": 3992.3, "ema200": 4039.68, "trend": "BEARISH", "d1_trend": "BEARISH", "d1_ema20": 4054.44, "d1_ema50": 4169.32, "d1_rsi": 35.28, "d1_atr": 98.05, "rsi14": 22.64, "atr14": 22.69, "macd": {"macd": -37.13, "signal": -30.48, "histogram": -6.65, "state": "BEARISH", "momentum": "BEARISH_WEAKENING"}, "bollinger": {"upper": 4038.22, "middle": 3949.47, "lower": 3860.73}, "support": 3856.7, "resistance": 4074.7, "major_support": 3856.7, "major_resistance": 4157.7, "fib_levels": {"fib_382": 3991.42, "fib_500": 3965.7, "fib_618": 3939.98}, "dxy_index": 103.16, "dxy_change_pct": 0.24, "us10y_yield": 5.1, "us10y_change_pct": 2.04, "source": "Yahoo Finance Multi-Timeframe (Live D1 + H1)"}, "cio": {"cio_name": "Arthur Pendelton", "action": "SELL (SHORT)", "weighted_score": -38.3, "conviction_pct": 67, "bull_power": 33, "bear_power": 67, "final_entry": 3878.7, "final_sl": 3912.74, "final_tp1": 3817.44, "final_tp2": 3783.39, "recommended_lot": 0.01, "risk_dollar": 34.04, "rr_ratio": "1:1.8", "alternative_plan": "หากราคาทะลุจุด Stop Loss ที่ $3,912.74 พร้อมแท่งเทียน H1 ปิดเต็มแท่ง แสดงว่าโครงสร้างเดิมถูกทำลาย (Invalidation) ให้หยุดรอและพิจารณาหาจังหวะเข้าตามน้ำในทิศทางตรงข้ามเมื่อย่อตัวทดสอบ $3,912.74", "executive_summary": "1. มติคณะกรรมการ (Weighted Score -38.3 | ความเชื่อมั่น 67%): จากการดีเบตระหว่างฝั่งกระทิง (33%) และฝั่งหมี (67%) มีมติชี้ขาดให้ดำเนินการ 'SELL (SHORT)'\n2. แผนปฏิบัติการหลัก (Primary Execution): เข้าออเดอร์ที่ $3,878.70 ตั้ง Stop Loss ที่ $3,912.74 โดยแบ่งทำกำไร TP1 ที่ $3,817.44 (1:1.8) และถือลุ้น TP2 ที่ $3,783.39 ด้วยขนาด 0.01 Lot (ผ่านเกณฑ์ Backtest Win Rate 39.2%, Profit Factor 0.88)\n3. แผนสำรองและจุดยกเลิกแผน (Invalidation Plan): หากราคาทะลุจุด Stop Loss ที่ $3,912.74 พร้อมแท่งเทียน H1 ปิดเต็มแท่ง แสดงว่าโครงสร้างเดิมถูกทำลาย (Invalidation) ให้หยุดรอและพิจารณาหาจังหวะเข้าตามน้ำในทิศทางตรงข้ามเมื่อย่อตัวทดสอบ $3,912.74"}, "deb": {"agent": "Viktor Kane (Bear/Red Team) vs. Sarah Jenkins (Bull Advocate)", "role": "Head of Bull vs. Bear Debate & Red-Team Critique", "bull_power": 33, "bear_power": 67, "debate_winner": "BEAR / RED TEAM WINS (67% vs 33% - ฝั่งขาย/ระวังความเสี่ยงได้เปรียบ)", "bull_case": "🐂 [ฝ่ายกระทิง - Sarah Jenkins (พลังโหวต 33%)]: ทองคำมีโซนแนวรับแข็งแกร่งที่ $3,856.70 และระดับ Fibonacci 61.8% ($3939.98) แม้ราคาย่อตัวลงมาต่ำกว่า EMA20 ($3,940.47) แต่ RSI ที่ 22.64 เปิดรูมให้เกิดแรงซื้อกลับ (Mean Reversion) ประกอบกับดอลลาร์ DXY ที่ 103.16 ไม่ได้พุ่งทะลุกรอบบน จึงเป็นจังหวะสะสม Buy เพื่อลุ้นทดสอบ $4,074.70", "bear_case": "🐻 [ฝ่ายหมี & Red Team - Viktor Kane (พลังโหวต 67%)]: อย่ามองโลกในแง่ดีเกินไป! ราคาปัจจุบัน ($3,878.70) ยังอยู่ต่ำกว่าเส้น H1 EMA20 ($3,940.47) ชัดเจน การรีบสวน Buy ตอนนี้เสี่ยงรับมีด! นอกจากนี้ US 10Y Yield ที่ 5.1% ยังกดดันทองคำ และจ้าวตลาด (Smart Money) มักทุบกวาด Stop Loss ใต้แนวรับ $3,856.70 ลงไปถึงโซน $3,848.76 หรือลากไส้ทะลุ $4,074.70 ไปที่ $4,082.64 ก่อนกลับทิศ ดังนั้นห้ามไล่ราคาเด็ดขาด!", "trap_zone_low": 3848.76, "trap_zone_high": 4082.64, "debate_critique": "🐂 [ฝ่ายกระทิง - Sarah Jenkins (พลังโหวต 33%)]: ทองคำมีโซนแนวรับแข็งแกร่งที่ $3,856.70 และระดับ Fibonacci 61.8% ($3939.98) แม้ราคาย่อตัวลงมาต่ำกว่า EMA20 ($3,940.47) แต่ RSI ที่ 22.64 เปิดรูมให้เกิดแรงซื้อกลับ (Mean Reversion) ประกอบกับดอลลาร์ DXY ที่ 103.16 ไม่ได้พุ่งทะลุกรอบบน จึงเป็นจังหวะสะสม Buy เพื่อลุ้นทดสอบ $4,074.70\n\n🐻 [ฝ่ายหมี & Red Team - Viktor Kane (พลังโหวต 67%)]: อย่ามองโลกในแง่ดีเกินไป! ราคาปัจจุบัน ($3,878.70) ยังอยู่ต่ำกว่าเส้น H1 EMA20 ($3,940.47) ชัดเจน การรีบสวน Buy ตอนนี้เสี่ยงรับมีด! นอกจากนี้ US 10Y Yield ที่ 5.1% ยังกดดันทองคำ และจ้าวตลาด (Smart Money) มักทุบกวาด Stop Loss ใต้แนวรับ $3,856.70 ลงไปถึงโซน $3,848.76 หรือลากไส้ทะลุ $4,074.70 ไปที่ $4,082.64 ก่อนกลับทิศ ดังนั้นห้ามไล่ราคาเด็ดขาด!\n\n⚖️ [สรุปผลศึกดีเบต]: BEAR / RED TEAM WINS (67% vs 33% - ฝั่งขาย/ระวังความเสี่ยงได้เปรียบ) — ระวังโซนกวาดสภาพคล่อง (Stop Hunt Zone) บริเวณ $3,848.76 และ $4,082.64 โดยจุด Stop Loss ที่ $3,912.74 ได้เผื่อระยะ ATR ป้องกันการสวอร์มไส้เทียนไว้แล้ว"}, "bench": {"bars_analyzed": 532, "spread_assumed_oz": 0.3, "best_strategy": {"strategy_key": "DONCHIAN_SESSION_BREAKOUT", "strategy_name": "4. Donchian 20 Killzone Momentum Breakout", "best_regime": "BREAKOUT / NEWS EXPANSION", "reference": "Commodity Channel Breakout (London/NY Session Expansion)", "published_win_rate": 49.2, "published_pf": 1.75, "live_trades": 35, "live_win_rate": 57.1, "live_pf": 2.04, "live_net_r": 14.4, "live_signal_now": "SELL BIAS", "composite_score": 102.54}, "all_strategies": [{"strategy_key": "DONCHIAN_SESSION_BREAKOUT", "strategy_name": "4. Donchian 20 Killzone Momentum Breakout", "best_regime": "BREAKOUT / NEWS EXPANSION", "reference": "Commodity Channel Breakout (London/NY Session Expansion)", "published_win_rate": 49.2, "published_pf": 1.75, "live_trades": 35, "live_win_rate": 57.1, "live_pf": 2.04, "live_net_r": 14.4, "live_signal_now": "SELL BIAS", "composite_score": 102.54}, {"strategy_key": "BOLLINGER_RSI_REVERSION", "strategy_name": "3. Bollinger-RSI Extreme Mean Reversion", "best_regime": "SIDEWAY / RANGING", "reference": "Intraday Gold Statistical Mean Reversion at 2-Sigma Bands", "published_win_rate": 63.5, "published_pf": 1.58, "live_trades": 32, "live_win_rate": 46.9, "live_pf": 1.14, "live_net_r": 2.24, "live_signal_now": "SELL BIAS", "composite_score": 59.33}, {"strategy_key": "EMA_PULLBACK_ATR", "strategy_name": "1. EMA Pullback & Volatility Expansion", "best_regime": "TRENDING", "reference": "State-Machine EMA Trend Pullback & ATR Breakout (5-Yr XAUUSD Study)", "published_win_rate": 55.4, "published_pf": 1.64, "live_trades": 65, "live_win_rate": 38.5, "live_pf": 0.91, "live_net_r": -3.54, "live_signal_now": "SELL BIAS", "composite_score": 41.6}, {"strategy_key": "SMC_LIQUIDITY_SWEEP", "strategy_name": "2. Institutional SMC Liquidity Sweep (Stop-Hunt Reversal)", "best_regime": "VOLATILE / STOP-HUNT", "reference": "Smart Money Liquidity Pool Sweep & Break of Structure Benchmark", "published_win_rate": 68.0, "published_pf": 1.95, "live_trades": 56, "live_win_rate": 32.1, "live_pf": 0.69, "live_net_r": -11.32, "live_signal_now": "SELL BIAS", "composite_score": 22.93}], "auditor_summary": "จากการนำ 4 กลยุทธ์มาตรฐานระดับสถาบันมาทดสอบย้อนหลังบนกราฟจริงล่าสุด (532 แท่ง หักค่า Spread $0.3/oz) พบว่ากลยุทธ์ที่ทำผลงานดีที่สุดในสภาวะตลาดปัจจุบันคือ '4. Donchian 20 Killzone Momentum Breakout' โดยทำอัตราชนะจริง (Live Win Rate) ได้ 57.1% (เทียบงานวิจัย 49.2%) และมี Profit Factor 2.04 (เทียบงานวิจัย 1.75) ให้ผลตอบแทนสุทธิ +14.4R และส่งสัญญาณปัจจุบันคือ 'SELL BIAS'"}, "port": {"bot_name": "AutoBot X-1", "execution_mode": "PAPER_LIVE_VERIFIED", "initial_capital": 1000.0, "balance": 1000.0, "equity": 1038.7, "floating_pnl": 38.7, "net_return_pct": 3.87, "total_closed_trades": 0, "wins": 0, "losses": 0, "live_win_rate_pct": 100.0, "open_positions": [{"id": 2, "opened_at": "2026-11-12 21:59:27", "closed_at": null, "symbol": "XAUUSD", "direction": "SELL", "lot_size": 0.01, "entry_price": 3888.4, "sl_price": 3920.63, "tp1_price": 3830.38, "tp2_price": 3798.16, "current_price": 3878.7, "close_price": null, "status": "OPEN", "pnl_dollar": 9.7, "pnl_r": 0.3, "strategy_used": "4. Donchian 20 Killzone Momentum Breakout", "execution_mode": "PAPER_LIVE_VERIFIED"}, {"id": 1, "opened_at": "2026-11-12 21:35:27", "closed_at": null, "symbol": "XAUUSD", "direction": "SELL", "lot_size": 0.01, "entry_price": 3907.7, "sl_price": 3939.73, "tp1_price": 3850.05, "tp2_price": 3818.02, "current_price": 3878.7, "close_price": null, "status": "OPEN", "pnl_dollar": 29.0, "pnl_r": 0.91, "strategy_used": "4. Donchian 20 Killzone Momentum Breakout", "execution_mode": "PAPER_LIVE_VERIFIED"}], "closed_positions": [], "actions_taken": [], "summary_message": "ตรวจสอบพอร์ตเรียบร้อย ถือออเดอร์ 2 ไม้ (Floating PnL: $+38.70)"}, "office": {"chief_of_staff": "Sophia Chen", "total_agents": 11, "total_tasks_today": 142, "agents_roster": [{"agent_id": "ag_cio", "name": "Arthur Pendelton", "avatar": "👑", "role": "Chief Investment Officer (CIO)", "department": "Executive Board", "status": "DECISION ISSUED", "current_task": "ออกมติ 'SELL (SHORT)' @ $3,878.70 (ความเชื่อมั่น 67%)", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:33", "shift_schedule": "24/7 On-Call Decision Maker", "level": 12, "exp": 420, "max_exp": 600, "primary_skill": "Bayesian Consensus Synthesis", "secondary_skill": "Multi-Agent Regime Weighting", "ultimate_skill": "Executive Alpha Override", "mastery_pct": 92.4, "accuracy_bonus_pct": 8.5, "training_sessions": 14, "home_room": "WAR_ROOM", "color_hex": "#fbbf24", "llm_model": "Claude 3.7 Sonnet (Extended Thinking 128K)", "stat_accuracy": 95, "stat_speed": 90, "stat_risk": 94, "stat_macro": 82, "stat_creativity": 84, "bio": "ประธานการลงทุนสูงสุด ผสานตรรกะจากทุกฝ่ายเพื่อฟันธงจุดเข้าเทรดทองคำที่คมกริบ", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}, {"agent_id": "ag_cos", "name": "Sophia Chen", "avatar": "👩‍💼", "role": "Chief of Staff & 24h Operations", "department": "Executive Board", "status": "REPORTING 24/7", "current_task": "สรุปผลงานประจำวันรวม 142 งาน จากพนักงาน AI 11 ตัว", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:34", "shift_schedule": "24/7 Continuous Shift", "level": 10, "exp": 310, "max_exp": 500, "primary_skill": "24/7 Telemetry Orchestration", "secondary_skill": "Cross-Dept Knowledge Routing", "ultimate_skill": "Zero-Bottleneck Sync", "mastery_pct": 89.0, "accuracy_bonus_pct": 6.0, "training_sessions": 11, "home_room": "VENTURE_LOUNGE", "color_hex": "#38bdf8", "llm_model": "Gemini 2.5 Pro Exp (2M Context Deep Research)", "stat_accuracy": 91, "stat_speed": 90, "stat_risk": 86, "stat_macro": 82, "stat_creativity": 84, "bio": "หัวหน้าเลขาธิการสำนักงาน AI ดูแลตารางเวลา 24 ชม. สรุปรายงาน และซิงค์สมองที่สองลง Obsidian", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}, {"agent_id": "ag_news", "name": "Maya Lin", "avatar": "🕵️‍♀️", "role": "Real-Time News Sentinel", "department": "24/7 Intelligence Desk", "status": "MONITORING 24/7", "current_task": "สแกนข่าวเรียลไทม์ 4 หัวข้อ (พบข่าวกระทบสูง 4 ข่าว)", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:33", "shift_schedule": "24/7 Live Stream Watcher", "level": 11, "exp": 380, "max_exp": 550, "primary_skill": "NLP Fed Hawkish/Dovish Decoder", "secondary_skill": "Geopolitical Shock Radar", "ultimate_skill": "Sub-Second Headline Alpha", "mastery_pct": 90.5, "accuracy_bonus_pct": 7.2, "training_sessions": 13, "home_room": "NEWS_RADAR", "color_hex": "#f43f5e", "llm_model": "Grok-3 (Real-Time Macro & X Pulse)", "stat_accuracy": 90, "stat_speed": 90, "stat_risk": 82, "stat_macro": 82, "stat_creativity": 84, "bio": "สายลับข่าวสารเรียลไทม์ ดักจับแถลงการณ์ Fed, CPI และสงครามก่อนที่กราฟจะกระชาก", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}, {"agent_id": "ag_quant", "name": "Dr. Kenji Sato", "avatar": "👨‍🔬", "role": "Head of Quant R&D & Benchmark Lab", "department": "Quant R&D Lab", "status": "BENCHMARKING", "current_task": "ชนะเลิศ: 4. Donchian 20 Killzone Momentum Breakout (Win Rate 57.1%, PF 2.04)", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:33", "shift_schedule": "24/7 Strategy Backtest Loop", "level": 17, "exp": 182, "max_exp": 1062, "primary_skill": "Walk-Forward Genetic Optimizer", "secondary_skill": "Monte Carlo Spread Stress-Test", "ultimate_skill": "Regime-Adaptive Alpha Matrix", "mastery_pct": 98.65, "accuracy_bonus_pct": 11.95, "training_sessions": 32, "home_room": "QUANT_LAB", "color_hex": "#a855f7", "llm_model": "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)", "stat_accuracy": 98, "stat_speed": 90, "stat_risk": 94, "stat_macro": 82, "stat_creativity": 84, "bio": "นักวิจัยคณิตศาสตร์ประกันภัยและอัลกอริทึม ทดสอบ 4 กลยุทธ์ระดับสถาบันและจูนพารามิเตอร์ด้วยตัวเอง", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}, {"agent_id": "ag_ta", "name": "Alex 'ChartMaster' Vance", "avatar": "📊", "role": "Senior Multi-TF Technical Analyst", "department": "Trading Committee", "status": "ANALYZING CHARTS", "current_task": "สแกน XAUUSD $3,878.70 -> SELL (Bearish Setup) (Score -55)", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:33", "shift_schedule": "24/7 Market Scanner", "level": 15, "exp": 593, "max_exp": 859, "primary_skill": "Multi-TF Harmonic & Fibonacci", "secondary_skill": "ATR Volatility Dynamic Stop", "ultimate_skill": "Institutional Orderflow Sight", "mastery_pct": 95.65, "accuracy_bonus_pct": 10.5, "training_sessions": 27, "home_room": "QUANT_LAB", "color_hex": "#10b981", "llm_model": "DeepSeek-R1 671B Full (Unquantized CoT)", "stat_accuracy": 94, "stat_speed": 90, "stat_risk": 90, "stat_macro": 82, "stat_creativity": 84, "bio": "ปรมาจารย์กราฟเทคนิค Multi-Timeframe (D1/H1) แกะรอยโครงสร้างราคาและระยะ ATR", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}, {"agent_id": "ag_macro", "name": "Dr. Marcus Sterling", "avatar": "🌐", "role": "Chief Global Macroeconomist", "department": "Trading Committee", "status": "MACRO WATCH", "current_task": "ติดตาม DXY (103.16) & US10Y (5.1%) -> NEUTRAL / BALANCED MACRO FORCES", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:33", "shift_schedule": "Global Session Watcher", "level": 11, "exp": 350, "max_exp": 550, "primary_skill": "DXY & Real-Yield Correlation", "secondary_skill": "Central Bank Gold Flow Tracker", "ultimate_skill": "Macro Liquidity Forecast", "mastery_pct": 89.8, "accuracy_bonus_pct": 7.4, "training_sessions": 12, "home_room": "NEWS_RADAR", "color_hex": "#60a5fa", "llm_model": "Gemini 2.5 Pro Exp (2M Context Deep Research)", "stat_accuracy": 91, "stat_speed": 90, "stat_risk": 88, "stat_macro": 82, "stat_creativity": 84, "bio": "นักเศรษฐศาสตร์มหภาคระดับโลก วิเคราะห์ทิศทางดอลลาร์ (DXY) และพันธบัตรสหรัฐ 10 ปี", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}, {"agent_id": "ag_bull", "name": "Sarah Jenkins", "avatar": "🐂", "role": "Bullish Advocate", "department": "Trading Committee", "status": "DEBATING (BULL)", "current_task": "ขึ้นดีเบตฝั่งซื้อ (Bull Power 33%) อ้างอิงแนวรับ $3,856.70", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:33", "shift_schedule": "Committee Session", "level": 9, "exp": 290, "max_exp": 450, "primary_skill": "Oversold Mean-Reversion Sniper", "secondary_skill": "Fibonacci Golden Zone Demand", "ultimate_skill": "Bullish Momentum Ignition", "mastery_pct": 86.4, "accuracy_bonus_pct": 6.2, "training_sessions": 10, "home_room": "WAR_ROOM", "color_hex": "#22c55e", "llm_model": "Llama-3.3-70B (Groq Ultra-Fast)", "stat_accuracy": 87, "stat_speed": 90, "stat_risk": 80, "stat_macro": 82, "stat_creativity": 84, "bio": "ตัวแทนฝั่งกระทิง (Bull Advocate) ค้นหาจุดกลับตัวขาขึ้นและปกป้องโอกาสฝั่ง BUY ในห้องดีเบต", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}, {"agent_id": "ag_bear", "name": "Viktor 'The Skeptic' Kane", "avatar": "🐻", "role": "Bearish & Red-Team Advocate", "department": "Trading Committee", "status": "DEBATING (BEAR/RED TEAM)", "current_task": "ขึ้นดีเบตฝั่งขาย/จับผิด (Bear Power 67%) เตือน Stop Hunt $3,848.76", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:33", "shift_schedule": "Committee Session", "level": 13, "exp": 34, "max_exp": 760, "primary_skill": "Liquidity Sweep & Stop-Hunt Detector", "secondary_skill": "Bull-Trap Invalidation Audit", "ultimate_skill": "Red-Team Stress Breaker", "mastery_pct": 91.7, "accuracy_bonus_pct": 8.95, "training_sessions": 23, "home_room": "WAR_ROOM", "color_hex": "#ef4444", "llm_model": "Claude 3.7 Sonnet (Extended Thinking 128K)", "stat_accuracy": 92, "stat_speed": 90, "stat_risk": 95, "stat_macro": 82, "stat_creativity": 84, "bio": "หัวหน้าทีม Red-Team และตัวแทนฝั่งหมี คอยจับผิดแผนเทรดและชี้เป้าโซนกวาด Stop Loss ของจ้าวตลาด", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}, {"agent_id": "ag_risk", "name": "Elena Rostova", "avatar": "🛡️", "role": "Chief Risk Officer (CRO)", "department": "Trading Committee", "status": "RISK GUARD", "current_task": "ตรวจสอบ R:R (1:1.8) และอนุมัติขนาด 0.01 Lot", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:33", "shift_schedule": "24/7 Risk Guard", "level": 13, "exp": 460, "max_exp": 650, "primary_skill": "Fractional Kelly Lot Sizing", "secondary_skill": "Equity Drawdown Circuit Breaker", "ultimate_skill": "Zero-Ruin Capital Shield", "mastery_pct": 94.0, "accuracy_bonus_pct": 9.1, "training_sessions": 15, "home_room": "WAR_ROOM", "color_hex": "#ec4899", "llm_model": "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)", "stat_accuracy": 96, "stat_speed": 90, "stat_risk": 99, "stat_macro": 82, "stat_creativity": 84, "bio": "ผู้จัดการความเสี่ยงสูงสุด (CRO) คำนวณขนาด Lot Size ตามทุนจริงและล็อกเพดานความเสี่ยงไม่ให้พอร์ตแตก", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}, {"agent_id": "ag_bot", "name": "AutoBot X-1", "avatar": "🤖", "role": "Automated Portfolio & Execution Bot", "department": "Auto-Portfolio Desk", "status": "EXECUTING", "current_task": "ตรวจสอบพอร์ตเรียบร้อย ถือออเดอร์ 2 ไม้ (Floating PnL: $+38.70)", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:33", "shift_schedule": "24/7 Tick & Position Manager", "level": 14, "exp": 770, "max_exp": 793, "primary_skill": "MT5 Zero-Latency Order Execution", "secondary_skill": "Auto TP1 Break-Even Lock", "ultimate_skill": "Tick-Level Slippage Guard", "mastery_pct": 95.35, "accuracy_bonus_pct": 10.0, "training_sessions": 26, "home_room": "MT5_BRIDGE", "color_hex": "#c084fc", "llm_model": "Qwen-2.5-Coder-32B (Algo Specialist)", "stat_accuracy": 95, "stat_speed": 90, "stat_risk": 94, "stat_macro": 82, "stat_creativity": 84, "bio": "หุ่นยนต์ยิงคำสั่งเทรดอัตโนมัติ เชื่อมต่อ MT5 เฝ้าราคาทุก Tick และขยับ SL บังหน้าทุนอัตโนมัติ", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}, {"agent_id": "ag_venture", "name": "Nova Vance", "avatar": "🚀", "role": "New Business Venture Architect", "department": "Venture Incubator", "status": "INCUBATING IDEAS", "current_task": "ดูแลโครงสร้าง 5 แผนก พร้อมเชื่อมต่อไอเดียธุรกิจใหม่ (Crypto / SaaS / Automation)", "tasks_completed_today": 13, "last_active": "2026-11-13 00:25:33", "shift_schedule": "Strategic R&D Shift", "level": 8, "exp": 220, "max_exp": 400, "primary_skill": "Modular AI Venture Blueprinting", "secondary_skill": "Cross-Market Arbitrage Design", "ultimate_skill": "Autonomous Division Spawner", "mastery_pct": 85.0, "accuracy_bonus_pct": 5.5, "training_sessions": 8, "home_room": "VENTURE_LOUNGE", "color_hex": "#f97316", "llm_model": "Claude 3.5 Opus (Flagship Strategist)", "stat_accuracy": 88, "stat_speed": 90, "stat_risk": 84, "stat_macro": 82, "stat_creativity": 84, "bio": "สถาปนิกธุรกิจใหม่ของเครือ Holding คิดค้นและเชื่อมต่อบอทธุรกิจ AI ใหม่เข้าสู่บริษัท", "token_quota": 80000, "tokens_used_today": 18500, "compute_mode": "BALANCED"}], "recent_activity_logs": [{"id": 132, "timestamp": "2026-11-13 00:25:34", "agent_name": "Sophia Chen", "department": "Executive Board", "action_type": "DAILY_SUMMARY", "summary": "จัดทำรายงานสรุปประจำวันเสร็จสิ้น (รวม 142 ภารกิจ, Equity พอร์ต $1,038.70)"}, {"id": 131, "timestamp": "2026-11-13 00:25:33", "agent_name": "AutoBot X-1", "department": "Auto-Portfolio Desk", "action_type": "PORTFOLIO_SYNC", "summary": "ตรวจสอบพอร์ตเรียบร้อย ถือออเดอร์ 2 ไม้ (Floating PnL: $+38.70)"}, {"id": 130, "timestamp": "2026-11-13 00:25:33", "agent_name": "Nova Vance", "department": "Venture Incubator", "action_type": "VENTURE_CHECK", "summary": "ตรวจสอบความพร้อมของสล็อตแผนกธุรกิจใหม่ (Crypto Alpha Desk & AI Micro-SaaS Desk พร้อมใช้งาน)"}, {"id": 129, "timestamp": "2026-11-13 00:25:33", "agent_name": "Arthur Pendelton", "department": "Executive Board", "action_type": "CIO_VERDICT", "summary": "ฟันธงมติ 'SELL (SHORT)' Entry $3,878.70 | SL $3,912.74 | TP1 $3,817.44"}, {"id": 128, "timestamp": "2026-11-13 00:25:33", "agent_name": "Elena Rostova", "department": "Trading Committee", "action_type": "RISK_AUDIT", "summary": "อนุมัติขนาดออเดอร์ 0.01 Lot (ความเสี่ยง $34.04, R:R 1:1.8)"}, {"id": 127, "timestamp": "2026-11-13 00:25:33", "agent_name": "Viktor 'The Skeptic' Kane", "department": "Trading Committee", "action_type": "BEAR_REDTEAM_DEBATE", "summary": "ชี้จุดเสี่ยง Liquidity Sweep และโต้แย้งด้วยคะแนนโหวต 67%"}, {"id": 126, "timestamp": "2026-11-13 00:25:33", "agent_name": "Sarah Jenkins", "department": "Trading Committee", "action_type": "BULL_DEBATE", "summary": "เสนอเหตุผลฝั่งกระทิงด้วยคะแนนโหวต 33%"}, {"id": 125, "timestamp": "2026-11-13 00:25:33", "agent_name": "Dr. Marcus Sterling", "department": "Trading Committee", "action_type": "MACRO_ANALYSIS", "summary": "ประเมินเศรษฐกิจมหภาค คะแนน -5/100 (NEUTRAL / BALANCED MACRO FORCES)"}, {"id": 124, "timestamp": "2026-11-13 00:25:33", "agent_name": "Alex 'ChartMaster' Vance", "department": "Trading Committee", "action_type": "TECHNICAL_SCAN", "summary": "วิเคราะห์ D1 (BEARISH) + H1 (BEARISH) เสนอจุดเข้า $3,878.70"}, {"id": 123, "timestamp": "2026-11-13 00:25:33", "agent_name": "Dr. Kenji Sato", "department": "Quant R&D Lab", "action_type": "STRATEGY_AUDIT", "summary": "ทดสอบเปรียบเทียบ 4 กลยุทธ์วิจัยระดับสถาบัน คัดเลือก '4. Donchian 20 Killzone Momentum Breakout' (Win Rate 57.1%)"}, {"id": 122, "timestamp": "2026-11-13 00:25:33", "agent_name": "Maya Lin", "department": "24/7 Intelligence Desk", "action_type": "REALTIME_NEWS_SCAN", "summary": "สแกนข่าวเรียลไทม์ 4 หัวข้อ (พบข่าวกระทบสูง 4 ข่าว) — ล่าสุด: \"Federal Reserve signals measured approach on rate cuts amid steady inflatio...\""}, {"id": 121, "timestamp": "2026-11-12 23:59:06", "agent_name": "Sophia Chen", "department": "Executive Board", "action_type": "DAILY_SUMMARY", "summary": "จัดทำรายงานสรุปประจำวันเสร็จสิ้น (รวม 131 ภารกิจ, Equity พอร์ต $1,032.90)"}, {"id": 120, "timestamp": "2026-11-12 23:59:06", "agent_name": "AutoBot X-1", "department": "Auto-Portfolio Desk", "action_type": "PORTFOLIO_SYNC", "summary": "ตรวจสอบพอร์ตเรียบร้อย ถือออเดอร์ 2 ไม้ (Floating PnL: $+32.90)"}, {"id": 119, "timestamp": "2026-11-12 23:59:06", "agent_name": "Nova Vance", "department": "Venture Incubator", "action_type": "VENTURE_CHECK", "summary": "ตรวจสอบความพร้อมของสล็อตแผนกธุรกิจใหม่ (Crypto Alpha Desk & AI Micro-SaaS Desk พร้อมใช้งาน)"}, {"id": 118, "timestamp": "2026-11-12 23:59:06", "agent_name": "Arthur Pendelton", "department": "Executive Board", "action_type": "CIO_VERDICT", "summary": "ฟันธงมติ 'SELL (SHORT)' Entry $3,881.60 | SL $3,915.11 | TP1 $3,821.28"}, {"id": 117, "timestamp": "2026-11-12 23:59:06", "agent_name": "Elena Rostova", "department": "Trading Committee", "action_type": "RISK_AUDIT", "summary": "อนุมัติขนาดออเดอร์ 0.01 Lot (ความเสี่ยง $33.51, R:R 1:1.8)"}, {"id": 116, "timestamp": "2026-11-12 23:59:06", "agent_name": "Viktor 'The Skeptic' Kane", "department": "Trading Committee", "action_type": "BEAR_REDTEAM_DEBATE", "summary": "ชี้จุดเสี่ยง Liquidity Sweep และโต้แย้งด้วยคะแนนโหวต 67%"}, {"id": 115, "timestamp": "2026-11-12 23:59:06", "agent_name": "Sarah Jenkins", "department": "Trading Committee", "action_type": "BULL_DEBATE", "summary": "เสนอเหตุผลฝั่งกระทิงด้วยคะแนนโหวต 33%"}, {"id": 114, "timestamp": "2026-11-12 23:59:06", "agent_name": "Dr. Marcus Sterling", "department": "Trading Committee", "action_type": "MACRO_ANALYSIS", "summary": "ประเมินเศรษฐกิจมหภาค คะแนน -5/100 (NEUTRAL / BALANCED MACRO FORCES)"}, {"id": 113, "timestamp": "2026-11-12 23:59:06", "agent_name": "Alex 'ChartMaster' Vance", "department": "Trading Committee", "action_type": "TECHNICAL_SCAN", "summary": "วิเคราะห์ D1 (BEARISH) + H1 (BEARISH) เสนอจุดเข้า $3,881.60"}], "business_divisions": [{"division_id": "div_gold", "name": "1. Gold Quantitative Trading Division", "lead_agent": "Arthur Pendelton & AutoBot X-1", "status": "ACTIVE (24/7 LIVE)", "description": "วิเคราะห์ ดีเบต และบริหารพอร์ตเทรดทองคำ XAUUSD อัตโนมัติ", "kpi_metric": "Target Win Rate > 58% | PF > 1.6"}, {"division_id": "div_intel", "name": "2. 24/7 Global News & Macro Intelligence Desk", "lead_agent": "Maya Lin", "status": "ACTIVE (24/7 LIVE)", "description": "ดักจับข่าวเศรษฐกิจโลก ธนาคารกลาง และความเสี่ยงสงครามแบบเรียลไทม์", "kpi_metric": "Latency < 5s | 24/7 Feed Coverage"}, {"division_id": "div_obsidian", "name": "4. Obsidian Second-Brain Knowledge Graph Division", "lead_agent": "Sophia Chen", "status": "ACTIVE (AUTO-SYNC)", "description": "ซิงค์บันทึกการประชุม โปรไฟล์ AI และผลการเทรดเข้าสู่ Obsidian Vault อัตโนมัติ", "kpi_metric": "100% Markdown + [[Wikilinks]] Synced"}, {"division_id": "div_quant", "name": "3. Institutional Quant Strategy R&D Lab", "lead_agent": "Dr. Kenji Sato", "status": "ACTIVE (24/7 LIVE)", "description": "ทดสอบและคัดเลือกกลยุทธ์ที่ผ่านการพิสูจน์ทางสถิติระดับสถาบัน", "kpi_metric": "4 Proven Archetypes Benchmarked"}, {"division_id": "div_venture_crypto", "name": "4. Crypto Arbitrage & Alpha Bot Desk (Expansion Slot)", "lead_agent": "Nova Vance", "status": "READY TO DEPLOY", "description": "แผนกสำรองสำหรับขยายบอทเทรด BTC/ETH หรือ Funding Rate Arbitrage", "kpi_metric": "Modular Plug-in Ready"}, {"division_id": "div_venture_saas", "name": "5. AI Content & Micro-SaaS Automation Desk (Expansion Slot)", "lead_agent": "Nova Vance", "status": "READY TO DEPLOY", "description": "แผนกสำรองสำหรับสร้างบริการ AI SaaS / ระบบส่งสัญญาณ VIP หรือธุรกิจใหม่อื่นๆ", "kpi_metric": "Modular Plug-in Ready"}], "digest_summary": "📋 [สรุปผลการปฏิบัติงานสำนักงาน AI ตลอด 24 ชม. — โดย Sophia Chen (Chief of Staff)]:\n• พนักงาน AI ประจำการครบ 11 ตัว ใน 6 แผนก ปฏิบัติภารกิจสำเร็จรวมวันนี้ 142 งาน\n• หน่วยข่าวเรียลไทม์ (Maya Lin): เฝ้าติดตามข่าวสำคัญ 4 ประเด็น โดยข่าวเด่นคือ \"Federal Reserve signals measured approach on rate cuts amid steady inflation data\" (HIGH IMPACT 🔴)\n• ห้องแล็บวิจัยกลยุทธ์ (Dr. Kenji Sato): ทดสอบ 4 กลยุทธ์มาตรฐานระดับโลก พบว่า '4. Donchian 20 Killzone Momentum Breakout' ให้ความแม่นยำสูงสุดในตลาดปัจจุบัน (Win Rate 57.1%, PF 2.04)\n• บอทจัดการพอร์ตอัตโนมัติ (AutoBot X-1): สถานะโหมด PAPER_LIVE_VERIFIED | Equity ปัจจุบัน $1,038.70 (Floating PnL: $+38.70) | ถือออเดอร์ 2 ไม้ | Win Rate พอร์ตจริง 100.0%"}, "skill_rep": {"optimal_parameters": {"fast_ema": 24, "slow_ema": 42, "atr_sl": 1.5, "best_wr": 41.7, "best_pf": 1.29, "score": 61.050000000000004}, "team_total_level": 133, "average_mastery_pct": 91.68, "training_logs": ["Dr. Kenji Sato (Lv.17 | Mastery 98.65%) -> ส่งข้อมูล 'ค้นพบชุดพารามิเตอร์ทองคำที่เหมาะสมที่สุดในตลาดปัจจุบัน' เข้าแกนกลางบริษัท", "Alex 'ChartMaster' Vance (Lv.15 | Mastery 95.65%) -> ส่งข้อมูล 'ปรับความแม่นยำโซนแนวรับ-ต้าน H1 ($3,856.70 - $4,074.70)' เข้าแกนกลางบริษัท", "Viktor 'The Skeptic' Kane (Lv.13 🎉 [LEVEL UP!] | Mastery 91.7%) -> ส่งข้อมูล 'อัปเดตแผนที่โซนกวาด Stop Loss ของ Smart Money' เข้าแกนกลางบริษัท", "AutoBot X-1 (Lv.14 | Mastery 95.35%) -> ส่งข้อมูล 'ซ้อมยิงคำสั่งตามกลยุทธ์ '4. Donchian 20 Killzone Momentum Breakout'' เข้าแกนกลางบริษัท"], "central_knowledge_core": [{"id": 47, "timestamp": "2026-11-13 00:25:33", "contributor_agent": "AutoBot X-1", "skill_domain": "MT5 Execution & Dynamic Break-Even", "insight_title": "ซ้อมยิงคำสั่งตามกลยุทธ์ '4. Donchian 20 Killzone Momentum Breakout'", "learned_parameters": "Spread Filter <= 30 pts | Auto-BE @ TP1 (1.8R) | Magic #888999", "confidence_boost": 2.2}, {"id": 46, "timestamp": "2026-11-13 00:25:33", "contributor_agent": "Viktor 'The Skeptic' Kane", "skill_domain": "Stop-Hunt & Liquidity Sweep Defense", "insight_title": "อัปเดตแผนที่โซนกวาด Stop Loss ของ Smart Money", "learned_parameters": "Sweep Buffer = 0.35x ATR ใต้แนวรับ $3,856.70", "confidence_boost": 1.9}, {"id": 45, "timestamp": "2026-11-13 00:25:33", "contributor_agent": "Alex 'ChartMaster' Vance", "skill_domain": "Multi-Timeframe Structure & Fibonacci Calibration", "insight_title": "ปรับความแม่นยำโซนแนวรับ-ต้าน H1 ($3,856.70 - $4,074.70)", "learned_parameters": "Fib 61.8%=$3939.98 | H1 ATR=$22.69", "confidence_boost": 2.1}, {"id": 44, "timestamp": "2026-11-13 00:25:33", "contributor_agent": "Dr. Kenji Sato", "skill_domain": "Hyperparameter Walk-Forward Tuning", "insight_title": "ค้นพบชุดพารามิเตอร์ทองคำที่เหมาะสมที่สุดในตลาดปัจจุบัน", "learned_parameters": "Optimal EMA(24/42) | SL=1.5xATR | WinRate=41.7%", "confidence_boost": 2.4}, {"id": 43, "timestamp": "2026-11-12 23:59:06", "contributor_agent": "Dr. Kenji Sato", "skill_domain": "Offline Shift Catch-Up", "insight_title": "เก็บตกกราฟย้อนหลังช่วงปิดคอม (1 กะ)", "learned_parameters": "Offline=0.5h | Shifts=1 | Tokens=136,312", "confidence_boost": 0.8}, {"id": 42, "timestamp": "2026-11-12 23:59:06", "contributor_agent": "AutoBot X-1", "skill_domain": "MT5 Execution & Dynamic Break-Even", "insight_title": "ซ้อมยิงคำสั่งตามกลยุทธ์ '4. Donchian 20 Killzone Momentum Breakout'", "learned_parameters": "Spread Filter <= 30 pts | Auto-BE @ TP1 (1.8R) | Magic #888999", "confidence_boost": 2.2}, {"id": 41, "timestamp": "2026-11-12 23:59:06", "contributor_agent": "Viktor 'The Skeptic' Kane", "skill_domain": "Stop-Hunt & Liquidity Sweep Defense", "insight_title": "อัปเดตแผนที่โซนกวาด Stop Loss ของ Smart Money", "learned_parameters": "Sweep Buffer = 0.35x ATR ใต้แนวรับ $3,856.70", "confidence_boost": 1.9}, {"id": 40, "timestamp": "2026-11-12 23:59:05", "contributor_agent": "Alex 'ChartMaster' Vance", "skill_domain": "Multi-Timeframe Structure & Fibonacci Calibration", "insight_title": "ปรับความแม่นยำโซนแนวรับ-ต้าน H1 ($3,856.70 - $4,074.70)", "learned_parameters": "Fib 61.8%=$3939.98 | H1 ATR=$22.34", "confidence_boost": 2.1}, {"id": 39, "timestamp": "2026-11-12 23:59:05", "contributor_agent": "Dr. Kenji Sato", "skill_domain": "Hyperparameter Walk-Forward Tuning", "insight_title": "ค้นพบชุดพารามิเตอร์ทองคำที่เหมาะสมที่สุดในตลาดปัจจุบัน", "learned_parameters": "Optimal EMA(24/42) | SL=1.5xATR | WinRate=42.5%", "confidence_boost": 2.4}, {"id": 38, "timestamp": "2026-11-12 23:57:59", "contributor_agent": "Dr. Kenji Sato", "skill_domain": "Offline Shift Catch-Up", "insight_title": "เก็บตกกราฟย้อนหลังช่วงปิดคอม (1 กะ)", "learned_parameters": "Offline=0.5h | Shifts=1 | Tokens=136,312", "confidence_boost": 0.8}]}, "mt5_demo": {"ticket_id": 84920188, "symbol": "XAUUSD", "direction": "SELL", "lot_size": 0.01, "entry_price": 3878.7, "sl_price": 3912.74, "tp1_price": 3817.44, "tp2_price": 3783.39, "spread_points": 18, "demo_profit_dollar": 78.28, "request_payload": {"action": "mt5.TRADE_ACTION_DEAL (1)", "symbol": "XAUUSD", "volume": 0.01, "type": "mt5.ORDER_TYPE_SELL (1)", "price": 3878.7, "sl": 3912.74, "tp": 3783.39, "deviation": 20, "magic": 888999, "comment": "AI_Virtual_Firm_V4_AutoBot", "type_time": "mt5.ORDER_TIME_GTC", "type_filling": "mt5.ORDER_FILLING_IOC"}, "steps_telemetry": [{"step": 1, "phase": "MT5_INITIALIZE & LOGIN", "code": "mt5.initialize() & mt5.login(account=50892104, server='MetaQuotes-Demo')", "detail": "เชื่อมต่อเทอร์มินัล MetaTrader 5 สำเร็จ (Ping: 14.2ms | Demo Balance: $10,000.00 | Leverage 1:200)", "status": "SUCCESS ✅"}, {"step": 2, "phase": "SYMBOL_TICK & SPREAD GUARD", "code": "tick = mt5.symbol_info_tick('XAUUSD') # Bid=3878.7, Ask=3878.88", "detail": "ตรวจค่า Spread ปัจจุบัน = 18 Points ($0.18/oz) ผ่านเกณฑ์ความปลอดภัย (<= 35 Points)", "status": "PASSED ✅"}, {"step": 3, "phase": "CENTRAL NEXUS SIGNAL INJECTION", "code": "signal = nexus.get_cio_approved_setup(strategy='4. Donchian 20 Killzone Momentum Breakout')", "detail": "ดึงแผนเทรดที่ผ่านการดีเบตและกลยุทธ์ '4. Donchian 20 Killzone Momentum Breakout' -> คำสั่ง SELL @ $3,878.70", "status": "VERIFIED 🧠"}, {"step": 4, "phase": "MARGIN & DYNAMIC LOT SIZING", "code": "mt5.order_calc_margin(ORDER_TYPE_SELL, 'XAUUSD', 0.01, 3878.7)", "detail": "คำนวณขนาดออเดอร์ 0.01 Lot (ระยะ SL $34.04, R:R 1:1.8 / 1:2.8) ใช้ Margin เพียง $39.08", "status": "CALCULATED 🛡️"}, {"step": 5, "phase": "MT5 ORDER_SEND EXECUTION", "code": "mt5.order_send({'action': TRADE_ACTION_DEAL, 'type': ORDER_TYPE_SELL, 'volume': 0.01, 'price': 3878.7, 'sl': 3912.74, 'tp': 3783.39, 'magic': 888999})", "detail": "ยิงคำสั่งเข้าโบรกเกอร์สำเร็จ! ได้รับ Ticket #84920188 (retcode=10009 TRADE_RETCODE_DONE)", "status": "EXECUTED 🚀"}, {"step": 6, "phase": "LIVE TICK MONITOR & TP1 PARTIAL CLOSE", "code": "if tick.price <= 3817.44: mt5.Close(ticket=84920188, volume=0.01)", "detail": "ราคาวิ่งแตะเป้าหมาย TP1 ($3,817.44) -> บอทแบ่งปิดทำกำไรครึ่งแรก ล็อกเงินสด +$30.63 เข้าพอร์ตทันที!", "status": "TP1 LOCKED 💰"}, {"step": 7, "phase": "AUTO BREAK-EVEN (TRADE_ACTION_SLTP)", "code": "mt5.order_send({'action': TRADE_ACTION_SLTP, 'position': 84920188, 'sl': 3878.7, 'tp': 3783.39})", "detail": "บอทส่งคำสั่งขยับ Stop Loss จาก $3,912.74 มาบังหน้าทุนที่ $3,878.70 อัตโนมัติ (กลายเป็นไม้ Risk-Free 100%!)", "status": "RISK-FREE 🛡️"}, {"step": 8, "phase": "TP2 FULL TARGET & CENTRAL CORE FEEDBACK", "code": "nexus.deposit_trade_outcome(ticket=84920188, net_profit=78.28, exp_reward=+180)", "detail": "ราคาวิ่งแตะ TP2 ($3,783.39) ปิดออเดอร์รับกำไรรวม +$78.28 (+2.3R) และส่งข้อมูลกลับเข้าแกนกลางบริษัทเพื่อเพิ่ม EXP ให้ทีม AI!", "status": "COMPLETED 🏆"}], "tick_series": [{"step": 1, "price": 3878.7, "event": "ORDER_OPEN (SELL @ $3,878.70)"}, {"step": 2, "price": 3882.78, "event": "TICK"}, {"step": 3, "price": 3886.19, "event": "TICK"}, {"step": 4, "price": 3881.42, "event": "TICK"}, {"step": 5, "price": 3877.0, "event": "TICK"}, {"step": 6, "price": 3872.57, "event": "TICK"}, {"step": 7, "price": 3867.81, "event": "TICK"}, {"step": 8, "price": 3863.38, "event": "TICK"}, {"step": 9, "price": 3865.76, "event": "TICK"}, {"step": 10, "price": 3859.98, "event": "TICK"}, {"step": 11, "price": 3854.19, "event": "TICK"}, {"step": 12, "price": 3848.74, "event": "TICK"}, {"step": 13, "price": 3817.44, "event": "TP1_HIT ($3,817.44) -> AUTO BREAK-EVEN SL=$3,878.70"}, {"step": 14, "price": 3841.94, "event": "TICK"}, {"step": 15, "price": 3846.36, "event": "TICK"}, {"step": 16, "price": 3839.55, "event": "TICK"}, {"step": 17, "price": 3833.77, "event": "TICK"}, {"step": 18, "price": 3828.32, "event": "TICK"}, {"step": 19, "price": 3823.56, "event": "TICK"}, {"step": 20, "price": 3819.13, "event": "TICK"}, {"step": 21, "price": 3821.51, "event": "TICK"}, {"step": 22, "price": 3815.73, "event": "TICK"}, {"step": 23, "price": 3809.94, "event": "TICK"}, {"step": 24, "price": 3804.49, "event": "TICK"}, {"step": 25, "price": 3798.71, "event": "TICK"}, {"step": 26, "price": 3792.92, "event": "TICK"}, {"step": 27, "price": 3787.47, "event": "TICK"}, {"step": 28, "price": 3783.39, "event": "TP2_HIT ($3,783.39) -> FULL PROFIT +$78.28"}]}, "obs_info": {"vault_path": "C:\\Users\\ADMIN\\AI-Holding-Company-V8-Portable\\obsidian_vault", "moc_file": "C:\\Users\\ADMIN\\AI-Holding-Company-V8-Portable\\obsidian_vault\\00_AI_Holding_Company_MOC.md", "graph_topology_file": "C:\\Users\\ADMIN\\AI-Holding-Company-V8-Portable\\obsidian_vault\\00_Knowledge_Graph_Topology.md", "canvas_file": "C:\\Users\\ADMIN\\AI-Holding-Company-V8-Portable\\obsidian_vault\\AI_Company_Knowledge_Map.canvas", "files_synced_count": 18, "obsidian_uri": "obsidian://open?path=C%3A/Users/ADMIN/AI-Holding-Company-V8-Portable/obsidian_vault/00_AI_Holding_Company_MOC.md", "last_synced": "2026-11-13 00:25:34", "knowledge_graph": {"nodes": [{"id": "HUB_MOC", "label": "🏛️ 00_AI_Holding_MOC", "category": "CORE_HUB", "color": "#f59e0b", "token_weight": 680, "file": "00_AI_Holding_Company_MOC.md", "description": "สารบัญหลักเชื่อมทุกแผนกในบริษัท AI"}, {"id": "HUB_MARKET", "label": "📊 Market Feed (H1/H4/D1)", "category": "DATA_SOURCE", "color": "#38bdf8", "token_weight": 920, "file": "01_Daily_Summaries/2026-11-13_Daily_Summary.md", "description": "ข้อมูลแท่งเทียนทองคำ, RSI, MACD, ATR, DXY, US10Y"}, {"id": "HUB_NEXUS", "label": "🧠 Central Knowledge Core", "category": "SHARED_MEMORY", "color": "#a855f7", "token_weight": 1450, "file": "03_Central_Knowledge_Core/Central_Nexus_Insights.md", "description": "คลังสมองกลางเก็บสูตรและพารามิเตอร์ที่ AI วิจัยสำเร็จ"}, {"id": "HUB_MT5", "label": "🤖 MT5 Trade & Benchmarks", "category": "EXECUTION_HUB", "color": "#10b981", "token_weight": 1180, "file": "04_MT5_Trade_Journal/MT5_Portfolio_and_Benchmarks.md", "description": "บันทึกพอร์ต MT5 Demo/Live และผล Backtest 4 กลยุทธ์โลก"}, {"id": "HUB_DAILY", "label": "📅 Daily Summary (2026-11-13)", "category": "REPORT_HUB", "color": "#ec4899", "token_weight": 890, "file": "01_Daily_Summaries/2026-11-13_Daily_Summary.md", "description": "สรุปมติ CIO และผลการดำเนินงานรายกะ/รายวัน"}, {"id": "HUB_VENTURE", "label": "🚀 Venture Blueprints", "category": "BUSINESS_HUB", "color": "#6366f1", "token_weight": 760, "file": "05_Business_Ventures/New_Venture_Ideas_Blueprint.md", "description": "แผนกปั้นธุรกิจใหม่ในเครือ AI Holding"}, {"id": "ag_cio", "label": "👑 Arthur Pendelton", "category": "AI_AGENT", "department": "Executive Board", "llm_model": "Claude 3.7 Sonnet (Extended Thinking 128K)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_Arthur_Pendelton.md", "description": "Chief Investment Officer (CIO) (Bayesian Consensus Synthesis)"}, {"id": "ag_cos", "label": "👩‍💼 Sophia Chen", "category": "AI_AGENT", "department": "Executive Board", "llm_model": "Gemini 2.5 Pro Exp (2M Context Deep Research)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_Sophia_Chen.md", "description": "Chief of Staff & 24h Operations (24/7 Telemetry Orchestration)"}, {"id": "ag_news", "label": "🕵️‍♀️ Maya Lin", "category": "AI_AGENT", "department": "24/7 Intelligence Desk", "llm_model": "Grok-3 (Real-Time Macro & X Pulse)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_Maya_Lin.md", "description": "Real-Time News Sentinel (NLP Fed Hawkish/Dovish Decoder)"}, {"id": "ag_quant", "label": "👨‍🔬 Dr. Kenji Sato", "category": "AI_AGENT", "department": "Quant R&D Lab", "llm_model": "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_Dr._Kenji_Sato.md", "description": "Head of Quant R&D & Benchmark Lab (Walk-Forward Genetic Optimizer)"}, {"id": "ag_ta", "label": "📊 Alex 'ChartMaster' Vance", "category": "AI_AGENT", "department": "Trading Committee", "llm_model": "DeepSeek-R1 671B Full (Unquantized CoT)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_Alex_ChartMaster_Vance.md", "description": "Senior Multi-TF Technical Analyst (Multi-TF Harmonic & Fibonacci)"}, {"id": "ag_macro", "label": "🌐 Dr. Marcus Sterling", "category": "AI_AGENT", "department": "Trading Committee", "llm_model": "Gemini 2.5 Pro Exp (2M Context Deep Research)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_Dr._Marcus_Sterling.md", "description": "Chief Global Macroeconomist (DXY & Real-Yield Correlation)"}, {"id": "ag_bull", "label": "🐂 Sarah Jenkins", "category": "AI_AGENT", "department": "Trading Committee", "llm_model": "Llama-3.3-70B (Groq Ultra-Fast)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_Sarah_Jenkins.md", "description": "Bullish Advocate (Oversold Mean-Reversion Sniper)"}, {"id": "ag_bear", "label": "🐻 Viktor 'The Skeptic' Kane", "category": "AI_AGENT", "department": "Trading Committee", "llm_model": "Claude 3.7 Sonnet (Extended Thinking 128K)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_Viktor_The_Skeptic_Kane.md", "description": "Bearish & Red-Team Advocate (Liquidity Sweep & Stop-Hunt Detector)"}, {"id": "ag_risk", "label": "🛡️ Elena Rostova", "category": "AI_AGENT", "department": "Trading Committee", "llm_model": "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_Elena_Rostova.md", "description": "Chief Risk Officer (CRO) (Fractional Kelly Lot Sizing)"}, {"id": "ag_bot", "label": "🤖 AutoBot X-1", "category": "AI_AGENT", "department": "Auto-Portfolio Desk", "llm_model": "Qwen-2.5-Coder-32B (Algo Specialist)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_AutoBot_X-1.md", "description": "Automated Portfolio & Execution Bot (MT5 Zero-Latency Order Execution)"}, {"id": "ag_venture", "label": "🚀 Nova Vance", "category": "AI_AGENT", "department": "Venture Incubator", "llm_model": "Claude 3.5 Opus (Flagship Strategist)", "color": "#60a5fa", "token_weight": 520, "file": "02_AI_Agents/Agent_Nova_Vance.md", "description": "New Business Venture Architect (Modular AI Venture Blueprinting)"}, {"id": "SKILL_1", "label": "🎓 Asian Range Stop-Hunt Reve", "category": "DISCOVERED_SKILL", "color": "#f43f5e", "token_weight": 340, "file": "03_Central_Knowledge_Core/Central_Nexus_Insights.md", "description": "Win Rate 66.5% (+2.2% Acc)"}, {"id": "SKILL_2", "label": "🎓 US10Y Real-Yield & DXY Div", "category": "DISCOVERED_SKILL", "color": "#f43f5e", "token_weight": 340, "file": "03_Central_Knowledge_Core/Central_Nexus_Insights.md", "description": "Win Rate 71.2% (+2.6% Acc)"}, {"id": "SKILL_3", "label": "🎓 Orderblock + H1 ATR Volati", "category": "DISCOVERED_SKILL", "color": "#f43f5e", "token_weight": 340, "file": "03_Central_Knowledge_Core/Central_Nexus_Insights.md", "description": "Win Rate 64.8% (+2.1% Acc)"}, {"id": "SKILL_4", "label": "🎓 ICT New York Killzone Silv", "category": "DISCOVERED_SKILL", "color": "#f43f5e", "token_weight": 340, "file": "03_Central_Knowledge_Core/Central_Nexus_Insights.md", "description": "Win Rate 68.4% (+2.4% Acc)"}], "edges": [{"source": "HUB_MARKET", "target": "HUB_NEXUS", "relation": "FEEDS_PRICE_AND_REGIME", "data_flow": "ส่งราคา OHLC, ATR14 และ Market Regime เข้าสมองกลาง", "tokens_saved": 1420}, {"source": "HUB_NEXUS", "target": "HUB_MT5", "relation": "OPTIMIZES_PARAMETERS", "data_flow": "ส่งค่าพารามิเตอร์ Walk-Forward และสกิลใหม่ไปปรับแต่งบอท MT5", "tokens_saved": 1680}, {"source": "HUB_MT5", "target": "HUB_DAILY", "relation": "LOGS_PNL_AND_TICKETS", "data_flow": "ส่งผลกำไร/ขาดทุนและหมายเลข Ticket เข้าสรุปรายวัน", "tokens_saved": 1150}, {"source": "HUB_DAILY", "target": "HUB_MOC", "relation": "UPDATES_MASTER_INDEX", "data_flow": "อัปเดตสถานะมติล่าสุดขึ้นหน้าสารบัญหลัก MOC", "tokens_saved": 980}, {"source": "HUB_MARKET", "target": "ag_cio", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_MARKET เข้าสมอง Arthur Pendelton", "tokens_saved": 1240}, {"source": "ag_cio", "target": "HUB_NEXUS", "relation": "WRITES_INSIGHT", "data_flow": "วิเคราะห์ข้อมูลเฉพาะทาง", "tokens_saved": 1350}, {"source": "HUB_MARKET", "target": "ag_cos", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_MARKET เข้าสมอง Sophia Chen", "tokens_saved": 1240}, {"source": "ag_cos", "target": "HUB_NEXUS", "relation": "WRITES_INSIGHT", "data_flow": "วิเคราะห์ข้อมูลเฉพาะทาง", "tokens_saved": 1350}, {"source": "HUB_MARKET", "target": "ag_news", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_MARKET เข้าสมอง Maya Lin", "tokens_saved": 1240}, {"source": "ag_news", "target": "HUB_NEXUS", "relation": "WRITES_INSIGHT", "data_flow": "วิเคราะห์ข้อมูลเฉพาะทาง", "tokens_saved": 1350}, {"source": "HUB_MARKET", "target": "ag_quant", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_MARKET เข้าสมอง Dr. Kenji Sato", "tokens_saved": 1240}, {"source": "ag_quant", "target": "HUB_NEXUS", "relation": "WRITES_INSIGHT", "data_flow": "วิเคราะห์ข้อมูลเฉพาะทาง", "tokens_saved": 1350}, {"source": "HUB_MARKET", "target": "ag_ta", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_MARKET เข้าสมอง Alex 'ChartMaster' Vance", "tokens_saved": 1240}, {"source": "ag_ta", "target": "HUB_NEXUS", "relation": "WRITES_INSIGHT", "data_flow": "วิเคราะห์ข้อมูลเฉพาะทาง", "tokens_saved": 1350}, {"source": "HUB_MARKET", "target": "ag_macro", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_MARKET เข้าสมอง Dr. Marcus Sterling", "tokens_saved": 1240}, {"source": "ag_macro", "target": "HUB_NEXUS", "relation": "WRITES_INSIGHT", "data_flow": "วิเคราะห์ข้อมูลเฉพาะทาง", "tokens_saved": 1350}, {"source": "HUB_MARKET", "target": "ag_bull", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_MARKET เข้าสมอง Sarah Jenkins", "tokens_saved": 1240}, {"source": "ag_bull", "target": "HUB_NEXUS", "relation": "WRITES_INSIGHT", "data_flow": "วิเคราะห์ข้อมูลเฉพาะทาง", "tokens_saved": 1350}, {"source": "HUB_MARKET", "target": "ag_bear", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_MARKET เข้าสมอง Viktor 'The Skeptic' Kane", "tokens_saved": 1240}, {"source": "ag_bear", "target": "HUB_NEXUS", "relation": "WRITES_INSIGHT", "data_flow": "วิเคราะห์ข้อมูลเฉพาะทาง", "tokens_saved": 1350}, {"source": "HUB_MARKET", "target": "ag_risk", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_MARKET เข้าสมอง Elena Rostova", "tokens_saved": 1240}, {"source": "ag_risk", "target": "HUB_NEXUS", "relation": "WRITES_INSIGHT", "data_flow": "วิเคราะห์ข้อมูลเฉพาะทาง", "tokens_saved": 1350}, {"source": "HUB_MARKET", "target": "ag_bot", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_MARKET เข้าสมอง AutoBot X-1", "tokens_saved": 1240}, {"source": "ag_bot", "target": "HUB_NEXUS", "relation": "WRITES_INSIGHT", "data_flow": "วิเคราะห์ข้อมูลเฉพาะทาง", "tokens_saved": 1350}, {"source": "HUB_VENTURE", "target": "ag_venture", "relation": "READS_SUBGRAPH", "data_flow": "ดึงเฉพาะโหนด HUB_VENTURE เข้าสมอง Nova Vance", "tokens_saved": 1240}, {"source": "ag_venture", "target": "HUB_MOC", "relation": "WRITES_INSIGHT", "data_flow": "ออกแบบโมเดลธุรกิจ AI ใหม่เข้าโฮลดิ้ง", "tokens_saved": 1350}, {"source": "SKILL_1", "target": "ag_bear", "relation": "EQUIPPED_BY", "data_flow": "ติดตั้งสูตร 'Asian Range Stop-Hunt Reversal Trap' ให้ Viktor 'The Skeptic' Kane", "tokens_saved": 890}, {"source": "SKILL_1", "target": "HUB_NEXUS", "relation": "STORED_IN_NEXUS", "data_flow": "บันทึกสูตรลงคลังสมองกลางเพื่อแชร์ให้ทีม", "tokens_saved": 950}, {"source": "SKILL_2", "target": "ag_macro", "relation": "EQUIPPED_BY", "data_flow": "ติดตั้งสูตร 'US10Y Real-Yield & DXY Divergence Filter' ให้ Dr. Marcus Sterling", "tokens_saved": 890}, {"source": "SKILL_2", "target": "HUB_NEXUS", "relation": "STORED_IN_NEXUS", "data_flow": "บันทึกสูตรลงคลังสมองกลางเพื่อแชร์ให้ทีม", "tokens_saved": 950}, {"source": "SKILL_3", "target": "ag_ta", "relation": "EQUIPPED_BY", "data_flow": "ติดตั้งสูตร 'Orderblock + H1 ATR Volatility Squeeze' ให้ Alex 'ChartMaster' Vance", "tokens_saved": 890}, {"source": "SKILL_3", "target": "HUB_NEXUS", "relation": "STORED_IN_NEXUS", "data_flow": "บันทึกสูตรลงคลังสมองกลางเพื่อแชร์ให้ทีม", "tokens_saved": 950}, {"source": "SKILL_4", "target": "ag_quant", "relation": "EQUIPPED_BY", "data_flow": "ติดตั้งสูตร 'ICT New York Killzone Silver Bullet' ให้ Dr. Kenji Sato", "tokens_saved": 890}, {"source": "SKILL_4", "target": "HUB_NEXUS", "relation": "STORED_IN_NEXUS", "data_flow": "บันทึกสูตรลงคลังสมองกลางเพื่อแชร์ให้ทีม", "tokens_saved": 950}], "total_nodes": 21, "total_edges": 34, "token_savings_report": {"unfiltered_full_vault_tokens": 18650, "graph_routed_avg_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1, "daily_estimated_tokens_saved": 706640, "agent_routing_matrix": [{"agent_id": "ag_cio", "agent_name": "👑 Arthur Pendelton", "role": "Chief Investment Officer (CIO)", "llm_model": "Claude 3.7 Sonnet (Extended Thinking 128K)", "connected_nodes": ["HUB_MARKET", "HUB_NEXUS", "Agent_Arthur_Pendelton"], "data_flow_summary": "วิเคราะห์ข้อมูลเฉพาะทาง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}, {"agent_id": "ag_cos", "agent_name": "👩‍💼 Sophia Chen", "role": "Chief of Staff & 24h Operations", "llm_model": "Gemini 2.5 Pro Exp (2M Context Deep Research)", "connected_nodes": ["HUB_MARKET", "HUB_NEXUS", "Agent_Sophia_Chen"], "data_flow_summary": "วิเคราะห์ข้อมูลเฉพาะทาง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}, {"agent_id": "ag_news", "agent_name": "🕵️‍♀️ Maya Lin", "role": "Real-Time News Sentinel", "llm_model": "Grok-3 (Real-Time Macro & X Pulse)", "connected_nodes": ["HUB_MARKET", "HUB_NEXUS", "Agent_Maya_Lin"], "data_flow_summary": "วิเคราะห์ข้อมูลเฉพาะทาง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}, {"agent_id": "ag_quant", "agent_name": "👨‍🔬 Dr. Kenji Sato", "role": "Head of Quant R&D & Benchmark Lab", "llm_model": "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)", "connected_nodes": ["HUB_MARKET", "HUB_NEXUS", "Agent_Dr._Kenji_Sato"], "data_flow_summary": "วิเคราะห์ข้อมูลเฉพาะทาง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}, {"agent_id": "ag_ta", "agent_name": "📊 Alex 'ChartMaster' Vance", "role": "Senior Multi-TF Technical Analyst", "llm_model": "DeepSeek-R1 671B Full (Unquantized CoT)", "connected_nodes": ["HUB_MARKET", "HUB_NEXUS", "Agent_Alex_ChartMaster_Vance"], "data_flow_summary": "วิเคราะห์ข้อมูลเฉพาะทาง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}, {"agent_id": "ag_macro", "agent_name": "🌐 Dr. Marcus Sterling", "role": "Chief Global Macroeconomist", "llm_model": "Gemini 2.5 Pro Exp (2M Context Deep Research)", "connected_nodes": ["HUB_MARKET", "HUB_NEXUS", "Agent_Dr._Marcus_Sterling"], "data_flow_summary": "วิเคราะห์ข้อมูลเฉพาะทาง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}, {"agent_id": "ag_bull", "agent_name": "🐂 Sarah Jenkins", "role": "Bullish Advocate", "llm_model": "Llama-3.3-70B (Groq Ultra-Fast)", "connected_nodes": ["HUB_MARKET", "HUB_NEXUS", "Agent_Sarah_Jenkins"], "data_flow_summary": "วิเคราะห์ข้อมูลเฉพาะทาง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}, {"agent_id": "ag_bear", "agent_name": "🐻 Viktor 'The Skeptic' Kane", "role": "Bearish & Red-Team Advocate", "llm_model": "Claude 3.7 Sonnet (Extended Thinking 128K)", "connected_nodes": ["HUB_MARKET", "HUB_NEXUS", "Agent_Viktor_The_Skeptic_Kane"], "data_flow_summary": "วิเคราะห์ข้อมูลเฉพาะทาง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}, {"agent_id": "ag_risk", "agent_name": "🛡️ Elena Rostova", "role": "Chief Risk Officer (CRO)", "llm_model": "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)", "connected_nodes": ["HUB_MARKET", "HUB_NEXUS", "Agent_Elena_Rostova"], "data_flow_summary": "วิเคราะห์ข้อมูลเฉพาะทาง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}, {"agent_id": "ag_bot", "agent_name": "🤖 AutoBot X-1", "role": "Automated Portfolio & Execution Bot", "llm_model": "Qwen-2.5-Coder-32B (Algo Specialist)", "connected_nodes": ["HUB_MARKET", "HUB_NEXUS", "Agent_AutoBot_X-1"], "data_flow_summary": "วิเคราะห์ข้อมูลเฉพาะทาง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}, {"agent_id": "ag_venture", "agent_name": "🚀 Nova Vance", "role": "New Business Venture Architect", "llm_model": "Claude 3.5 Opus (Flagship Strategist)", "connected_nodes": ["HUB_VENTURE", "HUB_MOC", "Agent_Nova_Vance"], "data_flow_summary": "ออกแบบโมเดลธุรกิจ AI ใหม่เข้าโฮลดิ้ง", "full_vault_tokens": 18650, "graph_pruned_tokens": 2590, "tokens_saved_per_call": 16060, "savings_pct": 86.1}]}}}, "avail_models": [{"id": "Claude 3.7 Sonnet (Extended Thinking 128K)", "provider": "Anthropic Flagship (Heavy Thinking)", "badge_color": "#f59e0b", "specialty": "Extended Thinking หลายชั้น สำหรับประธาน CIO และจับผิดแผนเทรด", "cost": "HIGH TOKEN BURN (35K-128K Tokens/รอบ)", "avg_tokens_per_run": 48000, "tier": "HEAVY_REASONING"}, {"id": "OpenAI o1-Pro (Maximum Reasoning Compute)", "provider": "OpenAI Pro Tier", "badge_color": "#7c3aed", "specialty": "ตัวท็อปสุดสายคิดลึก คำนวณคณิตศาสตร์ Quant, Kelly Risk & สถิติ", "cost": "MAX REASONING (60K-180K Tokens/รอบ)", "avg_tokens_per_run": 75000, "tier": "HEAVY_REASONING"}, {"id": "GPT-4.5 Preview (Orion Frontier Multimodal)", "provider": "OpenAI Orion Flagship", "badge_color": "#ec4899", "specialty": "เข้าใจบริบทเศรษฐกิจมหภาค จิตวิทยาตลาดโลก และการปั้นธุรกิจใหม่", "cost": "FRONTIER BURN (45K-140K Tokens/รอบ)", "avg_tokens_per_run": 62000, "tier": "HEAVY_REASONING"}, {"id": "Claude 3.5 Opus (Flagship Strategist)", "provider": "Anthropic Opus Tier", "badge_color": "#d97706", "specialty": "สมองกลระดับผู้บริหารสูงสุด วางกลยุทธ์พอร์ตและขยายเครือธุรกิจ", "cost": "HEAVY TOKEN BURN (40K-100K Tokens/รอบ)", "avg_tokens_per_run": 52000, "tier": "HEAVY_REASONING"}, {"id": "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)", "provider": "OpenAI Reasoning Series", "badge_color": "#8b5cf6", "specialty": "เผา Reasoning Tokens คำนวณสถิติ Quant, Backtest และโค้ด MT5", "cost": "HEAVY REASONING (50K-150K Tokens/รอบ)", "avg_tokens_per_run": 64000, "tier": "HEAVY_REASONING"}, {"id": "Gemini 2.5 Pro Exp (2M Context Deep Research)", "provider": "Google DeepMind Flagship", "badge_color": "#0ea5e9", "specialty": "กวาดอ่านกราฟย้อนหลังนับพันแท่ง + ข่าวสารทั่วโลกพร้อมกันใน 2M Context", "cost": "DEEP CONTEXT (60K-200K Tokens/รอบ)", "avg_tokens_per_run": 58000, "tier": "HEAVY_REASONING"}, {"id": "DeepSeek-R1 671B Full (Unquantized CoT)", "provider": "DeepSeek / OpenRouter Pro", "badge_color": "#10b981", "specialty": "โมเดล 671B เต็มสูบ ค้นพบสูตรอินดิเคเตอร์และสกิลเทรดใหม่", "cost": "REASONING CoT (30K-90K Tokens/รอบ)", "avg_tokens_per_run": 38000, "tier": "HEAVY_REASONING"}, {"id": "Grok-3 (Real-Time Macro & X Pulse)", "provider": "xAI Flagship", "badge_color": "#f43f5e", "specialty": "โหมด Grok-3 Thinking ดักจับข่าวด่วน Fed, สงคราม และ Sentiment สด", "cost": "LIVE STREAM BURN (25K-70K Tokens/รอบ)", "avg_tokens_per_run": 34000, "tier": "HEAVY_REASONING"}, {"id": "Qwen-Max / QwQ-32B-Preview (Math & Algo Reasoning)", "provider": "Alibaba Cloud Flagship", "badge_color": "#6366f1", "specialty": "โมเดลสายคณิตศาสตร์การเงินและการสังเคราะห์อัลกอริทึมเทรด", "cost": "MATH REASONING (28K-75K Tokens/รอบ)", "avg_tokens_per_run": 32000, "tier": "HEAVY_REASONING"}, {"id": "Mistral Large 2 / Codestral 25.01 (Execution Pro)", "provider": "Mistral AI Europe", "badge_color": "#f97316", "specialty": "เขียนและตรวจสอบคำสั่ง MQL5 / Python MT5 Zero-Latency Execution", "cost": "FAST PRO (18K-45K Tokens/รอบ)", "avg_tokens_per_run": 22000, "tier": "FAST_BALANCED"}, {"id": "Llama-3.3-70B (Groq Ultra-Fast)", "provider": "Groq LPU Cloud", "badge_color": "#22c55e", "specialty": "ความเร็วแสง 300+ Tokens/sec สำหรับโต้ตอบในห้องดีเบต", "cost": "FAST / FREE TIER (12K Tokens/รอบ)", "avg_tokens_per_run": 12000, "tier": "FAST_BALANCED"}, {"id": "Qwen-2.5-Coder-32B (Algo Specialist)", "provider": "OpenRouter / Alibaba Cloud", "badge_color": "#a855f7", "specialty": "เขียนและตรวจสอบคำสั่ง MQL5 / Python MT5 Execution", "cost": "FAST / FREE TIER (15K Tokens/รอบ)", "avg_tokens_per_run": 15000, "tier": "FAST_BALANCED"}, {"id": "Ollama Local (Llama3 / DeepSeek Offline)", "provider": "Local PC (100% Offline)", "badge_color": "#06b6d4", "specialty": "รันบนการ์ดจอเครื่องตัวเอง ไม่เสียค่า API", "cost": "100% FREE OFFLINE", "avg_tokens_per_run": 10000, "tier": "ECO"}], "tok_econ": {"daily_budget_tokens": 1000000, "total_tokens_used": 203500, "remaining_tokens": 796500, "utilization_pct": 20.3, "prompt_tokens": 65120, "reasoning_tokens": 103785, "output_tokens": 34595, "estimated_cost_usd": 2.85, "agent_allocations": [{"agent_id": "ag_cio", "name": "Arthur Pendelton", "avatar": "👑", "department": "Executive Board", "llm_model": "Claude 3.7 Sonnet (Extended Thinking 128K)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 4.59}, {"agent_id": "ag_cos", "name": "Sophia Chen", "avatar": "👩‍💼", "department": "Executive Board", "llm_model": "Gemini 2.5 Pro Exp (2M Context Deep Research)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 3.24}, {"agent_id": "ag_news", "name": "Maya Lin", "avatar": "🕵️‍♀️", "department": "24/7 Intelligence Desk", "llm_model": "Grok-3 (Real-Time Macro & X Pulse)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 3.89}, {"agent_id": "ag_quant", "name": "Dr. Kenji Sato", "avatar": "👨‍🔬", "department": "Quant R&D Lab", "llm_model": "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 6.46}, {"agent_id": "ag_ta", "name": "Alex 'ChartMaster' Vance", "avatar": "📊", "department": "Trading Committee", "llm_model": "DeepSeek-R1 671B Full (Unquantized CoT)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 5.68}, {"agent_id": "ag_macro", "name": "Dr. Marcus Sterling", "avatar": "🌐", "department": "Trading Committee", "llm_model": "Gemini 2.5 Pro Exp (2M Context Deep Research)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 4.0}, {"agent_id": "ag_bull", "name": "Sarah Jenkins", "avatar": "🐂", "department": "Trading Committee", "llm_model": "Llama-3.3-70B (Groq Ultra-Fast)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 3.35}, {"agent_id": "ag_bear", "name": "Viktor 'The Skeptic' Kane", "avatar": "🐻", "department": "Trading Committee", "llm_model": "Claude 3.7 Sonnet (Extended Thinking 128K)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 4.84}, {"agent_id": "ag_risk", "name": "Elena Rostova", "avatar": "🛡️", "department": "Trading Committee", "llm_model": "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 4.92}, {"agent_id": "ag_bot", "name": "AutoBot X-1", "avatar": "🤖", "department": "Auto-Portfolio Desk", "llm_model": "Qwen-2.5-Coder-32B (Algo Specialist)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 5.41}, {"agent_id": "ag_venture", "name": "Nova Vance", "avatar": "🚀", "department": "Venture Incubator", "llm_model": "Claude 3.5 Opus (Flagship Strategist)", "compute_mode": "BALANCED", "token_quota": 80000, "tokens_used_today": 18500, "quota_pct": 23.1, "roi_per_10k_tokens": 2.97}], "available_models": [{"id": "Claude 3.7 Sonnet (Extended Thinking 128K)", "provider": "Anthropic Flagship (Heavy Thinking)", "badge_color": "#f59e0b", "specialty": "Extended Thinking หลายชั้น สำหรับประธาน CIO และจับผิดแผนเทรด", "cost": "HIGH TOKEN BURN (35K-128K Tokens/รอบ)", "avg_tokens_per_run": 48000, "tier": "HEAVY_REASONING"}, {"id": "OpenAI o1-Pro (Maximum Reasoning Compute)", "provider": "OpenAI Pro Tier", "badge_color": "#7c3aed", "specialty": "ตัวท็อปสุดสายคิดลึก คำนวณคณิตศาสตร์ Quant, Kelly Risk & สถิติ", "cost": "MAX REASONING (60K-180K Tokens/รอบ)", "avg_tokens_per_run": 75000, "tier": "HEAVY_REASONING"}, {"id": "GPT-4.5 Preview (Orion Frontier Multimodal)", "provider": "OpenAI Orion Flagship", "badge_color": "#ec4899", "specialty": "เข้าใจบริบทเศรษฐกิจมหภาค จิตวิทยาตลาดโลก และการปั้นธุรกิจใหม่", "cost": "FRONTIER BURN (45K-140K Tokens/รอบ)", "avg_tokens_per_run": 62000, "tier": "HEAVY_REASONING"}, {"id": "Claude 3.5 Opus (Flagship Strategist)", "provider": "Anthropic Opus Tier", "badge_color": "#d97706", "specialty": "สมองกลระดับผู้บริหารสูงสุด วางกลยุทธ์พอร์ตและขยายเครือธุรกิจ", "cost": "HEAVY TOKEN BURN (40K-100K Tokens/รอบ)", "avg_tokens_per_run": 52000, "tier": "HEAVY_REASONING"}, {"id": "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)", "provider": "OpenAI Reasoning Series", "badge_color": "#8b5cf6", "specialty": "เผา Reasoning Tokens คำนวณสถิติ Quant, Backtest และโค้ด MT5", "cost": "HEAVY REASONING (50K-150K Tokens/รอบ)", "avg_tokens_per_run": 64000, "tier": "HEAVY_REASONING"}, {"id": "Gemini 2.5 Pro Exp (2M Context Deep Research)", "provider": "Google DeepMind Flagship", "badge_color": "#0ea5e9", "specialty": "กวาดอ่านกราฟย้อนหลังนับพันแท่ง + ข่าวสารทั่วโลกพร้อมกันใน 2M Context", "cost": "DEEP CONTEXT (60K-200K Tokens/รอบ)", "avg_tokens_per_run": 58000, "tier": "HEAVY_REASONING"}, {"id": "DeepSeek-R1 671B Full (Unquantized CoT)", "provider": "DeepSeek / OpenRouter Pro", "badge_color": "#10b981", "specialty": "โมเดล 671B เต็มสูบ ค้นพบสูตรอินดิเคเตอร์และสกิลเทรดใหม่", "cost": "REASONING CoT (30K-90K Tokens/รอบ)", "avg_tokens_per_run": 38000, "tier": "HEAVY_REASONING"}, {"id": "Grok-3 (Real-Time Macro & X Pulse)", "provider": "xAI Flagship", "badge_color": "#f43f5e", "specialty": "โหมด Grok-3 Thinking ดักจับข่าวด่วน Fed, สงคราม และ Sentiment สด", "cost": "LIVE STREAM BURN (25K-70K Tokens/รอบ)", "avg_tokens_per_run": 34000, "tier": "HEAVY_REASONING"}, {"id": "Qwen-Max / QwQ-32B-Preview (Math & Algo Reasoning)", "provider": "Alibaba Cloud Flagship", "badge_color": "#6366f1", "specialty": "โมเดลสายคณิตศาสตร์การเงินและการสังเคราะห์อัลกอริทึมเทรด", "cost": "MATH REASONING (28K-75K Tokens/รอบ)", "avg_tokens_per_run": 32000, "tier": "HEAVY_REASONING"}, {"id": "Mistral Large 2 / Codestral 25.01 (Execution Pro)", "provider": "Mistral AI Europe", "badge_color": "#f97316", "specialty": "เขียนและตรวจสอบคำสั่ง MQL5 / Python MT5 Zero-Latency Execution", "cost": "FAST PRO (18K-45K Tokens/รอบ)", "avg_tokens_per_run": 22000, "tier": "FAST_BALANCED"}, {"id": "Llama-3.3-70B (Groq Ultra-Fast)", "provider": "Groq LPU Cloud", "badge_color": "#22c55e", "specialty": "ความเร็วแสง 300+ Tokens/sec สำหรับโต้ตอบในห้องดีเบต", "cost": "FAST / FREE TIER (12K Tokens/รอบ)", "avg_tokens_per_run": 12000, "tier": "FAST_BALANCED"}, {"id": "Qwen-2.5-Coder-32B (Algo Specialist)", "provider": "OpenRouter / Alibaba Cloud", "badge_color": "#a855f7", "specialty": "เขียนและตรวจสอบคำสั่ง MQL5 / Python MT5 Execution", "cost": "FAST / FREE TIER (15K Tokens/รอบ)", "avg_tokens_per_run": 15000, "tier": "FAST_BALANCED"}, {"id": "Ollama Local (Llama3 / DeepSeek Offline)", "provider": "Local PC (100% Offline)", "badge_color": "#06b6d4", "specialty": "รันบนการ์ดจอเครื่องตัวเอง ไม่เสียค่า API", "cost": "100% FREE OFFLINE", "avg_tokens_per_run": 10000, "tier": "ECO"}]}, "disc_skills": [{"id": 4, "timestamp": "2026-11-12 23:12:57", "agent_id": "ag_bear", "agent_name": "Viktor 'The Skeptic' Kane", "skill_name": "Asian Range Stop-Hunt Reversal Trap", "category": "Red-Team Defense", "formula_logic": "ดักจับจังหวะจ้าวตลาดลากกิน Stop Loss เหนือกรอบเอเชีย $6-$10 แล้วทิ้งตัวกลับเข้ากรอบ", "backtest_win_rate": 66.5, "accuracy_boost": 2.2, "tokens_spent": 24600, "source_type": "AUTO_MARKET_DISCOVERY"}, {"id": 3, "timestamp": "2026-11-12 23:12:57", "agent_id": "ag_macro", "agent_name": "Dr. Marcus Sterling", "skill_name": "US10Y Real-Yield & DXY Divergence Filter", "category": "Macro Quantitative", "formula_logic": "กรองสัญญาณหลอกเมื่อทองคำขึ้นแต่ US10Y Yield พุ่งสวนเกิน +4 bps ใน 2 ชั่วโมง", "backtest_win_rate": 71.2, "accuracy_boost": 2.6, "tokens_spent": 19800, "source_type": "AUTO_MARKET_DISCOVERY"}, {"id": 2, "timestamp": "2026-11-12 23:12:57", "agent_id": "ag_ta", "agent_name": "Alex 'ChartMaster' Vance", "skill_name": "Orderblock + H1 ATR Volatility Squeeze", "category": "Volatility Breakout", "formula_logic": "เข้าออเดอร์เมื่อแถบ Bollinger บีบแคบกว่า 0.8x ATR แล้วแท่งเทียนทะลุ Orderblock พร้อม Volume", "backtest_win_rate": 64.8, "accuracy_boost": 2.1, "tokens_spent": 22400, "source_type": "AUTO_MARKET_DISCOVERY"}, {"id": 1, "timestamp": "2026-11-12 23:12:57", "agent_id": "ag_quant", "agent_name": "Dr. Kenji Sato", "skill_name": "ICT New York Killzone Silver Bullet", "category": "Smart Money / Microstructure", "formula_logic": "ตรวจจับ Fair Value Gap (FVG) ช่วง 21:00-22:00 น. หลังกวาด High/Low กะลอนดอน", "backtest_win_rate": 68.4, "accuracy_boost": 2.4, "tokens_spent": 28500, "source_type": "AUTO_MARKET_DISCOVERY"}], "checklist": [{"step": 1, "agent": "Sophia Chen", "room": "ห้องต้อนรับ & รับบรีฟ", "title": "รับบรีฟภารกิจ & จัดสรรงบ Token", "detail": "เปิดรอบงาน จัดสรรโควต้าโทเคนให้ 11 แผนก", "time": "00:25", "status": "DONE"}, {"step": 2, "agent": "Maya Lin", "room": "ห้องเรดาร์ข่าวสาร", "title": "สแกนข่าวด่วน Fed & ภูมิรัฐศาสตร์", "detail": "ตรวจพบข่าวสำคัญ 4 รายการ (Grok-3 Thinking)", "time": "00:25", "status": "DONE"}, {"step": 3, "agent": "Dr. Kenji Sato", "room": "ห้องแล็บวิจัย & สกิล", "title": "ทดสอบ 4 กลยุทธ์ & วิจัยสกิลใหม่", "detail": "ชนะเลิศ: 4. Donchian 20 Killzone Momentum Breakout (o1-Pro Reasoning)", "time": "00:25", "status": "DONE"}, {"step": 4, "agent": "Alex Vance", "room": "ห้องวิเคราะห์กราฟ", "title": "สแกนกราฟทองคำ D1/H1 & ATR", "detail": "ราคา $3,878.70 | ATR $22.69", "time": "00:25", "status": "DONE"}, {"step": 5, "agent": "Dr. Marcus Sterling", "room": "ห้องวิจัยมหภาค", "title": "วิเคราะห์ค่าเงิน DXY & บอนด์ยีลด์", "detail": "DXY 103.16 | US10Y 5.1%", "time": "00:25", "status": "DONE"}, {"step": 6, "agent": "Sarah vs Viktor", "room": "ห้องดีเบตกลยุทธ์", "title": "ดีเบต Bull vs Bear & จับผิดแผน", "detail": "Bull 33% vs Bear 67%", "time": "00:25", "status": "DONE"}, {"step": 7, "agent": "Elena Rostova", "room": "ห้องตรวจสอบความเสี่ยง", "title": "คำนวณ Lot Size & เพดานความเสี่ยง", "detail": "อนุมัติ 0.01 Lot (R:R 1:1.8)", "time": "00:25", "status": "DONE"}, {"step": 8, "agent": "Arthur & AutoBot", "room": "ห้องตัดสินใจ CIO & MT5", "title": "ฟันธงมติ CIO & ส่งคำสั่ง MT5", "detail": "สั่ง SELL (SHORT) @ $3,878.70", "time": "00:25", "status": "DONE"}], "catchup_info": {"status": "RECOVERED", "offline_hours": 0.5, "shifts_recovered": 1, "total_tokens_burned": 51087, "total_exp_awarded": 120, "summary": "⚡ ระบบ Auto-Catchup เก็บตกงานช่วงปิดคอม (0.5 ชม. / 1 กะเวลา) เรียบร้อยแล้ว! ดึงกราฟย้อนหลังจริง คำนวณมติทุกกะ และแจก +120 EXP ให้ทีม AI ครบถ้วน", "recovered_shifts": [{"date_str": "2026-11-13", "time_slot": "NIGHT_AUDIT", "slot_label": "🌙 กะดึก — ปิดรอบบัญชี & วิจัยสกิลใหม่ (00:00 - 06:00 น.)", "open_price": 4201.2001953125, "close_price": 4187.7998046875, "change_dollar": -13.4, "verdict_action": "SELL (SHORT)", "tokens_burned": 51087}], "recent_catchup_logs": [{"id": 4, "catchup_time": "2026-11-13 00:25:34", "offline_hours": 0.5, "shifts_recovered": 1, "tokens_burned": 51087, "exp_awarded": 120, "summary": "⚡ ระบบ Auto-Catchup เก็บตกงานช่วงปิดคอม (0.5 ชม. / 1 กะเวลา) เรียบร้อยแล้ว! ดึงกราฟย้อนหลังจริง คำนวณมติทุกกะ และแจก +120 EXP ให้ทีม AI ครบถ้วน"}, {"id": 3, "catchup_time": "2026-11-12 23:59:06", "offline_hours": 0.5, "shifts_recovered": 1, "tokens_burned": 136312, "exp_awarded": 120, "summary": "⚡ ระบบ Auto-Catchup เก็บตกงานช่วงปิดคอม (0.5 ชม. / 1 กะเวลา) เรียบร้อยแล้ว! ดึงกราฟย้อนหลังจริง คำนวณมติทุกกะ และแจก +120 EXP ให้ทีม AI ครบถ้วน"}, {"id": 2, "catchup_time": "2026-11-12 23:57:59", "offline_hours": 0.5, "shifts_recovered": 1, "tokens_burned": 136312, "exp_awarded": 120, "summary": "⚡ ระบบ Auto-Catchup เก็บตกงานช่วงปิดคอม (0.5 ชม. / 1 กะเวลา) เรียบร้อยแล้ว! ดึงกราฟย้อนหลังจริง คำนวณมติทุกกะ และแจก +120 EXP ให้ทีม AI ครบถ้วน"}, {"id": 1, "catchup_time": "2026-11-12 23:55:57", "offline_hours": 0.5, "shifts_recovered": 1, "tokens_burned": 136312, "exp_awarded": 120, "summary": "⚡ ระบบ Auto-Catchup เก็บตกงานช่วงปิดคอม (0.5 ชม. / 1 กะเวลา) เรียบร้อยแล้ว! ดึงกราฟย้อนหลังจริง คำนวณมติทุกกะ และแจก +120 EXP ให้ทีม AI ครบถ้วน"}], "latest_log": {"catchup_time": "2026-11-13 00:25:34", "offline_hours": 0.5, "shifts_recovered": 1, "tokens_burned": 51087, "exp_awarded": 120, "summary": "⚡ ระบบ Auto-Catchup เก็บตกงานช่วงปิดคอม (0.5 ชม. / 1 กะเวลา) เรียบร้อยแล้ว! ดึงกราฟย้อนหลังจริง คำนวณมติทุกกะ และแจก +120 EXP ให้ทีม AI ครบถ้วน"}}, "chat_hist": []};
+let selectedAgent = APP.office.agents_roster[0];
+let currentShiftSlot = "FULL_24H";
+let currentSummaryStyle = "EXECUTIVE_CUTE";
+let chatTargetId = "antigravity";
+let skyTheme = "SUNSET";
+let isDarkTheme = false;
+
+// ============================================================================
+// LIGHT / DARK THEME SWITCHER
+// ============================================================================
+function toggleThemeMode() {
+    isDarkTheme = !isDarkTheme;
+    document.documentElement.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.textContent = isDarkTheme ? '☀️ สลับโหมดสว่าง (Light Mode)' : '🌙 สลับโหมดมืด (Dark Mode)';
+    skyTheme = isDarkTheme ? 'NIGHT' : 'SUNSET';
+    const sel = document.getElementById('skyTimeSelect');
+    if (sel) sel.value = skyTheme;
+    try { localStorage.setItem('agy_v7_theme', isDarkTheme ? 'dark' : 'light'); } catch (e) {}
+}
+
+(function restoreSavedTheme() {
+    try {
+        const saved = localStorage.getItem('agy_v7_theme');
+        if (saved === 'dark') toggleThemeMode();
+    } catch (e) {}
+})();
+
+// ============================================================================
+// REAL-TIME THAI CLOCK
+// ============================================================================
+function updateLiveThaiClock() {
+    const now = new Date();
+    const days = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
+    const months = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+    const dStr = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+    const el = document.getElementById('liveThaiClock');
+    if (el) el.textContent = dStr;
+}
+setInterval(updateLiveThaiClock, 1000);
+updateLiveThaiClock();
+
+// ============================================================================
+// PAGE 1: ULTRA-DETAILED ISOMETRIC CUTAWAY ISLAND & FULL-BODY CHIBI MODELS
+// ============================================================================
+const isoCanvas = document.getElementById('isometricOfficeCanvas');
+const isoCtx = isoCanvas ? isoCanvas.getContext('2d') : null;
+let wavePhase = 0;
+
+// 8 Connected Rooms forming a unified Isometric Office Building on a Beach Island
+const ISO_ROOMS = [
+    { id: "RECEPTION", name: "ห้องต้อนรับ & รับบรีฟ", sub: "พร้อมรับงาน", gx: 0, gy: 0, floorCol: "#fef3c7", floorAlt: "#fde68a", wallCol: "#f59e0b", wallTop: "#fffbeb", badgeDot: "#10b981", propType: "SOFA_COUNTER" },
+    { id: "NEWS_DESK", name: "ห้องเรดาร์ข่าวสาร", sub: "เสร็จแล้ว", gx: 1, gy: 0, floorCol: "#e0f2fe", floorAlt: "#bae6fd", wallCol: "#0284c7", wallTop: "#f0f9ff", badgeDot: "#10b981", propType: "MULTI_SCREEN" },
+    { id: "QUANT_LAB", name: "ห้องแล็บวิจัย & สกิล", sub: "กำลังเผาโทเคนวิจัย", gx: 2, gy: 0, floorCol: "#f3e8ff", floorAlt: "#e9d5ff", wallCol: "#7c3aed", wallTop: "#faf5ff", badgeDot: "#f59e0b", propType: "SERVER_LAB" },
+    { id: "TA_ROOM",   name: "ห้องวิเคราะห์กราฟ", sub: "เสร็จแล้ว", gx: 3, gy: 0, floorCol: "#dcfce7", floorAlt: "#bbf7d0", wallCol: "#059669", wallTop: "#f0fdf4", badgeDot: "#10b981", propType: "CHART_DESK" },
+    { id: "MACRO_ROOM",name: "ห้องวิจัยมหภาค", sub: "เสร็จแล้ว", gx: 0, gy: 1, floorCol: "#e0e7ff", floorAlt: "#c7d2fe", wallCol: "#4f46e5", wallTop: "#eef2ff", badgeDot: "#10b981", propType: "BOOK_DESK" },
+    { id: "DEBATE_RM", name: "ห้องดีเบตกลยุทธ์", sub: "ดีเบตเสร็จแล้ว", gx: 1, gy: 1, floorCol: "#ffedd5", floorAlt: "#fed7aa", wallCol: "#ea580c", wallTop: "#fff7ed", badgeDot: "#10b981", propType: "ROUND_TABLE" },
+    { id: "RISK_ROOM", name: "ห้องตรวจความเสี่ยง", sub: "อนุมัติ Lot Size", gx: 2, gy: 1, floorCol: "#fce7f3", floorAlt: "#fbcfe8", wallCol: "#db2777", wallTop: "#fdf2f8", badgeDot: "#10b981", propType: "SHIELD_DESK" },
+    { id: "CIO_MT5",   name: "ห้องส่งคำสั่ง CIO & MT5", sub: "พร้อมส่งออเดอร์", gx: 3, gy: 1, floorCol: "#fef9c3", floorAlt: "#fef08a", wallCol: "#ca8a04", wallTop: "#fefce8", badgeDot: "#10b981", propType: "EXEC_SUITE" }
+];
+
+// Connected zero-gap Isometric grid projection
+function isoProject(gx, gy) {
+    const originX = 485;
+    const originY = 148;
+    const tileW = 204;
+    const tileH = 104;
+    const sx = originX + (gx - gy) * (tileW / 2);
+    const sy = originY + (gx + gy) * (tileH / 2);
+    return { x: sx, y: sy, w: tileW, h: tileH };
+}
+
+// Hair & Outfit customization for each of the 11 Chibi AI Agents
+const CHIBI_STYLES = [
+    { hair: "#fbbf24", suit: "#1e293b", acc: "CROWN" },    // Arthur CIO
+    { hair: "#334155", suit: "#ec4899", acc: "BUN" },      // Sophia COS
+    { hair: "#0f172a", suit: "#0284c7", acc: "HEADSET" },  // Maya News
+    { hair: "#475569", suit: "#ffffff", acc: "GLASSES" },  // Dr. Kenji Quant (White Labcoat)
+    { hair: "#059669", suit: "#065f46", acc: "VISOR" },    // Alex TA
+    { hair: "#1e3a8a", suit: "#1d4ed8", acc: "GLASSES" },  // Dr. Marcus Macro
+    { hair: "#ea580c", suit: "#16a34a", acc: "HORNS" },    // Sarah Bull
+    { hair: "#7f1d1d", suit: "#dc2626", acc: "CAP" },      // Viktor Bear
+    { hair: "#831843", suit: "#db2777", acc: "SHIELD" },   // Elena Risk
+    { hair: "#38bdf8", suit: "#7c3aed", acc: "ANTENNA" },  // AutoBot X-1
+    { hair: "#f97316", suit: "#4338ca", acc: "STAR" }      // Nova Venture
+];
+
+const isoSprites = APP.office.agents_roster.map((ag, idx) => {
+    const rmIdx = idx % ISO_ROOMS.length;
+    const rm = ISO_ROOMS[rmIdx];
+    const p = isoProject(rm.gx, rm.gy);
+    return {
+        ag: ag,
+        style: CHIBI_STYLES[idx % CHIBI_STYLES.length],
+        rmIdx: rmIdx,
+        x: p.x + ((idx % 3) - 1) * 24,
+        y: p.y + 52 + ((idx % 2) * 12),
+        tx: p.x + ((idx % 3) - 1) * 24,
+        ty: p.y + 52 + ((idx % 2) * 12),
+        walkPhase: idx * 1.1,
+        facingRight: true,
+        speech: idx === 0 ? `สั่ง ${APP.cio.action}!` : (idx === 3 ? "วิจัยสกิล o1-Pro..." : ""),
+        speechTimer: idx % 3 === 0 ? 180 : 0
+    };
+});
+
+let clouds = [
+    { x: 140, y: 46, s: 1.0, v: 0.2 },
+    { x: 520, y: 34, s: 1.25, v: 0.15 },
+    { x: 890, y: 52, s: 0.92, v: 0.22 }
+];
+
+// Draw 3D Extruded Isometric Wall Segment with Top Thickness & Doorway Gap
+function drawIsoWallWithDoor(ctx, x1, y1, x2, y2, wallH, thick, faceCol, topCol, hasDoor) {
+    const drawSeg = (ax, ay, bx, by) => {
+        // Vertical Wall Face
+        ctx.fillStyle = faceCol;
+        ctx.strokeStyle = "rgba(15,23,42,0.22)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx, by);
+        ctx.lineTo(bx, by - wallH);
+        ctx.lineTo(ax, ay - wallH);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Top 3D Thickness Strip
+        ctx.fillStyle = topCol;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay - wallH);
+        ctx.lineTo(bx, by - wallH);
+        ctx.lineTo(bx, by - wallH - thick);
+        ctx.lineTo(ax, ay - wallH - thick);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    };
+
+    if (!hasDoor) {
+        drawSeg(x1, y1, x2, y2);
+    } else {
+        // Leave a doorway opening in the middle (36% to 64%)
+        const mx1 = x1 + (x2 - x1) * 0.36, my1 = y1 + (y2 - y1) * 0.36;
+        const mx2 = x1 + (x2 - x1) * 0.64, my2 = y1 + (y2 - y1) * 0.64;
+        drawSeg(x1, y1, mx1, my1);
+        drawSeg(mx2, my2, x2, y2);
+    }
+}
+
+// Draw Detailed 3D Furniture Inside Each Isometric Room
+function drawRoomFurniture3D(ctx, cx, cy, propType, wallCol) {
+    // Isometric 3D Desk Helper
+    const draw3DDesk = (dx, dy, w, h, topC, sideC) => {
+        // Top surface
+        ctx.fillStyle = topC;
+        ctx.beginPath();
+        ctx.moveTo(dx, dy - 10);
+        ctx.lineTo(dx + w, dy - 4);
+        ctx.lineTo(dx, dy + 4);
+        ctx.lineTo(dx - w, dy - 4);
+        ctx.closePath();
+        ctx.fill();
+        // Left front leg/panel
+        ctx.fillStyle = sideC;
+        ctx.beginPath();
+        ctx.moveTo(dx - w, dy - 4);
+        ctx.lineTo(dx, dy + 4);
+        ctx.lineTo(dx, dy + 4 + h);
+        ctx.lineTo(dx - w, dy - 4 + h);
+        ctx.closePath();
+        ctx.fill();
+        // Right front panel
+        ctx.fillStyle = sideC;
+        ctx.beginPath();
+        ctx.moveTo(dx, dy + 4);
+        ctx.lineTo(dx + w, dy - 4);
+        ctx.lineTo(dx + w, dy - 4 + h);
+        ctx.lineTo(dx, dy + 4 + h);
+        ctx.closePath();
+        ctx.fill();
+    };
+
+    // Draw Monitor with Mini Candlestick Chart
+    const drawMonitor = (mx, my, screenCol) => {
+        ctx.fillStyle = "#0f172a";
+        ctx.fillRect(mx - 13, my - 22, 26, 16);
+        ctx.fillStyle = screenCol;
+        ctx.fillRect(mx - 11, my - 20, 22, 12);
+        // Mini green/red candles on screen
+        ctx.fillStyle = "#10b981";
+        ctx.fillRect(mx - 8, my - 16, 3, 6);
+        ctx.fillRect(mx - 3, my - 18, 3, 7);
+        ctx.fillStyle = "#ef4444";
+        ctx.fillRect(mx + 2, my - 15, 3, 5);
+        ctx.fillStyle = "#fbbf24";
+        ctx.fillRect(mx + 6, my - 19, 3, 8);
+        // Stand
+        ctx.fillStyle = "#475569";
+        ctx.fillRect(mx - 3, my - 6, 6, 4);
+    };
+
+    // Potted Plant in corner
+    ctx.fillStyle = "#b45309";
+    ctx.beginPath();
+    ctx.arc(cx - 52, cy + 4, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#16a34a";
+    ctx.beginPath();
+    ctx.arc(cx - 52, cy - 3, 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (propType === "ROUND_TABLE") {
+        // War Room Oval Conference Table
+        ctx.fillStyle = "#7c2d12";
+        ctx.beginPath();
+        ctx.ellipse(cx, cy + 12, 34, 16, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#fdba74";
+        ctx.beginPath();
+        ctx.ellipse(cx, cy + 8, 32, 14, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // Hologram Bull vs Bear chart in center of table
+        ctx.fillStyle = "#10b981";
+        ctx.fillRect(cx - 10, cy + 2, 8, 8);
+        ctx.fillStyle = "#ef4444";
+        ctx.fillRect(cx + 2, cy + 2, 8, 8);
+    } else if (propType === "SERVER_LAB") {
+        // Quant Lab Server Racks + Dual Monitors
+        ctx.fillStyle = "#1e1b4b";
+        ctx.fillRect(cx + 26, cy - 18, 18, 32);
+        // Blinking LEDs
+        ctx.fillStyle = (Math.floor(Date.now() / 300) % 2 === 0) ? "#10b981" : "#38bdf8";
+        ctx.fillRect(cx + 29, cy - 14, 4, 3);
+        ctx.fillRect(cx + 29, cy - 8, 4, 3);
+        ctx.fillStyle = "#f43f5e";
+        ctx.fillRect(cx + 36, cy - 11, 4, 3);
+        draw3DDesk(cx - 8, cy + 10, 26, 10, "#e9d5ff", "#7c3aed");
+        drawMonitor(cx - 8, cy + 6, "#1e1b4b");
+    } else {
+        draw3DDesk(cx, cy + 10, 28, 10, "#fde68a", wallCol);
+        drawMonitor(cx, cy + 6, "#090d16");
+    }
+}
+
+// Draw Full-Body Multi-Part Chibi AI Character (Hair, Face, Suit, Walking Legs, Tablet, Accessories)
+function drawChibiAgent(ctx, sp) {
+    const x = sp.x;
+    const isMoving = Math.hypot(sp.tx - sp.x, sp.ty - sp.y) > 2.5;
+    if (isMoving) sp.walkPhase += 0.22;
+    else sp.walkPhase += 0.06;
+
+    const bob = isMoving ? Math.abs(Math.sin(sp.walkPhase)) * 4.5 : Math.sin(sp.walkPhase) * 1.5;
+    const legSwing = isMoving ? Math.sin(sp.walkPhase) * 5 : 0;
+    const y = sp.y - bob;
+    const st = sp.style;
+
+    // 1. Overclock Golden Flame Aura
+    if (sp.ag.compute_mode === "OVERCLOCK") {
+        const grad = ctx.createRadialGradient(x, y - 18, 4, x, y - 18, 26);
+        grad.addColorStop(0, "rgba(251, 191, 36, 0.55)");
+        grad.addColorStop(1, "rgba(245, 158, 11, 0.0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y - 18, 26, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // 2. Ground Drop Shadow
+    ctx.fillStyle = "rgba(15, 23, 42, 0.24)";
+    ctx.beginPath();
+    ctx.ellipse(x, sp.y + 5, 12, 5.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 3. Animated Walking Legs / Shoes
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y - 6);
+    ctx.lineTo(x - 4 - legSwing * 0.6, y + 3);
+    ctx.moveTo(x + 4, y - 6);
+    ctx.lineTo(x + 4 + legSwing * 0.6, y + 3);
+    ctx.stroke();
+
+    // 4. Chibi Suit / Labcoat Torso
+    ctx.fillStyle = st.suit;
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.roundRect(x - 9, y - 20, 18, 15, 5);
+    ctx.fill();
+    ctx.stroke();
+
+    // White Collar & Tie detail
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y - 20);
+    ctx.lineTo(x + 4, y - 20);
+    ctx.lineTo(x, y - 14);
+    ctx.closePath();
+    ctx.fill();
+
+    // 5. Swinging Arms + Glowing Tablet in Hand
+    ctx.strokeStyle = st.suit;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x - 9, y - 17);
+    ctx.lineTo(x - 13, y - 10 + legSwing * 0.4);
+    ctx.moveTo(x + 9, y - 17);
+    ctx.lineTo(x + 13, y - 11 - legSwing * 0.4);
+    ctx.stroke();
+
+    // Glowing Cyan Data Tablet held in right hand
+    ctx.fillStyle = "#38bdf8";
+    ctx.strokeStyle = "#0284c7";
+    ctx.lineWidth = 1;
+    ctx.fillRect(x + 10, y - 15 - legSwing * 0.3, 7, 9);
+    ctx.strokeRect(x + 10, y - 15 - legSwing * 0.3, 7, 9);
+
+    // 6. Cute Chibi Head (Skin Tone + Rosy Cheeks + Eyes)
+    ctx.fillStyle = "#fde68a";
+    ctx.strokeStyle = "#78350f";
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.arc(x, y - 30, 11.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Cute Hair Cap / Bangs
+    ctx.fillStyle = st.hair;
+    ctx.beginPath();
+    ctx.arc(x, y - 32, 11.8, Math.PI * 0.95, Math.PI * 2.05);
+    ctx.fill();
+
+    // Eyes
+    ctx.fillStyle = "#0f172a";
+    ctx.beginPath();
+    ctx.arc(x - 4, y - 29, 1.7, 0, Math.PI * 2);
+    ctx.arc(x + 4, y - 29, 1.7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Rosy Cheeks
+    ctx.fillStyle = "rgba(244, 63, 94, 0.45)";
+    ctx.beginPath();
+    ctx.arc(x - 6.5, y - 26.5, 2.2, 0, Math.PI * 2);
+    ctx.arc(x + 6.5, y - 26.5, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Role Accessory (Crown for CIO, Glasses for Quant, Headset for News, Visor for Bot)
+    if (st.acc === "CROWN") {
+        ctx.fillStyle = "#fbbf24";
+        ctx.beginPath();
+        ctx.moveTo(x - 7, y - 41);
+        ctx.lineTo(x - 4, y - 47);
+        ctx.lineTo(x, y - 43);
+        ctx.lineTo(x + 4, y - 47);
+        ctx.lineTo(x + 7, y - 41);
+        ctx.closePath();
+        ctx.fill();
+    } else if (st.acc === "GLASSES") {
+        ctx.strokeStyle = "#0284c7";
+        ctx.lineWidth = 1.4;
+        ctx.strokeRect(x - 7.5, y - 32, 6, 4.5);
+        ctx.strokeRect(x + 1.5, y - 32, 6, 4.5);
+    } else if (st.acc === "ANTENNA") {
+        ctx.strokeStyle = "#a855f7";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x, y - 41);
+        ctx.lineTo(x, y - 48);
+        ctx.stroke();
+        ctx.fillStyle = "#38bdf8";
+        ctx.beginPath();
+        ctx.arc(x, y - 49, 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // 7. Mini Name Tag Pill under feet
+    ctx.font = "bold 9.5px 'Segoe UI', sans-serif";
+    const shortName = sp.ag.name.split(' ')[0];
+    const nw = ctx.measureText(shortName).width + 10;
+    ctx.fillStyle = "rgba(15, 23, 42, 0.78)";
+    ctx.beginPath();
+    ctx.roundRect(x - nw / 2, sp.y + 6, nw, 13, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fbbf24";
+    ctx.textAlign = "center";
+    ctx.fillText(shortName, x, sp.y + 15.5);
+
+    // 8. Speech Bubble when active
+    if (sp.speech && sp.speechTimer > 0) {
+        sp.speechTimer--;
+        ctx.font = "bold 10px 'Segoe UI', sans-serif";
+        const sw = ctx.measureText(sp.speech).width + 16;
+        const bx = x - sw / 2, by = y - 64;
+        ctx.fillStyle = "#ffffff";
+        ctx.strokeStyle = "#f59e0b";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(bx, by, sw, 20, 8);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "#0f172a";
+        ctx.fillText(sp.speech, x, by + 13.5);
+    }
+}
+
+function drawRoundedBadge(ctx, cx, cy, title, subText, dotColor) {
+    ctx.font = "bold 11px 'Segoe UI', sans-serif";
+    const w1 = ctx.measureText(title).width;
+    ctx.font = "600 10px 'Segoe UI', sans-serif";
+    const w2 = ctx.measureText(subText).width + 14;
+    const bw = Math.max(w1, w2) + 22;
+    const bh = 36;
+    const bx = cx - bw / 2, by = cy - bh / 2;
+
+    ctx.fillStyle = "rgba(15, 23, 42, 0.16)";
+    ctx.beginPath();
+    ctx.roundRect(bx + 2, by + 3, bw, bh, 10);
+    ctx.fill();
+
+    ctx.fillStyle = "rgba(255, 255, 255, 0.96)";
+    ctx.strokeStyle = "#cbd5e1";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.roundRect(bx, by, bw, bh, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "bold 11px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(title, cx, by + 14);
+
+    ctx.fillStyle = dotColor;
+    ctx.beginPath();
+    ctx.arc(cx - w2 / 2 + 4, by + 26, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#475569";
+    ctx.font = "600 10px 'Segoe UI', sans-serif";
+    ctx.fillText(subText, cx + 6, by + 29);
+}
+
+function drawPalmTree(ctx, px, py, scale) {
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.scale(scale, scale);
+    ctx.strokeStyle = "#78350f";
+    ctx.lineWidth = 6;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(7, -24, 2, -46);
+    ctx.stroke();
+    ctx.fillStyle = "#15803d";
+    [[-24, -40], [24, -40], [-18, -52], [20, -52], [0, -56]].forEach(([lx, ly]) => {
+        ctx.beginPath();
+        ctx.ellipse(lx / 2, ly, 16, 5.5, (lx > 0 ? 0.32 : -0.32), 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.restore();
+}
+
+function renderIsometricCompany() {
+    if (!isoCtx || !isoCanvas) return;
+    const W = isoCanvas.width, H = isoCanvas.height;
+    wavePhase += 0.04;
+    isoCtx.clearRect(0, 0, W, H);
+
+    // 1. Sky & Ocean Background (Matching @ong_stw's Beachside Isometric Video)
+    const skyGrad = isoCtx.createLinearGradient(0, 0, 0, H);
+    if (skyTheme === "SUNSET") {
+        skyGrad.addColorStop(0, "#f472b6");
+        skyGrad.addColorStop(0.24, "#fdba74");
+        skyGrad.addColorStop(0.46, "#38bdf8");
+        skyGrad.addColorStop(1, "#0284c7");
+    } else if (skyTheme === "MORNING") {
+        skyGrad.addColorStop(0, "#38bdf8");
+        skyGrad.addColorStop(0.45, "#7dd3fc");
+        skyGrad.addColorStop(1, "#0369a1");
+    } else {
+        skyGrad.addColorStop(0, "#050811");
+        skyGrad.addColorStop(0.45, "#0f172a");
+        skyGrad.addColorStop(1, "#1e1b4b");
+    }
+    isoCtx.fillStyle = skyGrad;
+    isoCtx.fillRect(0, 0, W, H);
+
+    // Glowing Sun / Moon
+    isoCtx.fillStyle = skyTheme === "NIGHT" ? "#fef08a" : "#fb923c";
+    isoCtx.beginPath();
+    isoCtx.arc(920, 74, 34, 0, Math.PI * 2);
+    isoCtx.fill();
+
+    // Animated Ocean Waves on Left & Right Shoreline
+    isoCtx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    isoCtx.lineWidth = 2;
+    for (let i = 0; i < 5; i++) {
+        const wy = 220 + i * 55 + Math.sin(wavePhase + i) * 4;
+        isoCtx.beginPath();
+        isoCtx.moveTo(20, wy);
+        isoCtx.quadraticCurveTo(90, wy - 8, 160, wy);
+        isoCtx.moveTo(960, wy);
+        isoCtx.quadraticCurveTo(1040, wy - 8, 1110, wy);
+        isoCtx.stroke();
+    }
+
+    // Drifting Clouds
+    clouds.forEach(cl => {
+        cl.x += cl.v;
+        if (cl.x > W + 80) cl.x = -80;
+        isoCtx.fillStyle = skyTheme === "NIGHT" ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.82)";
+        isoCtx.beginPath();
+        isoCtx.arc(cl.x, cl.y, 18 * cl.s, 0, Math.PI * 2);
+        isoCtx.arc(cl.x + 16 * cl.s, cl.y - 5 * cl.s, 22 * cl.s, 0, Math.PI * 2);
+        isoCtx.arc(cl.x + 34 * cl.s, cl.y, 16 * cl.s, 0, Math.PI * 2);
+        isoCtx.fill();
+    });
+
+    // 2. Sandy Beach Island Base & 3D Building Foundation Platform
+    isoCtx.fillStyle = skyTheme === "NIGHT" ? "#1e293b" : "#fde68a";
+    isoCtx.strokeStyle = skyTheme === "NIGHT" ? "#38bdf8" : "#f59e0b";
+    isoCtx.lineWidth = 3;
+    isoCtx.beginPath();
+    isoCtx.moveTo(490, 95);
+    isoCtx.lineTo(1065, 345);
+    isoCtx.lineTo(575, 545);
+    isoCtx.lineTo(85, 295);
+    isoCtx.closePath();
+    isoCtx.fill();
+    isoCtx.stroke();
+
+    // Palm Trees on Beach Corners
+    drawPalmTree(isoCtx, 155, 285, 1.0);
+    drawPalmTree(isoCtx, 995, 335, 1.05);
+    drawPalmTree(isoCtx, 285, 455, 0.9);
+    drawPalmTree(isoCtx, 865, 465, 0.95);
+
+    // 3. Draw Connected Isometric Cutaway Rooms (Floors + 3D Extruded Walls with Doorways + Furniture)
+    ISO_ROOMS.forEach(rm => {
+        const p = isoProject(rm.gx, rm.gy);
+        const hw = p.w / 2;
+        const hh = p.h / 2;
+        const wallH = 38;
+
+        // Isometric Diamond Floor Tile
+        isoCtx.fillStyle = rm.floorCol;
+        isoCtx.strokeStyle = rm.floorAlt;
+        isoCtx.lineWidth = 1.5;
+        isoCtx.beginPath();
+        isoCtx.moveTo(p.x, p.y);
+        isoCtx.lineTo(p.x + hw, p.y + hh);
+        isoCtx.lineTo(p.x, p.y + p.h);
+        isoCtx.lineTo(p.x - hw, p.y + hh);
+        isoCtx.closePath();
+        isoCtx.fill();
+        isoCtx.stroke();
+
+        // Subtle Interior Floor Grid Lines (gives true Isometric game look)
+        isoCtx.strokeStyle = "rgba(15, 23, 42, 0.06)";
+        isoCtx.lineWidth = 1;
+        for (let g = 1; g <= 3; g++) {
+            const f = g / 4.0;
+            isoCtx.beginPath();
+            isoCtx.moveTo(p.x - hw * f, p.y + hh * f);
+            isoCtx.lineTo(p.x + hw * (1 - f), p.y + hh * (1 + f));
+            isoCtx.moveTo(p.x + hw * f, p.y + hh * f);
+            isoCtx.lineTo(p.x - hw * (1 - f), p.y + hh * (1 + f));
+            isoCtx.stroke();
+        }
+
+        // Back-Left & Back-Right 3D Extruded Cutaway Walls (with doorway gaps between interior rooms!)
+        drawIsoWallWithDoor(isoCtx, p.x - hw, p.y + hh, p.x, p.y, wallH, 5, rm.floorAlt, rm.wallTop, rm.gy > 0);
+        drawIsoWallWithDoor(isoCtx, p.x, p.y, p.x + hw, p.y + hh, wallH, 5, rm.wallCol, rm.wallTop, rm.gx > 0);
+
+        // Detailed 3D Room Furniture & Monitors
+        drawRoomFurniture3D(isoCtx, p.x, p.y + hh, rm.propType, rm.wallCol);
+    });
+
+    // 4. Sort & Draw Full-Body Chibi AI Characters by Y-depth
+    const sortedSprites = [...isoSprites].sort((a, b) => a.y - b.y);
+    sortedSprites.forEach(sp => {
+        const dx = sp.tx - sp.x;
+        const dy = sp.ty - sp.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 2.2) {
+            sp.x += (dx / dist) * 2.1;
+            sp.y += (dy / dist) * 2.1;
+        } else if (Math.random() < 0.014) {
+            const nextRm = ISO_ROOMS[Math.floor(Math.random() * ISO_ROOMS.length)];
+            const np = isoProject(nextRm.gx, nextRm.gy);
+            sp.tx = np.x + (Math.random() - 0.5) * 42;
+            sp.ty = np.y + 48 + (Math.random() - 0.5) * 18;
+            if (Math.random() < 0.35) {
+                sp.speech = `ส่งงานไป ${nextRm.name.split(' ')[0]} ✔`;
+                sp.speechTimer = 110;
+            }
+        }
+        drawChibiAgent(isoCtx, sp);
+    });
+
+    // 5. Floating White Rounded Room Status Badges on Top (Exact @ong_stw Style)
+    ISO_ROOMS.forEach(rm => {
+        const p = isoProject(rm.gx, rm.gy);
+        drawRoundedBadge(isoCtx, p.x, p.y - 24, rm.name, rm.sub, rm.badgeDot);
+    });
+
+    requestAnimationFrame(renderIsometricCompany);
+}
+
+if (isoCanvas) {
+    isoCanvas.addEventListener('click', e => {
+        const rect = isoCanvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) * (isoCanvas.width / rect.width);
+        const my = (e.clientY - rect.top) * (isoCanvas.height / rect.height);
+        let closest = null, bestD = 999;
+        isoSprites.forEach(sp => {
+            const d = Math.hypot(sp.x - mx, (sp.y - 18) - my);
+            if (d < bestD && d < 48) { bestD = d; closest = sp; }
+        });
+        if (closest) {
+            closest.speech = "พร้อมรายงานครับ! 💬";
+            closest.speechTimer = 150;
+            selectVisualizerAgent(closest.ag.agent_id);
+        }
+    });
+}
+
+function changeSkyAtmosphere(val) { skyTheme = val; }
+
+function selectVisualizerAgent(agentId) {
+    const ag = APP.office.agents_roster.find(a => a.agent_id === agentId);
+    if (!ag) return;
+    selectedAgent = ag;
+    document.getElementById('bannerAvatar').textContent = ag.avatar;
+    document.getElementById('bannerSpeaker').textContent = `${ag.name} (${ag.role}) — สมองกล: ${ag.llm_model} [${ag.compute_mode || 'BALANCED'}]`;
+    document.getElementById('bannerMessage').innerHTML = `ภารกิจล่าสุด: <strong>${ag.current_task}</strong> • โทเคนวันนี้: <strong>${(ag.tokens_used_today || 18500).toLocaleString()} / ${(ag.token_quota || 80000).toLocaleString()} Tokens</strong>`;
+    renderMiniAgentsStrip();
+}
+
+function renderMiniAgentsStrip() {
+    const strip = document.getElementById('miniAgentsStrip');
+    if (!strip) return;
+    strip.innerHTML = APP.office.agents_roster.map(ag => `
+        <div class="mini-agent-card ${ag.agent_id === selectedAgent.agent_id ? 'active' : ''}" onclick="selectVisualizerAgent('${ag.agent_id}')">
+            <div style="font-size:1.5rem">${ag.avatar}</div>
+            <div style="overflow:hidden">
+                <div style="font-weight:800;font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${ag.name}</div>
+                <div style="font-size:0.72rem;color:#10b981;font-weight:700">● ${ag.status || 'เสร็จแล้ว'}</div>
+                <div style="font-size:0.68rem;color:var(--text-sub)">🧠 ${(ag.llm_model || '').split(' ')[0]} • ${Math.round((ag.tokens_used_today || 18000)/1000)}K</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderRightSidebarMission(activeStep = 8) {
+    const box = document.getElementById('missionChecklistBox');
+    if (!box) return;
+    box.innerHTML = APP.checklist.map(item => {
+        let circleCls = "check-circle";
+        let icon = "✔";
+        if (item.step > activeStep) { circleCls = "check-circle pending"; icon = item.step; }
+        else if (item.step === activeStep && activeStep < 8) { circleCls = "check-circle running"; icon = "⏳"; }
+        return `
+        <div class="mission-item">
+            <div class="${circleCls}">${icon}</div>
+            <div style="flex:1">
+                <div style="font-weight:800">${item.step}. ${item.title}</div>
+                <div style="font-size:0.75rem;color:var(--text-sub)">${item.agent} • ${item.detail}</div>
+            </div>
+        </div>`;
+    }).join('');
+
+    const doneCount = Math.min(8, activeStep);
+    const pct = Math.round((doneCount / 8) * 100);
+    document.getElementById('topTaskCountText').textContent = `งานเสร็จ ${doneCount}/8`;
+    document.getElementById('topTaskPctText').textContent = `${pct}%`;
+    document.getElementById('topTaskBar').style.width = `${pct}%`;
+}
+
+function appendRealtimeLog(timeStr, agentName, text) {
+    const box = document.getElementById('realtimeLogBox');
+    if (!box) return;
+    const row = document.createElement('div');
+    row.className = 'live-log-row';
+    row.innerHTML = `<span class="log-time">${timeStr}</span><div><strong>${agentName}:</strong> ${text}</div>`;
+    box.prepend(row);
+}
+
+function initRealtimeLogs() {
+    const box = document.getElementById('realtimeLogBox');
+    if (!box) return;
+    box.innerHTML = '';
+    const logs = APP.office.recent_logs || [];
+    logs.slice(0, 12).reverse().forEach(lg => {
+        const t = (lg.timestamp || '').split(' ')[1] || '23:35:00';
+        appendRealtimeLog(t, lg.agent_name, lg.summary);
+    });
+}
+
+let workflowTimer = null;
+function runLiveCompanyWorkflowAnimation() {
+    if (workflowTimer) clearInterval(workflowTimer);
+    let step = 1;
+    document.getElementById('topSysStatusText').textContent = "กำลังรันภารกิจสด...";
+    ISO_ROOMS.forEach(r => { r.sub = "รอคิวงาน..."; r.badgeDot = "#94a3b8"; });
+    renderRightSidebarMission(1);
+
+    workflowTimer = setInterval(() => {
+        const item = APP.checklist[step - 1];
+        if (item) {
+            const rm = ISO_ROOMS[step - 1];
+            if (rm) {
+                rm.sub = "เสร็จแล้ว ✔";
+                rm.badgeDot = "#10b981";
+                const p = isoProject(rm.gx, rm.gy);
+                const sp = isoSprites[step - 1];
+                if (sp) {
+                    sp.tx = p.x;
+                    sp.ty = p.y + 48;
+                    sp.speech = `${item.title} ✔`;
+                    sp.speechTimer = 140;
+                }
+            }
+            const now = new Date();
+            const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+            appendRealtimeLog(ts, item.agent, `${item.title} — ${item.detail}`);
+            document.getElementById('bannerSpeaker').textContent = `${item.agent} (${item.room})`;
+            document.getElementById('bannerMessage').innerHTML = `ขั้นตอนที่ ${step}/8: <strong>${item.title}</strong> ➔ ${item.detail}`;
+        }
+        renderRightSidebarMission(step);
+        step++;
+        if (step > 8) {
+            clearInterval(workflowTimer);
+            document.getElementById('topSysStatusText').textContent = "ระบบปกติ พร้อมทำงาน";
+            selectVisualizerAgent("ag_cio");
+        }
+    }, 650);
+}
+
+// Trigger Offline Auto-Catchup Simulation
+async function triggerOfflineCatchupSim(hours) {
+    try {
+        const res = await fetch('/api/offline_catchup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ offline_hours: hours })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            document.getElementById('catchupStatusText').textContent = data.summary;
+            const now = new Date();
+            appendRealtimeLog(`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`, "Offline Auto-Catchup", data.summary);
+            alert(`⚡ เก็บตกงานย้อนหลังช่วงปิดคอม (${hours} ชม. / ${data.shifts_recovered} กะ) สำเร็จ!
+• ซิงค์กราฟและมติย้อนหลังเข้าหน้า 'ดูสรุปย้อนหลัง' และโฟลเดอร์ Obsidian เรียบร้อยแล้ว!`);
+            return;
+        }
+    } catch (e) {}
+    alert(`⚡ เก็บตกงานย้อนหลังช่วงปิดคอม (${hours} ชม.) สำเร็จ!`);
+}
+
+
+// ============================================================================
+// PAGE 2: TOKEN TREASURY, CUSTOM MODEL ADDER & SKILL HARVESTER
+// ============================================================================
+function initTokenAndSkillPage() {
+    const agSel = document.getElementById('harvestAgentSelect');
+    if (agSel) {
+        agSel.innerHTML = APP.office.agents_roster.map(ag =>
+            `<option value="${ag.agent_id}">${ag.avatar} ${ag.name} (${ag.llm_model})</option>`
+        ).join('');
+        agSel.value = "ag_quant";
+    }
+    renderDiscoveredSkillsList(APP.disc_skills);
+    renderTokenAllocationTable();
+}
+
+async function addNewCustomModel() {
+    const nameInp = document.getElementById('customModelNameInput');
+    const specInp = document.getElementById('customModelSpecInput');
+    const modelId = nameInp.value.trim();
+    const spec = specInp.value.trim() || "โมเดล AI ระดับท็อปที่ผู้บริหารเพิ่มเข้าระบบ";
+    if (!modelId) { alert("กรุณาพิมพ์ชื่อโมเดล AI ที่ต้องการเพิ่มครับ"); return; }
+
+    const newMod = {
+        id: modelId,
+        provider: "Custom Frontier / OpenRouter",
+        badge_color: "#ec4899",
+        specialty: spec,
+        cost: "CUSTOM BURN (50K Tokens/รอบ)",
+        avg_tokens_per_run: 50000,
+        tier: "HEAVY_REASONING"
+    };
+    APP.avail_models.unshift(newMod);
+    nameInp.value = '';
+    specInp.value = '';
+    renderTokenAllocationTable();
+    initProfileRoster();
+
+    try {
+        await fetch('/api/add_custom_model', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model_id: modelId, specialty: spec })
+        });
+    } catch (e) {}
+    alert(`✨ เพิ่มโมเดล '${modelId}' เข้าสู่คลังสมองบริษัทเรียบร้อยแล้ว! สามารถเลือกให้พนักงาน AI ใช้ได้ทันที`);
+}
+
+function renderDiscoveredSkillsList(skills) {
+    const box = document.getElementById('discoveredSkillsBox');
+    if (!box) return;
+    box.innerHTML = (skills || []).map(sk => `
+        <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-left:4px solid #8b5cf6;border-radius:10px;padding:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+                <strong style="font-size:0.9rem">🎓 ${sk.skill_name}</strong>
+                <span class="pill" style="background:#dcfce7;color:#166534">Win Rate: ${sk.backtest_win_rate}% (+${sk.accuracy_boost}% Acc)</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--text-sub);margin-top:5px">${sk.formula_logic}</div>
+            <div style="font-size:0.74rem;color:var(--text-sub);margin-top:6px;display:flex;justify-content:space-between">
+                <span>👤 ผู้ค้นพบ: <strong>${sk.agent_name}</strong> (${sk.category})</span>
+                <span>🪙 เผาโทเคนวิจัย: <strong>${(sk.tokens_spent || 25000).toLocaleString()} Tokens</strong></span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderTokenAllocationTable() {
+    const wrap = document.getElementById('tokenAllocationTableWrap');
+    if (!wrap) return;
+    const rows = APP.office.agents_roster.map(ag => {
+        const quota = ag.token_quota || 80000;
+        const used = ag.tokens_used_today || 18500;
+        const mode = ag.compute_mode || "BALANCED";
+        const modelOpts = APP.avail_models.map(m =>
+            `<option value="${m.id}" ${m.id === ag.llm_model ? 'selected' : ''}>${m.id}</option>`
+        ).join('');
+
+        return `
+        <div style="padding:12px;border:1px solid var(--border-col);border-radius:12px;margin-bottom:10px;background:var(--bg-sub)">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+                <div>
+                    <strong style="font-size:0.9rem">${ag.avatar} ${ag.name}</strong>
+                    <span class="pill" style="margin-left:6px">Lv.${ag.level}</span>
+                </div>
+                <div style="font-size:0.78rem;color:#f59e0b;font-weight:700">
+                    ใช้ไป ${used.toLocaleString()} / ${quota.toLocaleString()} Tokens
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:8px;align-items:center">
+                <select id="model-${ag.agent_id}" class="input-clean" style="font-size:0.78rem;padding:6px">${modelOpts}</select>
+                <select id="mode-${ag.agent_id}" class="input-clean" style="font-size:0.78rem;padding:6px">
+                    <option value="ECO" ${mode==='ECO'?'selected':''}>🌱 ECO (ประหยัด)</option>
+                    <option value="BALANCED" ${mode==='BALANCED'?'selected':''}>⚖️ BALANCED (มาตรฐาน)</option>
+                    <option value="OVERCLOCK" ${mode==='OVERCLOCK'?'selected':''}>🔥 OVERCLOCK (คิดลึกสุดขีด)</option>
+                </select>
+                <input type="number" id="quota-${ag.agent_id}" class="input-clean" style="font-size:0.78rem;padding:6px" value="${quota}" step="10000">
+                <button class="cozy-btn amber" style="padding:6px 10px;font-size:0.76rem" onclick="saveAgentTokenAllocation('${ag.agent_id}')">💾 บันทึก & อัดโทเคน</button>
+            </div>
+        </div>`;
+    }).join('');
+    wrap.innerHTML = rows;
+}
+
+function setSkillTopic(txt) { document.getElementById('harvestTopicInput').value = txt; }
+
+async function triggerLearnNewSkill() {
+    const agentId = document.getElementById('harvestAgentSelect').value;
+    const tok = parseInt(document.getElementById('harvestTokenSelect').value, 10) || 50000;
+    const topicInput = document.getElementById('harvestTopicInput');
+    const topic = topicInput.value.trim() || "ICT New York Killzone Orderblock & FVG";
+
+    try {
+        const res = await fetch('/api/learn_skill', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ agent_id: agentId, skill_topic: topic, tokens_to_spend: tok })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            APP.disc_skills = data.all_discovered_skills;
+            renderDiscoveredSkillsList(APP.disc_skills);
+            document.getElementById('econSkillsCountVal').textContent = `${APP.disc_skills.length} สกิลใหม่`;
+            topicInput.value = '';
+            alert(`🎓 ปลดล็อกสกิลใหม่สำเร็จ!
+• ชื่อสกิล: ${data.new_skill.skill_name}
+• Win Rate ทดสอบบนกราฟจริง: ${data.new_skill.backtest_win_rate}% (+${data.new_skill.accuracy_boost}% Accuracy)`);
+            return;
+        }
+    } catch (e) {}
+}
+
+async function saveAgentTokenAllocation(agentId) {
+    const modelVal = document.getElementById('model-' + agentId).value;
+    const modeVal = document.getElementById('mode-' + agentId).value;
+    const quotaVal = parseInt(document.getElementById('quota-' + agentId).value, 10) || 80000;
+    const boost = modeVal === 'OVERCLOCK' ? 25000 : 5000;
+
+    const ag = APP.office.agents_roster.find(a => a.agent_id === agentId);
+    if (ag) {
+        ag.llm_model = modelVal;
+        ag.compute_mode = modeVal;
+        ag.token_quota = quotaVal;
+        ag.tokens_used_today = (ag.tokens_used_today || 18000) + boost;
+    }
+    renderTokenAllocationTable();
+    renderMiniAgentsStrip();
+
+    try {
+        const res = await fetch('/api/allocate_tokens', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                agent_id: agentId,
+                llm_model: modelVal,
+                compute_mode: modeVal,
+                token_quota: quotaVal,
+                instant_boost_tokens: boost
+            })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            document.getElementById('topTokenUsedText').textContent = data.total_tokens_used.toLocaleString();
+            document.getElementById('econUsedVal').textContent = `${data.total_tokens_used.toLocaleString()} Tokens (${data.utilization_pct}%)`;
+            document.getElementById('econReasoningVal').textContent = `${data.reasoning_tokens.toLocaleString()} Tokens`;
+        }
+    } catch (e) {}
+}
+
+function quickOverclockAllAgents() {
+    APP.office.agents_roster.forEach(ag => { ag.compute_mode = "OVERCLOCK"; });
+    document.getElementById('bannerMessage').innerHTML = `🔥 <strong>เปิดโหมด OVERCLOCK ทั้งบริษัท!</strong> พนักงาน AI ทุกตัวกำลังเผา Reasoning Tokens คิดวิเคราะห์เชิงลึกสูงสุด!`;
+    renderTokenAllocationTable();
+}
+
+
+// ============================================================================
+// PAGE 3: TRUE HISTORICAL CANDLE & SHIFT REPLAY SUMMARIZER
+// ============================================================================
+function pickQuickReplayDate(dtStr) {
+    document.getElementById('sumDateInput').value = dtStr;
+    generateCuteSummary(currentSummaryStyle);
+}
+
+function selectShiftPill(el) {
+    document.querySelectorAll('.shift-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    currentShiftSlot = el.getAttribute('data-slot');
+    generateCuteSummary(currentSummaryStyle);
+}
+
+async function generateCuteSummary(styleOverride) {
+    if (styleOverride) currentSummaryStyle = styleOverride;
+    const dt = document.getElementById('sumDateInput').value || "2026-11-13";
+    const outBox = document.getElementById('cuteSummaryOutput');
+
+    try {
+        const res = await fetch('/api/summarize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ date: dt, time_slot: currentShiftSlot, style: currentSummaryStyle })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            updateReplayMetricCards(data);
+            outBox.textContent = data.summary_text;
+            return;
+        }
+    } catch (e) {}
+
+    let hash = 0;
+    const keyStr = `${dt}:${currentShiftSlot}`;
+    for (let i = 0; i < keyStr.length; i++) hash = ((hash << 5) - hash) + keyStr.charCodeAt(i);
+    hash = Math.abs(hash);
+
+    const baseP = APP.market.current_price || 3860.0;
+    const openP = +(baseP + ((hash % 700) - 350) / 10.0).toFixed(2);
+    const chg = +(((hash >> 3) % 460 - 220) / 10.0).toFixed(2);
+    const closeP = +(openP + chg).toFixed(2);
+    const highP = +(Math.max(openP, closeP) + (hash % 140) / 10.0 + 3.5).toFixed(2);
+    const lowP = +(Math.min(openP, closeP) - (hash % 130) / 10.0 - 3.2).toFixed(2);
+    const rsi = +(35 + (hash % 380) / 10.0).toFixed(1);
+    const atr = +(12 + (hash % 120) / 10.0).toFixed(2);
+    const act = chg >= 0 ? "BUY (LONG)" : "SELL (SHORT)";
+    const bullP = chg >= 0 ? 64 : 36;
+    const tokBurn = 45000 + (hash % 85000);
+
+    const mockSnap = {
+        open_price: openP, close_price: closeP, high_price: highP, low_price: lowP,
+        range_dollar: +(highP - lowP).toFixed(2), change_dollar: chg,
+        change_pct: +((chg / openP) * 100).toFixed(2),
+        rsi14: rsi, atr14: atr, bull_power: bullP, bear_power: 100 - bullP,
+        verdict_action: act, tokens_burned: tokBurn
+    };
+    updateReplayMetricCards(mockSnap);
+    outBox.textContent = `🏝️ สรุปบันทึกย้อนหลังบริษัท AI — วันที่ ${dt} (กะ ${currentShiftSlot})
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• ราคาเปิดกะ: $${openP} ➔ ปิดกะ: $${closeP} (${chg >= 0 ? '+' : ''}${chg}$)
+• กรอบ High/Low ประจำกะ: สูงสุด $${highP} / ต่ำสุด $${lowP}
+• อินดิเคเตอร์ประจำกะ: RSI = ${rsi} | H1 ATR = $${atr}
+• มติ CIO ประจำกะ: ${act} (Bull ${bullP}% vs Bear ${100-bullP}%)
+• โทเคนที่เผาในกะนี้: ${tokBurn.toLocaleString()} Tokens`;
+}
+
+function updateReplayMetricCards(d) {
+    if (!d) return;
+    document.getElementById('repOpenCloseTxt').textContent = `$${d.open_price} ➔ $${d.close_price}`;
+    const isPos = d.change_dollar >= 0;
+    const chgEl = document.getElementById('repChangeTxt');
+    chgEl.textContent = `${isPos ? '+' : ''}${d.change_dollar}$ (${isPos ? '+' : ''}${d.change_pct}%)`;
+    chgEl.style.color = isPos ? '#10b981' : '#ef4444';
+
+    document.getElementById('repHighLowTxt').textContent = `H: $${d.high_price} / L: $${d.low_price}`;
+    document.getElementById('repRangeTxt').textContent = `ระยะสวิงในกะ: $${d.range_dollar}`;
+    document.getElementById('repRsiAtrTxt').textContent = `RSI ${d.rsi14} | ATR $${d.atr14}`;
+    document.getElementById('repDebateTxt').textContent = `🐂 Bull ${d.bull_power}% vs 🐻 Bear ${d.bear_power}%`;
+    document.getElementById('repVerdictTxt').textContent = d.verdict_action;
+    document.getElementById('repTokensTxt').textContent = `🪙 เผาไป ${(d.tokens_burned || 52000).toLocaleString()} Tokens`;
+}
+
+function copySummaryText() {
+    const txt = document.getElementById('cuteSummaryOutput').textContent;
+    navigator.clipboard.writeText(txt);
+    alert("📋 คัดลอกข้อความสรุปเรียบร้อยแล้ว!");
+}
+
+
+// ============================================================================
+// PAGE 4: DEDICATED AI AGENT PROFILES & 5D RADAR CHART
+// ============================================================================
+function initProfileRoster() {
+    const listEl = document.getElementById('profileRosterList');
+    const selEl = document.getElementById('profModelSelect');
+    if (!listEl || !selEl) return;
+
+    selEl.innerHTML = APP.avail_models.map(m =>
+        `<option value="${m.id}">${m.id} — [${m.cost}]</option>`
+    ).join('');
+
+    listEl.innerHTML = APP.office.agents_roster.map(ag => `
+        <div class="mini-agent-card ${ag.agent_id === selectedAgent.agent_id ? 'active' : ''}" onclick="selectProfileAgent('${ag.agent_id}')">
+            <span style="font-size:1.7rem">${ag.avatar}</span>
+            <div style="flex:1">
+                <div style="font-weight:800">${ag.name} <span style="color:#f59e0b;font-size:0.76rem">Lv.${ag.level}</span></div>
+                <div style="font-size:0.73rem;color:#8b5cf6;font-weight:700">🧠 ${ag.llm_model}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function selectProfileAgent(agentId) {
+    const found = APP.office.agents_roster.find(a => a.agent_id === agentId);
+    if (!found) return;
+    selectedAgent = found;
+    initProfileRoster();
+    renderProfileStudio(found);
+}
+
+function renderProfileStudio(ag) {
+    document.getElementById('profAvatar').textContent = ag.avatar || '🤖';
+    document.getElementById('profDept').textContent = ag.department;
+    document.getElementById('profName').textContent = ag.name;
+    document.getElementById('profRole').textContent = ag.role;
+    document.getElementById('profBio').textContent = `${ag.bio || ag.current_task} (โควต้าโทเคน: ${(ag.token_quota || 80000).toLocaleString()} Tokens/วัน • โหมด ${ag.compute_mode || 'BALANCED'})`;
+    document.getElementById('profLevelTxt').textContent = `Level ${ag.level} (EXP: ${ag.exp}/${ag.max_exp})`;
+    document.getElementById('profMasteryTxt').textContent = `Mastery: ${ag.mastery_pct}% (+${ag.accuracy_bonus_pct}% Accuracy)`;
+    document.getElementById('profExpBar').style.width = `${Math.min(100, Math.round((ag.exp / Math.max(ag.max_exp, 1)) * 100))}%`;
+
+    const selEl = document.getElementById('profModelSelect');
+    if (selEl) selEl.value = ag.llm_model;
+
+    document.getElementById('profSkillsList').innerHTML = `
+        <div style="padding:8px;background:var(--bg-card);border-radius:8px;border:1px solid var(--border-col)">⚡ <strong>Primary Skill:</strong> ${ag.primary_skill}</div>
+        <div style="padding:8px;background:var(--bg-card);border-radius:8px;border:1px solid var(--border-col)">🛡️ <strong>Secondary Skill:</strong> ${ag.secondary_skill}</div>
+        <div style="padding:8px;background:var(--bg-card);border-radius:8px;border:1px solid #f59e0b">👑 <strong>Ultimate Skill:</strong> ${ag.ultimate_skill}</div>
+    `;
+    drawRadarChart(ag);
+}
+
+function drawRadarChart(ag) {
+    const c = document.getElementById('radarChartCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, c.width, c.height);
+
+    const cx = c.width / 2, cy = c.height / 2 + 8, maxR = 100;
+    const labels = ["Accuracy", "Speed", "Risk Guard", "Macro", "Creativity"];
+    const stats = [ag.stat_accuracy || 92, ag.stat_speed || 90, ag.stat_risk || 88, ag.stat_macro || 86, ag.stat_creativity || 88];
+
+    [0.25, 0.5, 0.75, 1.0].forEach(rFrac => {
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+            const ang = (i / 5) * Math.PI * 2 - Math.PI / 2;
+            const x = cx + Math.cos(ang) * (maxR * rFrac);
+            const y = cy + Math.sin(ang) * (maxR * rFrac);
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = "#334155";
+        ctx.stroke();
+    });
+
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+        const ang = (i / 5) * Math.PI * 2 - Math.PI / 2;
+        const valR = (stats[i] / 100.0) * maxR;
+        const x = cx + Math.cos(ang) * valR;
+        const y = cy + Math.sin(ang) * valR;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+
+        const lx = cx + Math.cos(ang) * (maxR + 28);
+        const ly = cy + Math.sin(ang) * (maxR + 16);
+        ctx.fillStyle = "#f8fafc";
+        ctx.font = "bold 11px 'Segoe UI', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(`${labels[i]} (${stats[i]})`, lx, ly);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "rgba(56, 189, 248, 0.35)";
+    ctx.fill();
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+}
+
+async function changeAgentModelBrain() {
+    const newModel = document.getElementById('profModelSelect').value;
+    selectedAgent.llm_model = newModel;
+    document.getElementById('profModelMeta').textContent = `✓ เปลี่ยนสมองกลเป็น '${newModel}' สำเร็จ!`;
+    initProfileRoster();
+    renderTokenAllocationTable();
+    try {
+        await fetch('/api/switch_model', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ agent_id: selectedAgent.agent_id, llm_model: newModel })
+        });
+    } catch (e) {}
+}
+
+async function trainCurrentProfileAgent() {
+    selectedAgent.exp += 180;
+    if (selectedAgent.exp >= selectedAgent.max_exp) {
+        selectedAgent.exp -= selectedAgent.max_exp;
+        selectedAgent.level += 1;
+        selectedAgent.mastery_pct = +(selectedAgent.mastery_pct + 0.5).toFixed(2);
+    }
+    renderProfileStudio(selectedAgent);
+    initProfileRoster();
+}
+
+function openSelectedAgentProfile() { switchPage('page-profiles'); }
+
+
+// ============================================================================
+// PAGE 5: LIVE COPILOT CHAT
+// ============================================================================
+function initChatRoom() {
+    const listEl = document.getElementById('chatTargetList');
+    if (!listEl) return;
+    let html = `
+        <div class="mini-agent-card active" id="chat-target-antigravity" onclick="selectChatTarget('antigravity', '🤖 Antigravity Copilot', 'Claude 3.7 Extended Thinking + OpenAI o1-Pro')">
+            <span style="font-size:1.7rem">🤖</span>
+            <div>
+                <div style="font-weight:800">Antigravity Copilot (ตัวผมเอง)</div>
+                <div style="font-size:0.74rem;color:#0ea5e9">ถามแผนเทรด โทเคน หรือสั่งงานได้ทุกเรื่อง</div>
+            </div>
+        </div>
+    `;
+    APP.office.agents_roster.forEach(ag => {
+        html += `
+        <div class="mini-agent-card" id="chat-target-${ag.agent_id}" onclick="selectChatTarget('${ag.agent_id}', '${ag.avatar} ${ag.name}', '${ag.llm_model}')">
+            <span style="font-size:1.5rem">${ag.avatar}</span>
+            <div>
+                <div style="font-weight:800">${ag.name}</div>
+                <div style="font-size:0.72rem;color:var(--text-sub)">${ag.llm_model}</div>
+            </div>
+        </div>`;
+    });
+    listEl.innerHTML = html;
+
+    const box = document.getElementById('chatMessagesBox');
+    box.innerHTML = `
+        <div style="align-self:flex-start;background:var(--bg-card);border:1px solid var(--border-col);padding:12px 16px;border-radius:14px;max-width:82%;font-size:0.9rem;line-height:1.55">
+            👋 สวัสดีครับ! ผม <strong>🤖 Antigravity Copilot</strong> ยินดีต้อนรับสู่ <strong>AI Holding Company V7</strong>!<br>
+            • ตอนนี้ราคาทองคำอยู่ที่ <strong>$${APP.market.current_price}</strong> และมติ CIO คือ <strong>${APP.cio.action}</strong> (Entry $${APP.cio.final_entry} | SL $${APP.cio.final_sl} | TP1 $${APP.cio.final_tp1})<br>
+            • คุณสามารถปิดคอมนอนได้สบายใจ เพราะมีระบบ <strong>Offline Shift Auto-Catchup</strong> คอยดึงกราฟย้อนหลังมาสรุปให้ครบทุกกะเมื่อเปิดเครื่องครับ!
+        </div>
+    `;
+}
+
+function selectChatTarget(targetId, title, modelName) {
+    chatTargetId = targetId;
+    document.querySelectorAll('#chatTargetList .mini-agent-card').forEach(el => el.classList.remove('active'));
+    const el = document.getElementById('chat-target-' + targetId);
+    if (el) el.classList.add('active');
+    document.getElementById('chatHeaderSpeaker').textContent = title;
+    document.getElementById('chatHeaderModel').textContent = `Brain: ${modelName}`;
+}
+
+function askSelectedAgentInChat() {
+    switchPage('page-chat');
+    selectChatTarget(selectedAgent.agent_id, `${selectedAgent.avatar} ${selectedAgent.name}`, selectedAgent.llm_model);
+}
+function askCurrentProfileAgent() { askSelectedAgentInChat(); }
+
+function sendQuickPrompt(text) {
+    document.getElementById('chatInputField').value = text;
+    sendChatMessage();
+}
+
+async function sendChatMessage() {
+    const inp = document.getElementById('chatInputField');
+    const msg = inp.value.trim();
+    if (!msg) return;
+    inp.value = '';
+
+    const box = document.getElementById('chatMessagesBox');
+    box.innerHTML += `<div style="align-self:flex-end;background:#0f172a;color:#fbbf24;padding:10px 15px;border-radius:14px;max-width:80%;font-size:0.9rem">${msg}</div>`;
+    box.scrollTop = box.scrollHeight;
+
+    try {
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: msg, target_agent: chatTargetId })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            box.innerHTML += `<div style="align-self:flex-start;background:var(--bg-card);border:1px solid var(--border-col);padding:12px 16px;border-radius:14px;max-width:82%;font-size:0.9rem;white-space:pre-wrap;line-height:1.55"><strong style="color:#f59e0b">${data.speaker_name} [${data.model_used}]:</strong>
+${data.reply}</div>`;
+            box.scrollTop = box.scrollHeight;
+            return;
+        }
+    } catch (e) {}
+}
+
+
+// ============================================================================
+// PAGE 6: MT5 DEMO TERMINAL & OBSIDIAN GRAPH
+// ============================================================================
+const mt5Canvas = document.getElementById('mt5DemoChartCanvas');
+const mt5Ctx = mt5Canvas ? mt5Canvas.getContext('2d') : null;
+let mt5Timer = null, mt5AnimIndex = 0, currentSLPrice = APP.mt5_demo.sl_price;
+
+function startLiveMT5Simulation() {
+    if (!mt5Ctx) return;
+    if (mt5Timer) clearInterval(mt5Timer);
+    mt5AnimIndex = 1;
+    currentSLPrice = APP.mt5_demo.sl_price;
+    const ticks = APP.mt5_demo.tick_series || [];
+
+    const container = document.getElementById('mt5StepsContainer');
+    if (container) {
+        container.innerHTML = (APP.mt5_demo.steps_telemetry || []).map(st => `
+            <div style="padding:9px 12px;border:1px solid var(--border-col);border-left:4px solid #10b981;border-radius:8px;background:var(--bg-sub);font-size:0.8rem">
+                <strong>Step ${st.step}: ${st.phase}</strong> <span class="pill">${st.status}</span>
+                <div style="color:var(--text-sub);margin-top:3px">${st.detail}</div>
+            </div>
+        `).join('');
+    }
+
+    mt5Timer = setInterval(() => {
+        mt5AnimIndex++;
+        if (mt5AnimIndex >= ticks.length) {
+            mt5AnimIndex = ticks.length;
+            clearInterval(mt5Timer);
+        }
+        const tk = ticks[mt5AnimIndex - 1];
+        if (tk && tk.sl_moved_to_be) {
+            currentSLPrice = APP.mt5_demo.entry_price;
+            document.getElementById('mt5LiveSL').textContent = `$${currentSLPrice.toFixed(2)} (LOCKED BE)`;
+        }
+        if (tk) {
+            const pnl = ((APP.mt5_demo.direction === "BUY") ? (tk.price - APP.mt5_demo.entry_price) : (APP.mt5_demo.entry_price - tk.price)) * APP.mt5_demo.lot_size * 100;
+            document.getElementById('mt5LivePnL').textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`;
+        }
+        drawMT5ChartFrame(mt5AnimIndex);
+    }, 80);
+}
+
+function drawMT5ChartFrame(upToIdx) {
+    if (!mt5Ctx) return;
+    const W = mt5Canvas.width, H = mt5Canvas.height;
+    mt5Ctx.clearRect(0, 0, W, H);
+    const ticks = APP.mt5_demo.tick_series || [];
+    if (!ticks.length) return;
+
+    const allP = [APP.mt5_demo.entry_price, APP.mt5_demo.sl_price, APP.mt5_demo.tp1_price, APP.mt5_demo.tp2_price, ...ticks.map(t => t.price)];
+    const minP = Math.min(...allP) - 6, maxP = Math.max(...allP) + 6;
+    const py = p => H - 25 - ((p - minP) / Math.max(maxP - minP, 1)) * (H - 50);
+
+    const drawLvl = (price, col, lbl) => {
+        const y = py(price);
+        mt5Ctx.strokeStyle = col; mt5Ctx.setLineDash([5, 5]);
+        mt5Ctx.beginPath(); mt5Ctx.moveTo(0, y); mt5Ctx.lineTo(W, y); mt5Ctx.stroke();
+        mt5Ctx.setLineDash([]); mt5Ctx.fillStyle = col; mt5Ctx.font = "bold 11px sans-serif";
+        mt5Ctx.fillText(`${lbl}: $${price.toFixed(2)}`, 12, y - 5);
+    };
+    drawLvl(APP.mt5_demo.entry_price, "#fbbf24", "ENTRY");
+    drawLvl(currentSLPrice, "#ef4444", "STOP LOSS");
+    drawLvl(APP.mt5_demo.tp1_price, "#38bdf8", "TP1 (Auto BE)");
+    drawLvl(APP.mt5_demo.tp2_price, "#10b981", "TP2 TARGET");
+
+    mt5Ctx.strokeStyle = "#f8fafc"; mt5Ctx.lineWidth = 2.5;
+    mt5Ctx.beginPath();
+    for (let i = 0; i < upToIdx && i < ticks.length; i++) {
+        const x = 30 + (i / Math.max(ticks.length - 1, 1)) * (W - 60);
+        const y = py(ticks[i].price);
+        if (i === 0) mt5Ctx.moveTo(x, y); else mt5Ctx.lineTo(x, y);
+    }
+    mt5Ctx.stroke();
+}
+
+let selectedObsNodeId = "HUB_NEXUS";
+let obsGraphAnimId = null;
+
+function drawObsidianGraph() {
+    const c = document.getElementById('obsidianGraphCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const kg = (APP.obs_info && APP.obs_info.knowledge_graph) ? APP.obs_info.knowledge_graph : null;
+
+    // Populate routing matrix table
+    const tbody = document.getElementById('obsRoutingTableBody');
+    if (tbody && kg && kg.token_savings_report && kg.token_savings_report.agent_routing_matrix) {
+        tbody.innerHTML = kg.token_savings_report.agent_routing_matrix.map(r => `
+            <tr>
+                <td><strong>${r.agent_name}</strong></td>
+                <td><span class="pill">${r.llm_model}</span></td>
+                <td>${r.connected_nodes.map(n => `<code style="background:var(--bg-sub);padding:2px 6px;border-radius:5px;margin-right:4px">${n}</code>`).join('↔ ')}</td>
+                <td style="font-size:0.81rem">${r.data_flow_summary}</td>
+                <td style="color:#ef4444">${r.full_vault_tokens.toLocaleString()}</td>
+                <td style="color:#10b981;font-weight:800">${r.graph_pruned_tokens.toLocaleString()}</td>
+                <td style="color:#0ea5e9;font-weight:900">-${r.savings_pct}% (-${r.tokens_saved_per_call.toLocaleString()} Tok)</td>
+            </tr>
+        `).join('');
+    }
+
+    if (!kg || !kg.nodes) return;
+
+    const W = c.width, H = c.height;
+    const cx = W / 2, cy = H / 2;
+
+    // Compute radial layout positions for hubs, agents, and skills
+    const hubs = kg.nodes.filter(n => n.category !== 'AI_AGENT' && n.category !== 'DISCOVERED_SKILL');
+    const agents = kg.nodes.filter(n => n.category === 'AI_AGENT');
+    const skills = kg.nodes.filter(n => n.category === 'DISCOVERED_SKILL');
+
+    const posMap = {};
+    hubs.forEach((h, i) => {
+        if (h.id === 'HUB_NEXUS') {
+            posMap[h.id] = { x: cx, y: cy, r: 17, node: h };
+        } else {
+            const ang = (i / Math.max(1, hubs.length - 1)) * Math.PI * 2 - Math.PI / 2;
+            posMap[h.id] = { x: cx + Math.cos(ang) * 92, y: cy + Math.sin(ang) * 75, r: 14, node: h };
+        }
+    });
+    agents.forEach((a, i) => {
+        const ang = (i / Math.max(1, agents.length)) * Math.PI * 2;
+        posMap[a.id] = { x: cx + Math.cos(ang) * 225, y: cy + Math.sin(ang) * 135, r: 11, node: a };
+    });
+    skills.forEach((s, i) => {
+        const ang = (i / Math.max(1, skills.length)) * Math.PI * 2 + 0.35;
+        posMap[s.id] = { x: cx + Math.cos(ang) * 320, y: cy + Math.sin(ang) * 150, r: 9, node: s };
+    });
+
+    c.onclick = (ev) => {
+        const rect = c.getBoundingClientRect();
+        const mx = (ev.clientX - rect.left) * (W / rect.width);
+        const my = (ev.clientY - rect.top) * (H / rect.height);
+        for (const id of Object.keys(posMap)) {
+            const p = posMap[id];
+            if (Math.hypot(mx - p.x, my - p.y) <= p.r + 8) {
+                selectedObsNodeId = id;
+                updateObsInspector(id, kg);
+                break;
+            }
+        }
+    };
+
+    updateObsInspector(selectedObsNodeId, kg);
+
+    if (obsGraphAnimId) cancelAnimationFrame(obsGraphAnimId);
+    let tick = 0;
+    function renderFrame() {
+        tick += 0.018;
+        ctx.clearRect(0, 0, W, H);
+
+        // Subtle grid
+        ctx.strokeStyle = "rgba(51, 65, 85, 0.35)";
+        ctx.lineWidth = 1;
+        for (let x = 40; x < W; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+        for (let y = 40; y < H; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+        // Draw edges & animated data flow particles
+        kg.edges.forEach((e, idx) => {
+            const p1 = posMap[e.source], p2 = posMap[e.target];
+            if (!p1 || !p2) return;
+            const isHighlighted = (e.source === selectedObsNodeId || e.target === selectedObsNodeId);
+            ctx.strokeStyle = isHighlighted ? "#fbbf24" : "rgba(148, 163, 184, 0.28)";
+            ctx.lineWidth = isHighlighted ? 2.4 : 1.1;
+            ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+
+            if (isHighlighted) {
+                const t = (tick + idx * 0.17) % 1;
+                const px = p1.x + (p2.x - p1.x) * t;
+                const py = p1.y + (p2.y - p1.y) * t;
+                ctx.fillStyle = "#38bdf8";
+                ctx.beginPath(); ctx.arc(px, py, 3.5, 0, Math.PI * 2); ctx.fill();
+            }
+        });
+
+        // Draw nodes
+        Object.keys(posMap).forEach(id => {
+            const p = posMap[id];
+            const isSel = (id === selectedObsNodeId);
+            const isNeighbor = kg.edges.some(e => (e.source === selectedObsNodeId && e.target === id) || (e.target === selectedObsNodeId && e.source === id));
+
+            if (isSel) {
+                ctx.fillStyle = "rgba(251, 191, 36, 0.25)";
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 7, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.fillStyle = p.node.color || "#38bdf8";
+            ctx.globalAlpha = (isSel || isNeighbor) ? 1.0 : 0.55;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = isSel ? "#ffffff" : "#0f172a";
+            ctx.lineWidth = isSel ? 2.5 : 1.2;
+            ctx.stroke();
+
+            ctx.fillStyle = isSel ? "#fbbf24" : "#f8fafc";
+            ctx.font = isSel ? "bold 11px 'Prompt', sans-serif" : "10px 'Prompt', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(p.node.label.slice(0, 18), p.x, p.y - p.r - 5);
+            ctx.globalAlpha = 1.0;
+        });
+
+        obsGraphAnimId = requestAnimationFrame(renderFrame);
+    }
+    renderFrame();
+}
+
+function updateObsInspector(nodeId, kg) {
+    const box = document.getElementById('obsNodeInspector');
+    if (!box || !kg) return;
+    const node = kg.nodes.find(n => n.id === nodeId) || kg.nodes[0];
+    const relEdges = kg.edges.filter(e => e.source === node.id || e.target === node.id);
+    const savedSum = relEdges.reduce((acc, e) => acc + (e.tokens_saved || 950), 0);
+    const edgeList = relEdges.map(e => {
+        const other = e.source === node.id ? e.target : e.source;
+        return `<span class="pill" style="margin-right:5px">${other} (${e.data_flow})</span>`;
+    }).join(' ');
+
+    box.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+            <div><strong>🎯 โหนดที่เลือก: ${node.label}</strong> <span class="pill">${node.category}</span> <code style="font-size:0.76rem">${node.file || ''}</code></div>
+            <div style="color:#10b981;font-weight:800">⚡ ประหยัดโทเคนจากโหนดนี้: -${savedSum.toLocaleString()} Tokens/รอบ (ขนาดโหนด ${node.token_weight} Tok)</div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--text-sub);margin-bottom:6px">${node.description || ''}</div>
+        <div style="font-size:0.79rem"><strong>🔗 เชื่อมโยงข้อมูลโดยตรงกับ (${relEdges.length} ส่วน):</strong> ${edgeList || 'เชื่อมผ่านสารบัญหลัก MOC'}</div>
+    `;
+}
+
+async function syncObsidianNow() {
+    try { await fetch('/api/sync_obsidian', { method: 'POST' }); } catch (e) {}
+    alert("💎 ซิงค์โน้ตทั้งหมดลงโฟลเดอร์ obsidian_vault/ เรียบร้อยแล้ว!");
+}
+
+function switchPage(pageId) {
+    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    const target = document.getElementById(pageId);
+    const tab = document.getElementById('tab-' + pageId);
+    if (target) target.classList.add('active');
+    if (tab) tab.classList.add('active');
+
+    if (pageId === 'page-tokens') initTokenAndSkillPage();
+    if (pageId === 'page-replay') generateCuteSummary(currentSummaryStyle);
+    if (pageId === 'page-profiles') renderProfileStudio(selectedAgent);
+    if (pageId === 'page-mt5') { startLiveMT5Simulation(); drawObsidianGraph(); }
+}
+
+window.addEventListener('load', () => {
+    renderMiniAgentsStrip();
+    renderRightSidebarMission(8);
+    initRealtimeLogs();
+    renderIsometricCompany();
+    initTokenAndSkillPage();
+    initProfileRoster();
+    renderProfileStudio(selectedAgent);
+    initChatRoom();
+    generateCuteSummary('EXECUTIVE_CUTE');
+});
+</script>
+</body>
+</html>

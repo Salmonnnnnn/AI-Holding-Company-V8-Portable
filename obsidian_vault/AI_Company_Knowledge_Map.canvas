@@ -1,0 +1,124 @@
+{
+  "nodes": [
+    {
+      "id": "node_moc",
+      "type": "file",
+      "file": "00_AI_Holding_Company_MOC.md",
+      "x": 0,
+      "y": -380,
+      "width": 360,
+      "height": 220,
+      "color": "3"
+    },
+    {
+      "id": "node_graph_doc",
+      "type": "file",
+      "file": "00_Knowledge_Graph_Topology.md",
+      "x": 440,
+      "y": -380,
+      "width": 380,
+      "height": 220,
+      "color": "6"
+    },
+    {
+      "id": "node_market_text",
+      "type": "text",
+      "text": "### 📊 1. Market & Macro Feed\n- ดึงกราฟทองคำ H1/H4/D1\n- คำนวณ RSI, MACD, ATR, DXY, US10Y\n- ส่งเฉพาะตัวเลขสำคัญให้ทีม Quant & Macro (ประหยัด 85% โทเคน)",
+      "x": -480,
+      "y": -40,
+      "width": 340,
+      "height": 210,
+      "color": "5"
+    },
+    {
+      "id": "node_nexus",
+      "type": "file",
+      "file": "03_Central_Knowledge_Core/Central_Nexus_Insights.md",
+      "x": 0,
+      "y": -40,
+      "width": 380,
+      "height": 240,
+      "color": "6"
+    },
+    {
+      "id": "node_mt5",
+      "type": "file",
+      "file": "04_MT5_Trade_Journal/MT5_Portfolio_and_Benchmarks.md",
+      "x": 460,
+      "y": -40,
+      "width": 380,
+      "height": 240,
+      "color": "4"
+    },
+    {
+      "id": "node_daily",
+      "type": "file",
+      "file": "01_Daily_Summaries/2026-11-13_Daily_Summary.md",
+      "x": 0,
+      "y": 280,
+      "width": 380,
+      "height": 240,
+      "color": "1"
+    },
+    {
+      "id": "node_venture",
+      "type": "file",
+      "file": "05_Business_Ventures/New_Venture_Ideas_Blueprint.md",
+      "x": 460,
+      "y": 280,
+      "width": 380,
+      "height": 240,
+      "color": "2"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_1",
+      "fromNode": "node_market_text",
+      "fromSide": "right",
+      "toNode": "node_nexus",
+      "toSide": "left",
+      "label": "ส่งราคา & ATR (1-Hop Pruned)"
+    },
+    {
+      "id": "edge_2",
+      "fromNode": "node_nexus",
+      "fromSide": "right",
+      "toNode": "node_mt5",
+      "toSide": "left",
+      "label": "ส่งสูตรสกิล & พารามิเตอร์ชนะตลาด"
+    },
+    {
+      "id": "edge_3",
+      "fromNode": "node_nexus",
+      "fromSide": "bottom",
+      "toNode": "node_daily",
+      "toSide": "top",
+      "label": "สรุปมติ Bull vs Bear"
+    },
+    {
+      "id": "edge_4",
+      "fromNode": "node_mt5",
+      "fromSide": "bottom",
+      "toNode": "node_daily",
+      "toSide": "right",
+      "label": "บันทึก Ticket & กำไร MT5"
+    },
+    {
+      "id": "edge_5",
+      "fromNode": "node_moc",
+      "fromSide": "bottom",
+      "toNode": "node_nexus",
+      "toSide": "top",
+      "label": "เชื่อม AI ทั้ง 11 ตัว"
+    },
+    {
+      "id": "edge_6",
+      "fromNode": "node_daily",
+      "fromSide": "right",
+      "toNode": "node_venture",
+      "toSide": "left",
+      "label": "ต่อยอดธุรกิจใหม่"
+    }
+  ]
+}

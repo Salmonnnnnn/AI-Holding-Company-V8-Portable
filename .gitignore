@@ -1,0 +1,15 @@
+# Python byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Secrets (never commit real API keys)
+.env
+
+# OS files
+.DS_Store
+Thumbs.db

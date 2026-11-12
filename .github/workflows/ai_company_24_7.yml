@@ -1,0 +1,45 @@
+name: AI Holding Company 24/7 Cloud Runner
+
+on:
+  schedule:
+    # รันอัตโนมัติบนเซิร์ฟเวอร์ GitHub Cloud ฟรีทุกๆ 4 ชั่วโมง ตลอด 24 ชม. (แม้ปิดคอมสนิท!)
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-ai-company-shift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout AI Holding Company Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run 24/7 AI Committee Shift & Telegram Mobile Alert
+        env:
+          PYTHONIOENCODING: utf-8
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python main.py --capital 1000 --risk 1.5 --notify-telegram
+
+      - name: Auto-Commit Updated Obsidian Vault & SQLite History
+        run: |
+          git config --global user.name "AI Holding Company Bot"
+          git config --global user.email "bot@ai-holding-company.local"
+          git add obsidian_vault/ reports/latest_report.md data/company_hq.db || true
+          git diff --staged --quiet || git commit -m "chore(auto-shift): sync 24/7 AI company shift & Obsidian vault"
+          git push || true

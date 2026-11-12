@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: gold-ai-holding-company-v7
+    runtime: docker
+    plan: free
+    envVars:
+      - key: PYTHONIOENCODING
+        value: utf-8
+      - key: PORT
+        value: 8080
