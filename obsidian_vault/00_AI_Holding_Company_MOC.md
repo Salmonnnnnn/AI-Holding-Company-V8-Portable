@@ -3,7 +3,7 @@ tags:
   - moc
   - ai-holding-hq
   - second-brain
-updated: "2026-11-13 00:54:23"
+updated: "2026-11-13 00:54:43"
 ---
 # 🏛️ 00 — AI Holding Company & Isometric Cutaway HQ (Master MOC — V8)
 
