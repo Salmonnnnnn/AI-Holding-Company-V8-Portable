@@ -349,9 +349,43 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <span>🪙 โทเคน:</span>
             <strong id="topTokenUsedText" style="color:#f59e0b">{tok_econ.get('total_tokens_used', 279200):,}</strong> / <span id="topTokenBudgetText">{tok_econ.get('daily_budget_tokens', 1000000):,}</span>
         </div>
-        <!-- Theme Switcher Button -->
+        <!-- Theme Switcher & GitHub Push Buttons -->
+        <button class="cozy-btn purple" onclick="openGitHubPushModal()" id="topGithubBtn">🚀 อัปโหลดขึ้น GitHub (1-Click)</button>
         <button class="cozy-btn amber" onclick="toggleThemeMode()" id="themeToggleBtn">🌙 สลับโหมดมืด (Dark Mode)</button>
         <button class="cozy-btn primary" onclick="switchPage('page-replay')">▶ ดูสรุปย้อนหลัง</button>
+    </div>
+</div>
+
+<!-- GITHUB 1-CLICK PUSH MODAL -->
+<div id="githubPushModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.72);z-index:9999;align-items:center;justify-content:center;padding:16px">
+    <div class="white-card" style="max-width:620px;width:100%;margin:0;border:2px solid #8b5cf6;box-shadow:0 20px 50px rgba(0,0,0,0.45)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:1px solid var(--border-soft);padding-bottom:10px">
+            <h2 style="margin:0;border:none">🚀 อัปโหลดโปรเจกต์ทั้งหมดขึ้น GitHub (1-Click Cloud Sync)</h2>
+            <button class="cozy-btn" onclick="closeGitHubPushModal()">✖ ปิด</button>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-sub);margin-bottom:12px">
+            สร้าง Repository และอัปโหลดโค้ดทั้งหมด (73+ ไฟล์ + ฐานข้อมูล + คลังสมอง Obsidian Knowledge Graph) ขึ้นบัญชี GitHub ของคุณ เพื่อดึงไปทำต่อบนคอมเครื่องใหม่หรือรัน GitHub Actions ฟรี 24 ชม.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+            <div>
+                <label style="font-size:0.8rem;font-weight:700;display:block;margin-bottom:4px">📦 ชื่อ Repository บน GitHub:</label>
+                <input type="text" id="ghRepoNameInput" class="input-clean" style="width:100%" value="AI-Holding-Company-V8-Portable">
+            </div>
+            <div>
+                <label style="font-size:0.8rem;font-weight:700;display:block;margin-bottom:4px">🔑 GitHub Personal Access Token (เว้นว่างได้หากต้องการกดล็อกอินผ่านเว็บเบราว์เซอร์):</label>
+                <input type="password" id="ghTokenInput" class="input-clean" style="width:100%" placeholder="เว้นว่างไว้เพื่อเด้งหน้าเว็บล็อกอิน GitHub อัตโนมัติ หรือวาง ghp_... ที่นี่">
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem">
+                <input type="checkbox" id="ghPrivateCheckbox">
+                <label for="ghPrivateCheckbox">🔒 ตั้งค่าเป็น Private Repository (ส่วนตัว)</label>
+            </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="cozy-btn purple" style="flex:1;padding:11px;font-size:0.9rem" id="ghPushConfirmBtn" onclick="triggerGitHubPush()">
+                🌐 เชื่อมต่อ GitHub & อัปโหลดทั้งหมดทันที
+            </button>
+        </div>
+        <div id="ghPushResultBox" style="display:none;margin-top:14px;padding:12px;border-radius:10px;background:var(--bg-sub);border:1px solid var(--border-col);font-size:0.83rem"></div>
     </div>
 </div>
 
@@ -375,8 +409,9 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <strong style="color:#10b981">☁️ สถานะระบบทำงานแทนตอนปิดคอม (Offline Auto-Catchup & Cloud 24/7):</strong>
             <span id="catchupStatusText">{html.escape(str(catchup_info.get('summary', 'ปิดคอมได้สบายใจ! เมื่อเปิดเครื่องใหม่ ระบบจะดึงกราฟย้อนหลังทุกกะที่ปิดคอมมาสรุปให้อัตโนมัติ')))}</span>
         </div>
-        <div style="display:flex;gap:8px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="cozy-btn green" style="padding:4px 10px;font-size:0.76rem" onclick="triggerOfflineCatchupSim(12)">⚡ ทดสอบเก็บตกงานย้อนหลัง 12 ชม. (2 กะ)</button>
+            <button class="cozy-btn purple" style="padding:4px 10px;font-size:0.76rem" onclick="openGitHubPushModal()">🚀 กดอัปโหลดขึ้น GitHub</button>
         </div>
     </div>
 
@@ -2269,6 +2304,62 @@ function updateObsInspector(nodeId, kg) {{
 async function syncObsidianNow() {{
     try {{ await fetch('/api/sync_obsidian', {{ method: 'POST' }}); }} catch (e) {{}}
     alert("💎 ซิงค์โน้ตทั้งหมดลงโฟลเดอร์ obsidian_vault/ เรียบร้อยแล้ว!");
+}}
+
+function openGitHubPushModal() {{
+    const m = document.getElementById('githubPushModal');
+    if (m) m.style.display = 'flex';
+}}
+
+function closeGitHubPushModal() {{
+    const m = document.getElementById('githubPushModal');
+    if (m) m.style.display = 'none';
+}}
+
+async function triggerGitHubPush() {{
+    const repoName = document.getElementById('ghRepoNameInput').value.trim() || 'AI-Holding-Company-V8-Portable';
+    const customToken = document.getElementById('ghTokenInput').value.trim();
+    const isPrivate = document.getElementById('ghPrivateCheckbox').checked;
+    const btn = document.getElementById('ghPushConfirmBtn');
+    const resBox = document.getElementById('ghPushResultBox');
+
+    btn.disabled = true;
+    btn.innerText = "⏳ กำลังเชื่อมต่อ GitHub (โปรดดูหน้าต่างเบราว์เซอร์ที่เด้งขึ้นมาเพื่อกด Authorize)...";
+    resBox.style.display = 'block';
+    resBox.innerHTML = "🔄 กำลังตรวจสอบสิทธิ์ GitHub และสร้าง Repository <code>" + repoName + "</code>...";
+
+    try {{
+        const resp = await fetch('/api/github_push', {{
+            method: 'POST',
+            headers: {{ 'Content-Type': 'application/json' }},
+            body: JSON.stringify({{
+                repo_name: repoName,
+                private: isPrivate,
+                custom_token: customToken
+            }})
+        }});
+        const data = await resp.json();
+        const stepsHtml = (data.steps_log || []).map(s => `<div style="margin-bottom:4px">${{s}}</div>`).join('');
+        if (data.status === 'SUCCESS') {{
+            resBox.innerHTML = `
+                <div style="color:#10b981;font-weight:900;font-size:0.95rem;margin-bottom:8px">${{data.message}}</div>
+                ${{stepsHtml}}
+                <div style="margin-top:10px">
+                    <a href="${{data.repo_url}}" target="_blank" class="cozy-btn green" style="text-decoration:none;display:inline-block">🌐 คลิกเปิดดู GitHub Repository ของคุณทันที!</a>
+                </div>
+            `;
+        }} else {{
+            resBox.innerHTML = `
+                <div style="color:#f59e0b;font-weight:800;margin-bottom:6px">${{data.message}}</div>
+                ${{stepsHtml}}
+            `;
+        }}
+    }} catch (err) {{
+        resBox.innerHTML = `<div style="color:#ef4444">⚠️ ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณารันผ่าน <code>setup_and_start.bat</code> หรือดับเบิลคลิกไฟล์ <code>push_to_github.bat</code> ในโฟลเดอร์ได้โดยตรงครับ</div>`;
+    }} finally {{
+        btn.disabled = false;
+        btn.innerText = "🌐 เชื่อมต่อ GitHub & อัปโหลดทั้งหมดทันที";
+    }}
 }}
 
 function switchPage(pageId) {{

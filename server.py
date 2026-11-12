@@ -18,6 +18,7 @@ if sys.platform.startswith("win"):
 
 from engine.committee_room import TradingCommitteeRoom
 from engine.dashboard_generator import generate_html_dashboard
+from engine.github_pusher import GitHubAutoPusher
 
 GLOBAL_ROOM = None
 LATEST_REPORT = None
@@ -186,6 +187,20 @@ class V7RequestHandler(BaseHTTPRequestHandler):
             obs_info = room.obsidian_sync.sync_all(report)
             report["obsidian_status"] = obs_info
             self._send_json({"status": "ok", "obsidian_status": obs_info})
+            return
+
+        if self.path == "/api/github_push":
+            repo_name = body.get("repo_name", "AI-Holding-Company-V8-Portable")
+            private = bool(body.get("private", False))
+            custom_token = body.get("custom_token", "")
+            pusher = GitHubAutoPusher()
+            res = pusher.push_project_to_github(
+                repo_name=repo_name,
+                private=private,
+                custom_token=custom_token,
+                interactive_browser_login=True
+            )
+            self._send_json(res)
             return
 
         self._send_json({"error": "Unknown endpoint"}, status=404)

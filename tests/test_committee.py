@@ -110,6 +110,8 @@ def test_v7_isometric_visualizer_dark_light_theme_and_obsidian(tmp_path):
     assert "drawIsoWallWithDoor" in html_text
     assert "addNewCustomModel" in html_text
     assert "triggerOfflineCatchupSim" in html_text
+    assert "openGitHubPushModal" in html_text
+    assert "triggerGitHubPush" in html_text
 
 
 def test_obsidian_knowledge_graph_and_token_saving_router(tmp_path):

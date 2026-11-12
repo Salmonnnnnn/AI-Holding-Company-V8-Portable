@@ -3,7 +3,7 @@ tags:
   - moc
   - ai-holding-hq
   - second-brain
-updated: "2026-11-13 00:25:34"
+updated: "2026-11-13 00:54:23"
 ---
 # 🏛️ 00 — AI Holding Company & Isometric Cutaway HQ (Master MOC — V8)
 
@@ -27,10 +27,10 @@ updated: "2026-11-13 00:25:34"
 - 👩‍💼 [[Agent_Sophia_Chen|Sophia Chen]] — *Chief of Staff & 24h Operations* (`Gemini 2.5 Pro Exp (2M Context Deep Research)` | `Lv.10`)
 - 🕵️‍♀️ [[Agent_Maya_Lin|Maya Lin]] — *Real-Time News Sentinel* (`Grok-3 (Real-Time Macro & X Pulse)` | `Lv.11`)
 - 👨‍🔬 [[Agent_Dr._Kenji_Sato|Dr. Kenji Sato]] — *Head of Quant R&D & Benchmark Lab* (`OpenAI o3-mini / o1-Pro (Deep Math Reasoning)` | `Lv.17`)
-- 📊 [[Agent_Alex_ChartMaster_Vance|Alex 'ChartMaster' Vance]] — *Senior Multi-TF Technical Analyst* (`DeepSeek-R1 671B Full (Unquantized CoT)` | `Lv.15`)
+- 📊 [[Agent_Alex_ChartMaster_Vance|Alex 'ChartMaster' Vance]] — *Senior Multi-TF Technical Analyst* (`DeepSeek-R1 671B Full (Unquantized CoT)` | `Lv.16`)
 - 🌐 [[Agent_Dr._Marcus_Sterling|Dr. Marcus Sterling]] — *Chief Global Macroeconomist* (`Gemini 2.5 Pro Exp (2M Context Deep Research)` | `Lv.11`)
 - 🐂 [[Agent_Sarah_Jenkins|Sarah Jenkins]] — *Bullish Advocate* (`Llama-3.3-70B (Groq Ultra-Fast)` | `Lv.9`)
 - 🐻 [[Agent_Viktor_The_Skeptic_Kane|Viktor 'The Skeptic' Kane]] — *Bearish & Red-Team Advocate* (`Claude 3.7 Sonnet (Extended Thinking 128K)` | `Lv.13`)
 - 🛡️ [[Agent_Elena_Rostova|Elena Rostova]] — *Chief Risk Officer (CRO)* (`OpenAI o3-mini / o1-Pro (Deep Math Reasoning)` | `Lv.13`)
-- 🤖 [[Agent_AutoBot_X-1|AutoBot X-1]] — *Automated Portfolio & Execution Bot* (`Qwen-2.5-Coder-32B (Algo Specialist)` | `Lv.14`)
+- 🤖 [[Agent_AutoBot_X-1|AutoBot X-1]] — *Automated Portfolio & Execution Bot* (`Qwen-2.5-Coder-32B (Algo Specialist)` | `Lv.15`)
 - 🚀 [[Agent_Nova_Vance|Nova Vance]] — *New Business Venture Architect* (`Claude 3.5 Opus (Flagship Strategist)` | `Lv.8`)
