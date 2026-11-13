@@ -27,6 +27,7 @@
 - [x] Adopted `docs/ORCHESTRATION_PROTOCOL.md` (2026-11-13) — agent defs in `.claude/agents/`.
 - [x] Aurum Isle rebrand + 30-day $1,000 Agent Town challenge (`orchestrator/aurum-isle-town`, commit `02200a6`).
 - [x] Installed Homebrew `node`/`npx`, `@openai/codex` CLI, `bin/ask-codex` read-only wrapper, and `find-skills` + `obra/superpowers` (`.agents/skills/`).
+- [x] Multi-Venture AI Town Studios & Deliverables Viewer (`Exmple.mp4`) with animated task pipelines & multi-stream revenue breakdown (commit `f5dfe32`).
 
 ## ⚠️ Known Pitfalls
 - Sandbox blocks writes to `.git/` → git branch/worktree/commit need sandbox bypass.

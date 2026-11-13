@@ -35,7 +35,7 @@ python server.py --port 8080 --capital 1000 --risk 1.5 --interval 45
 | **V6** | **Cozy Isometric Cutaway Office, Historical Replay, Token Treasury & Skill Harvester** | หน้าจอตึกบริษัท Isometric 6 ห้องสไตล์คลิป TikTok `@ong_stw`, ระบบดูสรุปย้อนหลังตามแท่งเทียนจริง (`engine/historical_replay.py`), ระบบจัดสรรงบโทเคน (`engine/token_economy.py`), และระบบสั่ง AI ออกไปวิจัยสกิลใหม่สดๆ (`engine/skill_harvester.py`) |
 | **V7** | **Light/Dark Theme, 12+ Frontier Models + Custom Model Adder & Offline Auto-Catchup** | ปุ่มสลับโหมดสว่าง/มืด (`☀️/🌙`), โมเดลระดับท็อป 12 รุ่น (`Claude 3.7 Sonnet`, `OpenAI o1-Pro`, `GPT-4.5`, `DeepSeek-R1 671B`, `Grok-3` ฯลฯ) + ปุ่มเพิ่มโมเดลใหม่เองได้ และระบบกู้คืนกะตอนปิดคอม (`engine/offline_catchup.py`) + GitHub Actions 24/7 (`.github/workflows/ai_company_24_7.yml`) |
 | **V8** | **Obsidian Knowledge Graph Token-Saver (Graph-RAG) & Portable GitHub Release** | สร้างกระดานกราฟ `AI_Company_Knowledge_Map.canvas` + `00_Knowledge_Graph_Topology.md` + Interactive Graph บนเว็บ เพื่อดึงเฉพาะโหนดที่เชื่อมกัน 1 ขั้น (1-Hop Subgraph) **ช่วยประหยัดโทเคน AI เฉลี่ย 83.5%+ ต่อรอบ** |
-| **Aurum Isle** | **30-Day $1,000 AI Agent Town Challenge & Orchestration Protocol** | รีแบรนด์เป็น **Aurum Isle — เกาะ AI ล่าทองคำ**, เพิ่มแบนเนอร์ภารกิจ 30 วัน ปั้นกำไร $1,000 (`compute_challenge_state`), อัปเกรดเกาะ Isometric เป็นเมือง AI พร้อมหลังคาบ้านและหลอดแบตเตอรี่พลังงานเรืองแสงรายตัว (`drawAgentTownHouseAndBattery`), จัดระเบียบหัวข้อและตารางทั้ง 6 หน้า และใช้ระเบียบ Multi-Agent Orchestration (`docs/ORCHESTRATION_PROTOCOL.md`) |
+| **Aurum Isle** | **30-Day $1,000 AI Agent Town Challenge & Multi-Venture Studios (`Exmple.mp4`)** | รีแบรนด์เป็น **Aurum Isle — เกาะ AI ล่าทองคำ**, อัปเกรดเกาะเมือง AI ตามคลิป `Exmple.mp4` ให้มี 8 สตูดิโอเฉพาะทาง (ทำเนียบ Town Hall บอสสั่งการ, Tech Studio `</>` สร้างโค้ด/บอท, Meme Studio เต็นท์ลูกกวาดสร้างคลิป Reels ไวรัล, Online Store ร้านค้าดิจิทัล/SaaS, Trading War Room, Critic ตรวจงาน, Growth ยิงแอด, Courier กระจายงาน), ซองจดหมายและลำแสงงานบินข้ามเกาะ, หน้าต่างป๊อปอัปดูผลงานจริงของแต่ละสตูดิโอ (Deliverables Viewer Modal), แบนเนอร์เป้าหมาย $1,000 แยกรายได้หลายสาย, และระเบียบ Orchestration Protocol |
 
 ---
 
@@ -47,7 +47,7 @@ python server.py --port 8080 --capital 1000 --risk 1.5 --interval 45
 
 ---
 
-## 🧪 การรันทดสอบระบบอัตโนมัติ (8/8 Automated Pytest Suite)
+## 🧪 การรันทดสอบระบบอัตโนมัติ (10/10 Automated Pytest Suite)
 ```bash
 ./run_tests.sh
 # หรือบน Windows: python -m pytest tests\test_committee.py -v
