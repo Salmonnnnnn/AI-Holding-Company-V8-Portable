@@ -218,6 +218,26 @@ class GitHubAutoPusher:
             }
         else:
             err_txt = (push_proc.stderr or push_proc.stdout or "").strip()
+            if "without 'workflow' scope" in err_txt or "workflow" in err_txt.lower() and "scope" in err_txt.lower():
+                friendly_msg = (
+                    "⚠️ GitHub Token ขาดสิทธิ์ 'workflow' (จำเป็นสำหรับระบบรันบนคลาวด์ 24 ชม. แม้ปิดคอม)\n\n"
+                    "👉 วิธีแก้ใน 3 ขั้นตอน (ใช้เวลา 30 วินาที):\n"
+                    "1. เปิดลิงก์: https://github.com/settings/tokens\n"
+                    "2. คลิกที่ชื่อ Token ที่สร้างไว้\n"
+                    "3. ติ๊กเครื่องหมายถูกหน้าช่อง [✔] workflow แล้วเลื่อนลงล่างสุดกด 'Update token'\n"
+                    "4. นำโทเคนมาวางหรือกดปุ่ม 'เชื่อมต่อ GitHub & อัปโหลดทั้งหมดทันที' อีกครั้งได้เลยครับ!"
+                )
+                steps_log.append("❌ GitHub ปฏิเสธ: Token ขาดสิทธิ์ 'workflow' สำหรับโฟลเดอร์ .github/workflows/")
+                steps_log.append("💡 วิธีแก้: ติ๊กถูกที่ช่อง [✔] workflow บน GitHub Settings -> แล้วกดอัปโหลดอีกครั้ง")
+                return {
+                    "status": "WORKFLOW_SCOPE_REQUIRED",
+                    "username": username,
+                    "repo_name": clean_repo_name,
+                    "repo_url": repo_url,
+                    "message": friendly_msg,
+                    "steps_log": steps_log
+                }
+
             steps_log.append(f"❌ Push Error: {err_txt[:240]}")
             return {
                 "status": "PUSH_ERROR",

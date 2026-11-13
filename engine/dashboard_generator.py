@@ -5898,8 +5898,8 @@ async function triggerGitHubPush() {{
             `;
         }} else {{
             resBox.innerHTML = `
-                <div style="color:#f59e0b;font-weight:800;margin-bottom:6px">${{data.message}}</div>
-                ${{stepsHtml}}
+                <div style="color:#f59e0b;font-weight:800;margin-bottom:8px;white-space:pre-wrap;line-height:1.5">${{data.message}}</div>
+                <div style="font-size:0.85rem;opacity:0.95">${{stepsHtml}}</div>
             `;
         }}
     }} catch (err) {{
