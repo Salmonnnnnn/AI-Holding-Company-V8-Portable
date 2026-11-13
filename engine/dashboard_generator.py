@@ -136,6 +136,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     port_equity = float(port.get("equity", 1000.0))
     port_winrate = float(port.get("live_win_rate_pct", 100.0))
     port_closed = int(port.get("total_closed_trades", 0))
+    chal_profit_disp = f"${chal_profit:+,.0f}" if chal_profit != 0 else "$0"
 
     v_trading = float(challenge.get("ventures", {}).get("trading", chal_profit * 0.45 if chal_profit > 0 else chal_profit))
     v_store = float(challenge.get("ventures", {}).get("store", chal_profit * 0.25 if chal_profit > 0 else 0.0))
@@ -525,6 +526,306 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             gap: 16px;
             align-items: start;
         }}
+        .town-fullscreen-card {{
+            background: #22a6f2;
+            border: 2px solid #1e293b;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.2);
+            position: relative;
+            height: calc(100vh - 100px);
+            min-height: 720px;
+            margin-bottom: 20px;
+        }}
+        .town-fullscreen-card .iso-canvas-wrap {{
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }}
+        .town-fullscreen-card #isometricOfficeCanvas {{
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: pointer;
+            object-fit: cover;
+        }}
+        .town-top-left-bar {{
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 25;
+            flex-wrap: wrap;
+        }}
+        .comic-pill-title {{
+            background: #0f172a;
+            color: #fbbf24;
+            border: 2px solid #1e293b;
+            border-radius: 999px;
+            box-shadow: 0 3px 0 #1e293b;
+            padding: 6px 14px;
+            font-weight: 900;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }}
+        .comic-pill-btn {{
+            border: 2px solid #1e293b;
+            border-radius: 999px;
+            box-shadow: 0 3px 0 #1e293b;
+            padding: 6px 14px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            background: #ffffff;
+            color: #1e293b;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s, background-color 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }}
+        .comic-pill-btn:hover {{
+            transform: translateY(-1px);
+            box-shadow: 0 4px 0 #1e293b;
+            background: #f8fafc;
+        }}
+        .comic-pill-btn:active {{
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #1e293b;
+        }}
+        .comic-pill-btn.active-green {{
+            background: #dcfce7;
+            color: #166534;
+            border-color: #166534;
+        }}
+        .comic-pill-btn.paused {{
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #991b1b;
+        }}
+        .comic-badge-red {{
+            background: #ef4444;
+            color: #ffffff;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            padding: 1px 6px;
+            line-height: 1.2;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        }}
+        .town-top-right-bar {{
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 25;
+            flex-wrap: wrap;
+        }}
+        .comic-hud-pill {{
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid #1e293b;
+            border-radius: 999px;
+            box-shadow: 0 3px 0 #1e293b;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }}
+        .comic-hud-pill .hud-gold {{ color: #b45309; font-weight: 900; }}
+        .comic-hud-pill .hud-sep {{ color: #94a3b8; }}
+        .comic-hud-pill .hud-day {{ color: #2563eb; font-weight: 800; }}
+        .comic-hud-pill .hud-batt {{ color: #16a34a; font-weight: 800; }}
+
+        .atmosphere-segmented-bar {{
+            display: inline-flex;
+            background: #ffffff;
+            border: 2px solid #1e293b;
+            border-radius: 999px;
+            box-shadow: 0 3px 0 #1e293b;
+            padding: 3px;
+            gap: 4px;
+        }}
+        .atmosphere-segmented-bar .segment-btn {{
+            border: none;
+            background: transparent;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 0.78rem;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }}
+        .atmosphere-segmented-bar .segment-btn:hover:not(.active) {{
+            background: #f1f5f9;
+            color: #0f172a;
+        }}
+        .atmosphere-segmented-bar .segment-btn.active {{
+            background: #1e293b;
+            color: #fde68a;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }}
+
+        .town-messages-box {{
+            width: 320px;
+            max-height: 230px;
+            border: 2px solid #1e293b;
+            border-radius: 14px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+            position: absolute;
+            left: 16px;
+            bottom: 16px;
+            z-index: 20;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: max-height 0.2s ease;
+        }}
+        .town-messages-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1.5px solid #e2e8f0;
+            background: rgba(248, 250, 252, 0.95);
+        }}
+        .town-msg-min-btn {{
+            border: none;
+            background: transparent;
+            font-weight: 900;
+            font-size: 0.85rem;
+            color: #64748b;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }}
+        .town-msg-min-btn:hover {{ background: #e2e8f0; color: #0f172a; }}
+        .town-messages-feed {{
+            padding: 8px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }}
+        .town-msg-item {{
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.12s;
+        }}
+        .town-msg-item:hover {{
+            border-color: #3b82f6;
+            background: #f8fafc;
+            transform: translateX(2px);
+        }}
+        .town-msg-meta {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.68rem;
+            margin-bottom: 2px;
+        }}
+        .town-msg-meta .msg-time {{
+            color: #94a3b8;
+            font-family: monospace;
+        }}
+        .town-msg-meta .msg-badge {{
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+        }}
+        .town-msg-meta .msg-badge.cyan {{ background: #e0f2fe; color: #0284c7; }}
+        .town-msg-meta .msg-badge.pink {{ background: #fce7f3; color: #db2777; }}
+        .town-msg-meta .msg-badge.purple {{ background: #f3e8ff; color: #7c3aed; }}
+        .town-msg-meta .msg-badge.orange {{ background: #ffedd5; color: #ea580c; }}
+        .town-msg-item .msg-text {{
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #1e293b;
+        }}
+
+        .town-zone-switcher-bar {{
+            position: absolute;
+            right: 16px;
+            bottom: 16px;
+            display: flex;
+            gap: 6px;
+            z-index: 20;
+            flex-wrap: wrap;
+        }}
+        .zone-pill-btn {{
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #1e293b;
+            border-radius: 999px;
+            box-shadow: 0 3px 0 #1e293b;
+            padding: 6px 12px;
+            font-weight: 800;
+            font-size: 0.78rem;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.12s;
+            white-space: nowrap;
+        }}
+        .zone-pill-btn:hover {{
+            transform: translateY(-1px);
+            box-shadow: 0 4px 0 #1e293b;
+            background: #fef08a;
+        }}
+        .zone-pill-btn.active {{
+            background: #0f172a;
+            color: #fbbf24;
+            border-color: #0f172a;
+        }}
+
+        .town-directory-drawer {{
+            display: none;
+            position: absolute;
+            top: 62px;
+            left: 16px;
+            width: 380px;
+            max-height: 480px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid #1e293b;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            z-index: 30;
+            padding: 14px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }}
+        .live-dot-pulse {{
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 999px;
+            display: inline-block;
+            box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+            animation: pulseDot 1.5s infinite;
+        }}
+        @keyframes pulseDot {{
+            0% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }}
+            70% {{ transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }}
+            100% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }}
+        }}
+
         .iso-stage-card {{
             background: var(--bg-card);
             border: 1px solid var(--border-col);
@@ -1119,140 +1420,223 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 <!-- PAGE 1: AURUM ISLE — AI AGENT TOWN & 30-DAY $1,000 CHALLENGE           -->
 <!-- ====================================================================== -->
 <div class="page-view active" id="page-visualizer">
-    <!-- 30-Day $1,000 AI Agent Town Challenge Banner -->
-    <div class="challenge-banner" id="challengeBanner">
-        <div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <span class="challenge-day-badge" id="challengeDayBadge">DAY {chal_day} OF {chal_days_total}</span>
-                <span style="font-size:0.76rem;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,0.1);color:#fde68a;font-weight:700">⏳ เหลืออีก {chal_days_left} วัน</span>
-                <span style="font-size:0.75rem;padding:3px 10px;border-radius:999px;background:{chal_pill_bg};color:{chal_pill_col};font-weight:700">{chal_status_txt}</span>
-            </div>
-            <div class="challenge-headline">CAN A TOWN OF AI AGENTS MAKE US $1,000?</div>
-            <div class="challenge-sub">🏝️ <strong>{BRAND_NAME} — {BRAND_TAGLINE}:</strong> ภารกิจเมือง AI ล่าทองคำ ปั้นกำไรสะสม <strong>$1,000</strong> ใน 30 วัน (พอร์ตจริง Equity <strong>${port_equity:,.2f}</strong> • Win Rate <strong>{port_winrate:.1f}%</strong> • ปิดแล้ว <strong>{port_closed} ไม้</strong>)</div>
+    <!-- Single-Page Fullscreen AI Town View (Top of Page 1) -->
+    <div class="town-fullscreen-card" id="townFullscreenCard">
+        <div class="iso-canvas-wrap" id="isoWrapBox">
+            <canvas id="isometricOfficeCanvas" width="1440" height="820"></canvas>
+            <div id="threeContainer"></div>
         </div>
 
-        <div class="challenge-right">
-            <div class="challenge-goal-figure">
-                <div style="font-size:0.74rem;color:#94a3b8;font-weight:700">กำไรสะสม (Cumulative Profit)</div>
-                <div style="font-size:1.35rem;font-weight:900;color:{chal_profit_col}" id="challengeProfitText">${chal_profit:+,.2f} <span style="font-size:0.85rem;color:#cbd5e1">/ ${chal_goal:,.0f}</span></div>
+        <!-- Floating Top-Left Bar (exact layout of unmirrored_frame_0_0s.jpg) -->
+        <div class="town-top-left-bar">
+            <div class="comic-pill-title">🏰 AI Office • Aurum Isle</div>
+            <button class="comic-pill-btn active-green" id="btnTownStatus" onclick="runLiveCompanyWorkflowAnimation()" title="รันภารกิจบริษัทสดๆ">▶ 11 working</button>
+            <button class="comic-pill-btn" id="btnTownPause" onclick="toggleTownPause()" title="หยุด/เริ่มอนิเมชัน">⏸ Pause</button>
+            <button class="comic-pill-btn" id="btnTownViewAll" onclick="toggleAgentsDirectoryDrawer()">👥 View all</button>
+            <button class="comic-pill-btn" id="btnTownStats" onclick="toggleChallengeStatsHUD()">📊 Stats</button>
+            <button class="comic-pill-btn" id="btnTownInbox" onclick="openStudioDeliverablesModal()">📬 Inbox <span class="comic-badge-red">8</span></button>
+            <button class="comic-pill-btn" id="btnTownEnterpriseMenu" onclick="toggleEnterpriseTabsBar()">🗂️ 6 แท็บระบบ (Menu)</button>
+        </div>
+
+        <!-- Floating Top-Right Bar & Atmosphere Switcher -->
+        <div class="town-top-right-bar">
+            <div class="comic-hud-pill">
+                <span class="hud-gold">🪙 {chal_profit_disp} / $1,000</span>
+                <span class="hud-sep">•</span>
+                <span class="hud-day">DAY {chal_day} OF 30</span>
+                <span class="hud-sep">•</span>
+                <span class="hud-batt">Lv 8 • ⚡ 5-HR 99% | 7-DAY 100%</span>
             </div>
-            <div class="challenge-progress-wrap">
-                <div style="display:flex;justify-content:space-between;font-size:0.76rem;font-weight:800;color:#fde68a">
-                    <span>เป้าหมาย $1,000 Challenge</span>
-                    <span id="challengePctText">{chal_pct:.1f}%</span>
-                </div>
-                <div class="challenge-progress-track">
-                    <div class="challenge-progress-fill" id="challengeProgressBar" style="width:{chal_pct:.1f}%"></div>
-                </div>
+            <!-- 3-Button Segmented Atmosphere Bar -->
+            <div class="atmosphere-segmented-bar" id="atmosphereSegmentBar">
+                <button type="button" class="segment-btn active" data-sky="DAY" onclick="setTownSkyAtmosphere('DAY')">☀️ กลางวัน (Day)</button>
+                <button type="button" class="segment-btn" data-sky="SUNSET" onclick="setTownSkyAtmosphere('SUNSET')">🌅 ยามเย็น (Sunset)</button>
+                <button type="button" class="segment-btn" data-sky="NIGHT" onclick="setTownSkyAtmosphere('NIGHT')">🌙 กลางคืน (Night)</button>
             </div>
-            <div class="challenge-goal-figure">
-                <div class="challenge-goal-big">$1,000?</div>
-                <div style="font-size:0.7rem;color:#fde68a;font-weight:700">30-DAY GOAL</div>
+            <select id="skyTimeSelect" style="display:none;" onchange="setTownSkyAtmosphere(this.value)">
+                <option value="DAY" selected>☀️ กลางวัน (Day)</option>
+                <option value="SUNSET">🌅 ยามเย็น (Sunset)</option>
+                <option value="NIGHT">🌙 กลางคืน (Night)</option>
+            </select>
+        </div>
+
+        <!-- Floating Bottom-Left Messages Box -->
+        <div class="town-messages-box" id="townMessagesBox">
+            <div class="town-messages-header">
+                <div style="display:flex;align-items:center;gap:6px;font-weight:900;font-size:0.86rem;color:#1e293b">
+                    <span>💬 Messages</span>
+                    <span class="live-dot-pulse"></span>
+                </div>
+                <button class="town-msg-min-btn" id="btnMinMessages" onclick="toggleTownMessagesBox()" title="ย่อ/ขยายข้อความ">[ − ]</button>
+            </div>
+            <div class="town-messages-feed" id="townMessagesFeed">
+                <div class="town-msg-item" onclick="openStudioDeliverablesModal('TECH_STUDIO')">
+                    <div class="town-msg-meta"><span class="msg-time">12:04:12</span> <span class="msg-badge cyan">Forge ➔ Hype</span></div>
+                    <div class="msg-text">Handoff: Liquidity bot compiled ✔</div>
+                </div>
+                <div class="town-msg-item" onclick="openStudioDeliverablesModal('CRITIC_STUDIO')">
+                    <div class="town-msg-meta"><span class="msg-time">12:03:45</span> <span class="msg-badge pink">Critic ➔ Iso</span></div>
+                    <div class="msg-text">Audit complete: 96/100 PASSED 🛡️</div>
+                </div>
+                <div class="town-msg-item" onclick="openStudioDeliverablesModal('TRADING_LAB')">
+                    <div class="town-msg-meta"><span class="msg-time">12:02:18</span> <span class="msg-badge purple">Atlas ➔ Vector</span></div>
+                    <div class="msg-text">XAUUSD $3,900 signal dispatched 📈</div>
+                </div>
+                <div class="town-msg-item" onclick="openStudioDeliverablesModal('MEME_STUDIO')">
+                    <div class="town-msg-meta"><span class="msg-time">12:01:05</span> <span class="msg-badge orange">Jester ➔ Mittens</span></div>
+                    <div class="msg-text">Viral TikTok hook script ready 🎬</div>
+                </div>
             </div>
         </div>
 
-        <!-- Multi-Venture Revenue Breakdown Strip (Exmple.mp4 Studio Streams) -->
-        <div class="challenge-ventures-strip" id="challengeVenturesStrip">
-            <div class="venture-badge-title">
-                <span>⚡ แหล่งรายได้เมือง AI (Multi-Venture Streams):</span>
+        <!-- Floating Bottom-Right Quick Zone Switcher Bar -->
+        <div class="town-zone-switcher-bar" id="townZoneSwitcherBar">
+            <button class="zone-pill-btn" onclick="focusTownZone('TOWN_HALL')" id="btnZone_TOWN_HALL">🏛️ Town Hall</button>
+            <button class="zone-pill-btn" onclick="focusTownZone('TECH_STUDIO')" id="btnZone_TECH_STUDIO">💻 Tech Studio</button>
+            <button class="zone-pill-btn" onclick="focusTownZone('ONLINE_STORE')" id="btnZone_ONLINE_STORE">👕 Online Store</button>
+            <button class="zone-pill-btn" onclick="focusTownZone('MEME_STUDIO')" id="btnZone_MEME_STUDIO">🎬 Meme Studio</button>
+            <button class="zone-pill-btn" onclick="focusTownZone('TRADING_LAB')" id="btnZone_TRADING_LAB">🔮 What-If & Quant</button>
+        </div>
+
+        <!-- Floating Directory Drawer of 11 Agents & 5 Studios -->
+        <div class="town-directory-drawer" id="townDirectoryDrawer">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:2px solid #1e293b;padding-bottom:8px">
+                <strong style="font-size:0.95rem;color:#1e293b">👥 ทำเนียบพนักงาน & สตูดิโอ Aurum Isle</strong>
+                <button class="town-msg-min-btn" onclick="toggleAgentsDirectoryDrawer()">✖</button>
             </div>
-            <div class="venture-stream-pills">
-                <div class="venture-pill" title="Trading Desk: กำไรจากการเทรดทองคำ XAUUSD โดย War Room">
-                    <span>📈 พอร์ตเทรดทอง:</span>
-                    <strong class="v-val" id="vTradingVal">${v_trading:+,.2f}</strong>
-                </div>
-                <div class="venture-pill" title="Online Store: รายได้จาก VIP Signal & Subscriptions">
-                    <span>🏪 ร้านค้าออนไลน์:</span>
-                    <strong class="v-val" id="vStoreVal">${v_store:+,.2f}</strong>
-                </div>
-                <div class="venture-pill" title="Tech Studio: รายได้จากใบอนุญาต Micro-SaaS & Bot Tools">
-                    <span>💻 Micro-SaaS & Bot:</span>
-                    <strong class="v-val" id="vTechVal">${v_tech:+,.2f}</strong>
-                </div>
-                <div class="venture-pill" title="Meme Studio: รายได้จากคอนเทนต์สปอนเซอร์และสื่อไวรัล">
-                    <span>🎬 มีม & สื่อไวรัล:</span>
-                    <strong class="v-val" id="vMediaVal">${v_media:+,.2f}</strong>
+            <div style="margin-bottom:12px">
+                <div style="font-size:0.75rem;font-weight:800;color:#64748b;margin-bottom:6px">🏛️ 5 โซนสตูดิโอหลัก:</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <button class="cozy-btn" onclick="openStudioDeliverablesModal('TOWN_HALL')" style="font-size:0.75rem;padding:3px 8px">🏛️ Town Hall</button>
+                    <button class="cozy-btn" onclick="openStudioDeliverablesModal('TECH_STUDIO')" style="font-size:0.75rem;padding:3px 8px">💻 Tech Studio</button>
+                    <button class="cozy-btn" onclick="openStudioDeliverablesModal('ONLINE_STORE')" style="font-size:0.75rem;padding:3px 8px">👕 Online Store</button>
+                    <button class="cozy-btn" onclick="openStudioDeliverablesModal('MEME_STUDIO')" style="font-size:0.75rem;padding:3px 8px">🎬 Meme Studio</button>
+                    <button class="cozy-btn" onclick="openStudioDeliverablesModal('TRADING_LAB')" style="font-size:0.75rem;padding:3px 8px">🔮 What-If & Quant</button>
                 </div>
             </div>
-            <button class="cozy-btn gold" onclick="openStudioDeliverablesModal()" id="btnOpenDeliverablesBanner" style="font-size:0.76rem;padding:4px 11px">
-                📦 ดูผลงานจริงของแต่ละสตูดิโอ (View AI Deliverables)
-            </button>
+            <div>
+                <div style="font-size:0.75rem;font-weight:800;color:#64748b;margin-bottom:6px">🤖 11 พนักงาน AI ประจำเกาะ:</div>
+                <div id="townDirectoryAgentsList" style="display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Offline Auto-Catchup Status Bar -->
-    <div class="catchup-banner">
-        <div>
-            <strong style="color:#10b981">☁️ สถานะระบบทำงานแทนตอนปิดคอม (Offline Auto-Catchup & Cloud 24/7):</strong>
-            <span id="catchupStatusText">{html.escape(str(catchup_info.get('summary', 'ปิดคอมได้สบายใจ! เมื่อเปิดเครื่องใหม่ ระบบจะดึงกราฟย้อนหลังทุกกะที่ปิดคอมมาสรุปให้อัตโนมัติ')))}</span>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="cozy-btn green" style="padding:4px 10px;font-size:0.76rem" onclick="triggerOfflineCatchupSim(12)">⚡ ทดสอบเก็บตกงานย้อนหลัง 12 ชม. (2 กะ)</button>
-            <button class="cozy-btn purple" style="padding:4px 10px;font-size:0.76rem" onclick="openGitHubPushModal()">🚀 กดอัปโหลดขึ้น GitHub</button>
-        </div>
-    </div>
-
-    <div class="visualizer-layout">
-        <!-- Left: Ultra-Detailed Isometric Island Cutaway Stage -->
-        <div class="iso-stage-card">
-            <div class="iso-canvas-wrap" id="isoWrapBox">
-                <canvas id="isometricOfficeCanvas" width="1140" height="560"></canvas>
-                <div id="threeContainer"></div>
-
-                <div class="stage-floating-top-left">
-                    <button class="cozy-btn gold" onclick="openStudioDeliverablesModal()" id="btnTopCanvasDeliverables">📦 ดูผลงานจริงของแต่ละสตูดิโอ (View AI Deliverables)</button>
-                    <button class="cozy-btn amber" onclick="runLiveCompanyWorkflowAnimation()">▶️ รันภารกิจบริษัทสดๆ (Step 1 ➔ 8)</button>
-                    <button class="cozy-btn purple" onclick="quickOverclockAllAgents()">🔥 ทุ่มโทเคน Overclock ทั้งบริษัท</button>
-                    <button class="cozy-btn green" onclick="switchPage('page-tokens')">🎓 สั่ง AI ไปเรียนสกิลใหม่</button>
+    <!-- ENTERPRISE DETAILS (Toggleable via "🗂️ 6 แท็บระบบ (Menu)" or "📊 Stats") -->
+    <div id="enterpriseDetailsWrap">
+        <!-- 30-Day $1,000 AI Agent Town Challenge Banner -->
+        <div class="challenge-banner" id="challengeBanner">
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <span class="challenge-day-badge" id="challengeDayBadge">DAY {chal_day} OF {chal_days_total}</span>
+                    <span style="font-size:0.76rem;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,0.1);color:#fde68a;font-weight:700">⏳ เหลืออีก {chal_days_left} วัน</span>
+                    <span style="font-size:0.75rem;padding:3px 10px;border-radius:999px;background:{chal_pill_bg};color:{chal_pill_col};font-weight:700">{chal_status_txt}</span>
                 </div>
-
-                <div class="stage-floating-top-right">
-                    <select id="skyTimeSelect" class="cozy-btn" onchange="changeSkyAtmosphere(this.value)">
-                        <option value="SUNSET">🌅 บรรยากาศ: ชายหาดยามเย็นพาสเทล (ต้นฉบับคลิป)</option>
-                        <option value="MORNING">☀️ บรรยากาศ: เช้าสดใสน้ำทะเลคราม</option>
-                        <option value="NIGHT">🌙 บรรยากาศ: ค่ำคืนนีออน (Dark Cyber Island)</option>
-                    </select>
-                </div>
+                <div class="challenge-headline">CAN A TOWN OF AI AGENTS MAKE US $1,000?</div>
+                <div class="challenge-sub">🏝️ <strong>{BRAND_NAME} — {BRAND_TAGLINE}:</strong> ภารกิจเมือง AI ล่าทองคำ ปั้นกำไรสะสม <strong>$1,000</strong> ใน 30 วัน (พอร์ตจริง Equity <strong>${port_equity:,.2f}</strong> • Win Rate <strong>{port_winrate:.1f}%</strong> • ปิดแล้ว <strong>{port_closed} ไม้</strong>)</div>
             </div>
 
-            <!-- Active Agent Speech Banner -->
-            <div class="dialogue-banner">
-                <div style="display:flex;align-items:center;gap:12px">
-                    <div id="bannerAvatar" style="width:44px;height:44px;border-radius:12px;background:#fef3c7;border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:1.5rem">👑</div>
-                    <div>
-                        <div style="font-weight:800;font-size:0.92rem" id="bannerSpeaker">Arthur Pendelton (CIO) — สมองกล: Claude 3.7 Sonnet (Extended Thinking 128K)</div>
-                        <div style="font-size:0.84rem;color:var(--text-sub)" id="bannerMessage">ตรวจสอบครบทั้ง 8 ขั้นตอนแล้ว — มติเอกฉันท์สั่ง <strong>{html.escape(action_text)}</strong> ทองคำที่ <strong>${cio['final_entry']:,.2f}</strong> (SL ${cio['final_sl']:,.2f} | TP1 ${cio['final_tp1']:,.2f} | TP2 ${cio['final_tp2']:,.2f})</div>
+            <div class="challenge-right">
+                <div class="challenge-goal-figure">
+                    <div style="font-size:0.74rem;color:#94a3b8;font-weight:700">กำไรสะสม (Cumulative Profit)</div>
+                    <div style="font-size:1.35rem;font-weight:900;color:{chal_profit_col}" id="challengeProfitText">${chal_profit:+,.2f} <span style="font-size:0.85rem;color:#cbd5e1">/ ${chal_goal:,.0f}</span></div>
+                </div>
+                <div class="challenge-progress-wrap">
+                    <div style="display:flex;justify-content:space-between;font-size:0.76rem;font-weight:800;color:#fde68a">
+                        <span>เป้าหมาย $1,000 Challenge</span>
+                        <span id="challengePctText">{chal_pct:.1f}%</span>
+                    </div>
+                    <div class="challenge-progress-track">
+                        <div class="challenge-progress-fill" id="challengeProgressBar" style="width:{chal_pct:.1f}%"></div>
                     </div>
                 </div>
-                <div style="display:flex;gap:8px;flex-shrink:0">
-                    <button class="cozy-btn" onclick="openSelectedAgentProfile()">🪪 ดูโปรไฟล์</button>
-                    <button class="cozy-btn primary" onclick="askSelectedAgentInChat()">💬 ทักแชทถามตัวนี้</button>
+                <div class="challenge-goal-figure">
+                    <div class="challenge-goal-big">$1,000?</div>
+                    <div style="font-size:0.7rem;color:#fde68a;font-weight:700">30-DAY GOAL</div>
                 </div>
             </div>
 
-            <!-- Mini Agent Status Cards Row -->
-            <div class="mini-agents-strip" id="miniAgentsStrip"></div>
+            <!-- Multi-Venture Revenue Breakdown Strip (Exmple.mp4 Studio Streams) -->
+            <div class="challenge-ventures-strip" id="challengeVenturesStrip">
+                <div class="venture-badge-title">
+                    <span>⚡ แหล่งรายได้เมือง AI (Multi-Venture Streams):</span>
+                </div>
+                <div class="venture-stream-pills">
+                    <div class="venture-pill" title="Trading Desk: กำไรจากการเทรดทองคำ XAUUSD โดย War Room">
+                        <span>📈 พอร์ตเทรดทอง:</span>
+                        <strong class="v-val" id="vTradingVal">${v_trading:+,.2f}</strong>
+                    </div>
+                    <div class="venture-pill" title="Online Store: รายได้จาก VIP Signal & Subscriptions">
+                        <span>🏪 ร้านค้าออนไลน์:</span>
+                        <strong class="v-val" id="vStoreVal">${v_store:+,.2f}</strong>
+                    </div>
+                    <div class="venture-pill" title="Tech Studio: รายได้จากใบอนุญาต Micro-SaaS & Bot Tools">
+                        <span>💻 Micro-SaaS & Bot:</span>
+                        <strong class="v-val" id="vTechVal">${v_tech:+,.2f}</strong>
+                    </div>
+                    <div class="venture-pill" title="Meme Studio: รายได้จากคอนเทนต์สปอนเซอร์และสื่อไวรัล">
+                        <span>🎬 มีม & สื่อไวรัล:</span>
+                        <strong class="v-val" id="vMediaVal">${v_media:+,.2f}</strong>
+                    </div>
+                </div>
+                <button class="cozy-btn gold" onclick="openStudioDeliverablesModal()" id="btnOpenDeliverablesBanner" style="font-size:0.76rem;padding:4px 11px">
+                    📦 ดูผลงานจริงของแต่ละสตูดิโอ (View AI Deliverables)
+                </button>
+            </div>
         </div>
 
-        <!-- Right Sidebar: Today's Mission Checklist + Real-Time Activity Log -->
-        <div class="right-sidebar-card">
+        <!-- Offline Auto-Catchup Status Bar -->
+        <div class="catchup-banner">
             <div>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                    <h3 style="font-size:1.02rem">📋 ภารกิจวันนี้ (Live Workflow)</h3>
-                    <span class="pill" style="background:#dcfce7;color:#166534">ทองคำ XAUUSD • สด</span>
+                <strong style="color:#10b981">☁️ สถานะระบบทำงานแทนตอนปิดคอม (Offline Auto-Catchup & Cloud 24/7):</strong>
+                <span id="catchupStatusText">{html.escape(str(catchup_info.get('summary', 'ปิดคอมได้สบายใจ! เมื่อเปิดเครื่องใหม่ ระบบจะดึงกราฟย้อนหลังทุกกะที่ปิดคอมมาสรุปให้อัตโนมัติ')))}</span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="cozy-btn green" style="padding:4px 10px;font-size:0.76rem" onclick="triggerOfflineCatchupSim(12)">⚡ ทดสอบเก็บตกงานย้อนหลัง 12 ชม. (2 กะ)</button>
+                <button class="cozy-btn purple" style="padding:4px 10px;font-size:0.76rem" onclick="openGitHubPushModal()">🚀 กดอัปโหลดขึ้น GitHub</button>
+            </div>
+        </div>
+
+        <div class="visualizer-layout">
+            <!-- Active Agent Speech Banner & Mini Agents Strip Card -->
+            <div class="iso-stage-card" style="border:1px solid var(--border-col);border-radius:14px;overflow:hidden">
+                <div class="dialogue-banner">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div id="bannerAvatar" style="width:44px;height:44px;border-radius:12px;background:#fef3c7;border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:1.5rem">👑</div>
+                        <div>
+                            <div style="font-weight:800;font-size:0.92rem" id="bannerSpeaker">Arthur Pendelton (CIO) — สมองกล: Claude 3.7 Sonnet (Extended Thinking 128K)</div>
+                            <div style="font-size:0.84rem;color:var(--text-sub)" id="bannerMessage">ตรวจสอบครบทั้ง 8 ขั้นตอนแล้ว — มติเอกฉันท์สั่ง <strong>{html.escape(action_text)}</strong> ทองคำที่ <strong>${cio['final_entry']:,.2f}</strong> (SL ${cio['final_sl']:,.2f} | TP1 ${cio['final_tp1']:,.2f} | TP2 ${cio['final_tp2']:,.2f})</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:8px;flex-shrink:0">
+                        <button class="cozy-btn" onclick="openSelectedAgentProfile()">🪪 ดูโปรไฟล์</button>
+                        <button class="cozy-btn primary" onclick="askSelectedAgentInChat()">💬 ทักแชทถามตัวนี้</button>
+                    </div>
                 </div>
-                <div style="font-size:0.77rem;color:var(--text-sub);margin-bottom:10px">
-                    กดปุ่ม <strong>"▶️ รันภารกิจบริษัทสดๆ"</strong> เพื่อดูตัวละคร AI เดินส่งงานผ่านประตูห้องทีละแผนก:
-                </div>
-                <div id="missionChecklistBox" style="display:flex;flex-direction:column;gap:4px"></div>
+
+                <!-- Mini Agent Status Cards Row -->
+                <div class="mini-agents-strip" id="miniAgentsStrip"></div>
             </div>
 
-            <div style="border-top:1px solid var(--border-soft);padding-top:12px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                    <h3 style="font-size:0.95rem">🕒 บันทึกการทำงานสด (Real-Time Log)</h3>
-                    <span style="font-size:0.72rem;color:#10b981;font-weight:700">● LIVE STREAM</span>
+            <!-- Right Sidebar: Today's Mission Checklist + Real-Time Activity Log -->
+            <div class="right-sidebar-card">
+                <div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                        <h3 style="font-size:1.02rem">📋 ภารกิจวันนี้ (Live Workflow)</h3>
+                        <span class="pill" style="background:#dcfce7;color:#166534">ทองคำ XAUUSD • สด</span>
+                    </div>
+                    <div style="font-size:0.77rem;color:var(--text-sub);margin-bottom:10px">
+                        กดปุ่ม <strong>"▶ 11 working"</strong> บนแถบเมนูเมืองเพื่อรันตัวละคร AI เดินส่งงานผ่านประตูห้องทีละแผนก:
+                    </div>
+                    <div id="missionChecklistBox" style="display:flex;flex-direction:column;gap:4px"></div>
                 </div>
-                <div class="live-log-list" id="realtimeLogBox"></div>
+
+                <div style="border-top:1px solid var(--border-soft);padding-top:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                        <h3 style="font-size:0.95rem">🕒 บันทึกการทำงานสด (Real-Time Log)</h3>
+                        <span style="font-size:0.72rem;color:#10b981;font-weight:700">● LIVE STREAM</span>
+                    </div>
+                    <div class="live-log-list" id="realtimeLogBox"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1627,20 +2011,36 @@ let selectedAgent = APP.office.agents_roster[0];
 let currentShiftSlot = "FULL_24H";
 let currentSummaryStyle = "EXECUTIVE_CUTE";
 let chatTargetId = "antigravity";
-let skyTheme = "SUNSET";
+let skyTheme = "DAY";
 let isDarkTheme = false;
+let isTownPaused = false;
+let focusedZone = null;
+let focusedZoneTimer = 0;
 
 // ============================================================================
-// LIGHT / DARK THEME SWITCHER
+// LIGHT / DARK THEME & ATMOSPHERE SWITCHER
 // ============================================================================
+function setTownSkyAtmosphere(mode) {{
+    skyTheme = mode;
+    const sel = document.getElementById('skyTimeSelect');
+    if (sel) sel.value = mode;
+    const btns = document.querySelectorAll('#atmosphereSegmentBar .segment-btn');
+    btns.forEach(b => {{
+        if (b.getAttribute('data-sky') === mode) b.classList.add('active');
+        else b.classList.remove('active');
+    }});
+}}
+
+function changeSkyAtmosphere(val) {{
+    setTownSkyAtmosphere(val);
+}}
+
 function toggleThemeMode() {{
     isDarkTheme = !isDarkTheme;
     document.documentElement.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
     const btn = document.getElementById('themeToggleBtn');
     if (btn) btn.textContent = isDarkTheme ? '☀️ สลับโหมดสว่าง (Light Mode)' : '🌙 สลับโหมดมืด (Dark Mode)';
-    skyTheme = isDarkTheme ? 'NIGHT' : 'SUNSET';
-    const sel = document.getElementById('skyTimeSelect');
-    if (sel) sel.value = skyTheme;
+    setTownSkyAtmosphere(isDarkTheme ? 'NIGHT' : 'DAY');
     try {{ localStorage.setItem('agy_v7_theme', isDarkTheme ? 'dark' : 'light'); }} catch (e) {{}}
 }}
 
@@ -1650,6 +2050,103 @@ function toggleThemeMode() {{
         if (saved === 'dark') toggleThemeMode();
     }} catch (e) {{}}
 }})();
+
+// Town Pause Control
+function toggleTownPause() {{
+    isTownPaused = !isTownPaused;
+    const btn = document.getElementById('btnTownPause');
+    const sBtn = document.getElementById('btnTownStatus');
+    if (btn) {{
+        btn.textContent = isTownPaused ? '▶ Resume' : '⏸ Pause';
+        if (isTownPaused) btn.classList.add('paused');
+        else btn.classList.remove('paused');
+    }}
+    if (sBtn) {{
+        sBtn.textContent = isTownPaused ? '⏸ 11 paused' : '▶ 11 working';
+    }}
+}}
+
+// Town Floating Messages Box Toggle
+function toggleTownMessagesBox() {{
+    const box = document.getElementById('townMessagesBox');
+    const feed = document.getElementById('townMessagesFeed');
+    const btn = document.getElementById('btnMinMessages');
+    if (!feed || !btn) return;
+    if (feed.style.display === 'none') {{
+        feed.style.display = 'flex';
+        btn.textContent = '[ − ]';
+        if (box) box.style.maxHeight = '230px';
+    }} else {{
+        feed.style.display = 'none';
+        btn.textContent = '[ + ]';
+        if (box) box.style.maxHeight = '42px';
+    }}
+}}
+
+// Quick Zone Switcher Focus
+function focusTownZone(zoneId) {{
+    focusedZone = zoneId;
+    focusedZoneTimer = 240;
+    const btns = document.querySelectorAll('.zone-pill-btn');
+    btns.forEach(b => {{
+        if (b.id === `btnZone_${{zoneId}}`) b.classList.add('active');
+        else b.classList.remove('active');
+    }});
+}}
+
+// Floating Directory Drawer Toggle
+function toggleAgentsDirectoryDrawer() {{
+    const d = document.getElementById('townDirectoryDrawer');
+    if (!d) return;
+    if (d.style.display === 'none' || !d.style.display) {{
+        d.style.display = 'block';
+        renderTownDirectoryDrawer();
+    }} else {{
+        d.style.display = 'none';
+    }}
+}}
+
+function renderTownDirectoryDrawer() {{
+    const list = document.getElementById('townDirectoryAgentsList');
+    if (!list || !APP.office || !APP.office.agents_roster) return;
+    list.innerHTML = APP.office.agents_roster.map(ag => `
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;cursor:pointer" onclick="selectVisualizerAgent('${{ag.agent_id}}');toggleAgentsDirectoryDrawer()">
+            <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:1.2rem">${{ag.avatar || '🤖'}}</span>
+                <div>
+                    <strong style="font-size:0.8rem;color:#0f172a">${{ag.name}}</strong>
+                    <div style="font-size:0.7rem;color:#64748b">${{ag.role}} • ${{ag.llm_model}}</div>
+                </div>
+            </div>
+            <span class="pill" style="font-size:0.65rem;background:#dcfce7;color:#166534">Active</span>
+        </div>
+    `).join('');
+}}
+
+// Floating Challenge Stats HUD Toggle
+function toggleChallengeStatsHUD() {{
+    const b = document.getElementById('challengeBanner');
+    if (!b) return;
+    if (b.style.display === 'none') {{
+        b.style.display = 'flex';
+        b.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+    }} else {{
+        b.style.display = 'none';
+    }}
+}}
+
+// Toggle Enterprise Tabs Bar
+function toggleEnterpriseTabsBar() {{
+    const nav = document.querySelector('.nav-tabs');
+    const details = document.getElementById('enterpriseDetailsWrap');
+    if (!nav && !details) return;
+    const isHidden = (nav && nav.style.display === 'none');
+    if (nav) nav.style.display = isHidden ? 'flex' : 'none';
+    if (details) details.style.display = isHidden ? 'block' : 'none';
+    if (isHidden && details) {{
+        details.scrollIntoView({{ behavior: 'smooth' }});
+    }}
+}}
 
 // ============================================================================
 // REAL-TIME THAI CLOCK
@@ -1674,14 +2171,14 @@ let wavePhase = 0;
 
 // 8 Specialized AI Studios forming the Multi-Venture AI Agent Town (Exmple.mp4)
 const ISO_ROOMS = [
-    {{ id: "TOWN_HALL", name: "🏛️ ทำเนียบผู้บริหาร (The Boss)", sub: "กำกับทิศทาง $1,000", gx: 0, gy: 0, x: 570, y: 130, floorCol: "#fef3c7", floorAlt: "#fde68a", wallCol: "#d97706", wallTop: "#fffbeb", badgeDot: "#10b981", propType: "TOWN_HALL" }},
-    {{ id: "COURIER_DISPATCH", name: "🔬 ควอนต์ & หอดูดาว (Observatory & Dispatch)", sub: "ซิงค์ API & ลิควิดิตี้", gx: 3, gy: 1, x: 850, y: 185, floorCol: "#f3e8ff", floorAlt: "#e9d5ff", wallCol: "#7c3aed", wallTop: "#faf5ff", badgeDot: "#10b981", propType: "COURIER_DISPATCH" }},
-    {{ id: "TRADING_LAB", name: "📈 วอร์รูมเทรดดิ้ง (Quant Lab)", sub: "เทรดทองคำ XAUUSD", gx: 0, gy: 1, x: 925, y: 290, floorCol: "#e0f2fe", floorAlt: "#bae6fd", wallCol: "#2563eb", wallTop: "#eff6ff", badgeDot: "#10b981", propType: "TRADING_LAB" }},
-    {{ id: "ONLINE_STORE", name: "🏪 ร้านค้าดิจิทัล (Online Store)", sub: "VIP Signal & Prompt", gx: 3, gy: 0, x: 815, y: 395, floorCol: "#dcfce7", floorAlt: "#bbf7d0", wallCol: "#10b981", wallTop: "#f0fdf4", badgeDot: "#10b981", propType: "ONLINE_STORE" }},
-    {{ id: "MEME_STUDIO", name: "🎬 มีมสตูดิโอ (Meme Studio)", sub: "คลิปไวรัล Reels/TikTok", gx: 2, gy: 0, x: 570, y: 440, floorCol: "#ffe4e6", floorAlt: "#fecdd3", wallCol: "#f43f5e", wallTop: "#fff1f2", badgeDot: "#f43f5e", propType: "MEME_STUDIO" }},
-    {{ id: "GROWTH_STUDIO", name: "⚡ สตูดิโอยิงการตลาด (Growth)", sub: "แคมเปญไวรัล & ชุมชน", gx: 2, gy: 1, x: 325, y: 395, floorCol: "#ffedd5", floorAlt: "#fed7aa", wallCol: "#ea580c", wallTop: "#fff7ed", badgeDot: "#10b981", propType: "GROWTH_STUDIO" }},
-    {{ id: "TECH_STUDIO", name: "💻 สตูดิโอโค้ดดิ้ง (Tech Studio </ >)", sub: "Micro-SaaS & Bot", gx: 1, gy: 0, x: 215, y: 290, floorCol: "#0f172a", floorAlt: "#1e293b", wallCol: "#0284c7", wallTop: "#38bdf8", badgeDot: "#38bdf8", propType: "TECH_STUDIO" }},
-    {{ id: "CRITIC_STUDIO", name: "🛡️ สตูดิโอตรวจงาน (Critic & Risk)", sub: "Audit คุณภาพ 100%", gx: 1, gy: 1, x: 290, y: 185, floorCol: "#fce7f3", floorAlt: "#fbcfe8", wallCol: "#db2777", wallTop: "#fdf2f8", badgeDot: "#10b981", propType: "CRITIC_STUDIO" }}
+    {{ id: "TOWN_HALL", name: "🏛️ ทำเนียบผู้บริหาร (The Boss)", sub: "กำกับทิศทาง $1,000", gx: 0, gy: 0, x: 720, y: 165, floorCol: "#fef3c7", floorAlt: "#fde68a", wallCol: "#d97706", wallTop: "#fffbeb", badgeDot: "#10b981", propType: "TOWN_HALL" }},
+    {{ id: "COURIER_DISPATCH", name: "🌉 ท่าเรือ OpenClaw (OpenClaw Pier)", sub: "ซิงค์ API & ลิควิดิตี้", gx: 3, gy: 1, x: 260, y: 160, floorCol: "#f3e8ff", floorAlt: "#e9d5ff", wallCol: "#7c3aed", wallTop: "#faf5ff", badgeDot: "#10b981", propType: "COURIER_DISPATCH" }},
+    {{ id: "TRADING_LAB", name: "🔮 วอร์รูม & ควอนต์ (What-If & Quant)", sub: "เทรดทองคำ XAUUSD", gx: 0, gy: 1, x: 1180, y: 420, floorCol: "#e0f2fe", floorAlt: "#bae6fd", wallCol: "#2563eb", wallTop: "#eff6ff", badgeDot: "#10b981", propType: "TRADING_LAB" }},
+    {{ id: "ONLINE_STORE", name: "🏪 ร้านค้าดิจิทัล (Online Store)", sub: "VIP Signal & Prompt", gx: 3, gy: 0, x: 440, y: 610, floorCol: "#dcfce7", floorAlt: "#bbf7d0", wallCol: "#10b981", wallTop: "#f0fdf4", badgeDot: "#10b981", propType: "ONLINE_STORE" }},
+    {{ id: "MEME_STUDIO", name: "🎬 มีมสตูดิโอ (Meme Studio)", sub: "คลิปไวรัล Reels/TikTok", gx: 2, gy: 0, x: 1000, y: 610, floorCol: "#ffe4e6", floorAlt: "#fecdd3", wallCol: "#f43f5e", wallTop: "#fff1f2", badgeDot: "#f43f5e", propType: "MEME_STUDIO" }},
+    {{ id: "GROWTH_STUDIO", name: "⚡ สตูดิโอยิงการตลาด (Growth)", sub: "แคมเปญไวรัล & ชุมชน", gx: 2, gy: 1, x: 980, y: 320, floorCol: "#ffedd5", floorAlt: "#fed7aa", wallCol: "#ea580c", wallTop: "#fff7ed", badgeDot: "#10b981", propType: "GROWTH_STUDIO" }},
+    {{ id: "TECH_STUDIO", name: "💻 สตูดิโอโค้ดดิ้ง (Tech Studio </ >)", sub: "Micro-SaaS & Bot", gx: 1, gy: 0, x: 260, y: 420, floorCol: "#0f172a", floorAlt: "#1e293b", wallCol: "#0284c7", wallTop: "#38bdf8", badgeDot: "#38bdf8", propType: "TECH_STUDIO" }},
+    {{ id: "CRITIC_STUDIO", name: "🛡️ สตูดิโอตรวจงาน (Critic & Risk)", sub: "Audit คุณภาพ 100%", gx: 1, gy: 1, x: 460, y: 320, floorCol: "#fce7f3", floorAlt: "#fbcfe8", wallCol: "#db2777", wallTop: "#fdf2f8", badgeDot: "#10b981", propType: "CRITIC_STUDIO" }}
 ];
 
 // Connected circular town coordinate projection
@@ -1690,12 +2187,12 @@ function isoProject(gx, gy) {{
     if (rm && rm.x !== undefined) {{
         return {{ x: rm.x, y: rm.y, w: 140, h: 80 }};
     }}
-    return {{ x: 570 + (gx - gy) * 80, y: 280 + (gx + gy) * 45, w: 140, h: 80 }};
+    return {{ x: 720 + (gx - gy) * 80, y: 415 + (gx + gy) * 45, w: 140, h: 80 }};
 }}
 
 // Hair & Outfit customization for each of the 11 Chibi AI Agents
 const CHIBI_STYLES = [
-    {{ hair: "#fbbf24", suit: "#1e293b", acc: "CROWN" }},    // Arthur CIO
+    {{ hair: "#fbbf24", suit: "#1e293b", acc: "CROWN" }},    // Arthur CIO / The Boss
     {{ hair: "#334155", suit: "#ec4899", acc: "BUN" }},      // Sophia COS
     {{ hair: "#0f172a", suit: "#0284c7", acc: "HEADSET" }},  // Maya News
     {{ hair: "#475569", suit: "#ffffff", acc: "GLASSES" }},  // Dr. Kenji Quant (White Labcoat)
@@ -1716,37 +2213,37 @@ const isoSprites = APP.office.agents_roster.map((ag, idx) => {{
     let initSpeech = "";
 
     if (idx === 0) {{
-        initX = 570; initY = 166;
-        initSpeech = "Directing all 8 studios...";
+        initX = 720; initY = 215;
+        initSpeech = "Cutaway #1 render APPROVED! Accuracy 96%...";
     }} else if (idx === 1) {{
-        initX = 598; initY = 168;
+        initX = 750; initY = 220;
         initSpeech = "Checking Daily Memo ✔";
     }} else if (idx === 2) {{
-        initX = 538; initY = 462;
+        initX = 970; initY = 620;
         initSpeech = "Writing viral Reel hook...";
     }} else if (idx === 3) {{
-        initX = 205; initY = 322;
-        initSpeech = "Building lead harvester bot...";
+        initX = 260; initY = 430;
+        initSpeech = "Building liquidity bot...";
     }} else if (idx === 4) {{
-        initX = 905; initY = 322;
+        initX = 1150; initY = 425;
         initSpeech = "Gold XAUUSD testing $3,900 support...";
     }} else if (idx === 5) {{
-        initX = 945; initY = 322;
+        initX = 1200; initY = 425;
         initSpeech = "Yields down, gold breakout!";
     }} else if (idx === 6) {{
-        initX = 602; initY = 462;
+        initX = 1030; initY = 620;
         initSpeech = "Rendering 9:16 video...";
     }} else if (idx === 7) {{
-        initX = 275; initY = 216;
+        initX = 450; initY = 320;
         initSpeech = "Reviewing code pull request...";
     }} else if (idx === 8) {{
-        initX = 312; initY = 216;
+        initX = 475; initY = 320;
         initSpeech = "Audit checklist 100% verified!";
     }} else if (idx === 9) {{
-        initX = 245; initY = 322;
+        initX = 290; initY = 430;
         initSpeech = "Compiling API...";
     }} else if (idx === 10) {{
-        initX = 825; initY = 422;
+        initX = 450; initY = 620;
         initSpeech = "New order: VIP Signal $29!";
     }}
 
@@ -3116,56 +3613,91 @@ function drawLushCircularIsland(ctx, W, H) {{
         skyGrad.addColorStop(0.45, "#0f172a");
         skyGrad.addColorStop(1, "#1e1b4b");
     }} else {{
-        skyGrad.addColorStop(0, "#38bdf8");
-        skyGrad.addColorStop(0.38, "#7dd3fc");
-        skyGrad.addColorStop(0.65, "#0ea5e9");
+        // DAY — Default starting vibrant cartoon blue (#22a6f2) from video
+        skyGrad.addColorStop(0, "#22a6f2");
+        skyGrad.addColorStop(0.35, "#38bdf8");
+        skyGrad.addColorStop(0.68, "#0ea5e9");
         skyGrad.addColorStop(1, "#0284c7");
     }}
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, W, H);
 
-    ctx.fillStyle = skyTheme === "NIGHT" ? "#fef08a" : "#fb923c";
-    ctx.beginPath();
-    ctx.arc(920, 74, 34, 0, Math.PI * 2);
-    ctx.fill();
+    // Sun / Moon & Stars
+    if (skyTheme === "NIGHT") {{
+        // Cyber Moon
+        ctx.fillStyle = "#fef08a";
+        ctx.beginPath();
+        ctx.arc(1220, 75, 28, 0, Math.PI * 2);
+        ctx.fill();
+        // Twinkling cyber stars
+        ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+        for (let st = 0; st < 36; st++) {{
+            const sx = ((st * 97 + 45) % (W - 40)) + 20;
+            const sy = ((st * 53 + 23) % 190) + 15;
+            const sr = (st % 3 === 0) ? 2 : 1.2;
+            ctx.beginPath();
+            ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+            ctx.fill();
+        }}
+    }} else {{
+        // Vibrant Golden Sun with warm corona
+        const sunGrad = ctx.createRadialGradient(1220, 80, 8, 1220, 80, 52);
+        sunGrad.addColorStop(0, skyTheme === "SUNSET" ? "#fdba74" : "#fef08a");
+        sunGrad.addColorStop(0.4, skyTheme === "SUNSET" ? "#fb923c" : "#f59e0b");
+        sunGrad.addColorStop(1, "rgba(251, 146, 60, 0)");
+        ctx.fillStyle = sunGrad;
+        ctx.beginPath();
+        ctx.arc(1220, 80, 52, 0, Math.PI * 2);
+        ctx.fill();
 
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.42)";
-    ctx.lineWidth = 2;
-    for (let i = 0; i < 7; i++) {{
-        const wy = 200 + i * 48 + Math.sin(wavePhase + i * 1.2) * 5;
+        ctx.fillStyle = skyTheme === "SUNSET" ? "#fb923c" : "#fef08a";
+        ctx.beginPath();
+        ctx.arc(1220, 80, 26, 0, Math.PI * 2);
+        ctx.fill();
+    }}
+
+    // Ocean Waves
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+    ctx.lineWidth = 2.2;
+    for (let i = 0; i < 9; i++) {{
+        const wy = 230 + i * 58 + Math.sin(wavePhase + i * 1.1) * 6;
         ctx.beginPath();
         ctx.moveTo(30, wy);
-        ctx.quadraticCurveTo(110, wy - 9, 190, wy);
-        ctx.moveTo(930, wy);
-        ctx.quadraticCurveTo(1010, wy - 9, 1090, wy);
+        ctx.quadraticCurveTo(120, wy - 9, 210, wy);
+        ctx.moveTo(W - 220, wy);
+        ctx.quadraticCurveTo(W - 120, wy - 9, W - 30, wy);
         ctx.stroke();
     }}
 
+    // Drifting Cartoon Clouds
     clouds.forEach(cl => {{
-        cl.x += cl.v;
-        if (cl.x > W + 80) cl.x = -80;
-        ctx.fillStyle = skyTheme === "NIGHT" ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.85)";
+        if (!isTownPaused) cl.x += cl.v;
+        if (cl.x > W + 90) cl.x = -90;
+        ctx.fillStyle = skyTheme === "NIGHT" ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.88)";
         ctx.beginPath();
-        ctx.arc(cl.x, cl.y, 18 * cl.s, 0, Math.PI * 2);
-        ctx.arc(cl.x + 16 * cl.s, cl.y - 5 * cl.s, 22 * cl.s, 0, Math.PI * 2);
-        ctx.arc(cl.x + 34 * cl.s, cl.y, 16 * cl.s, 0, Math.PI * 2);
+        ctx.arc(cl.x, cl.y, 20 * cl.s, 0, Math.PI * 2);
+        ctx.arc(cl.x + 18 * cl.s, cl.y - 6 * cl.s, 24 * cl.s, 0, Math.PI * 2);
+        ctx.arc(cl.x + 38 * cl.s, cl.y, 18 * cl.s, 0, Math.PI * 2);
         ctx.fill();
     }});
 
-    const cx = 570, cy = 290;
-    const rx = 485, ry = 210;
+    // Island Dimensions (Scaled for 1440 x 820 Viewport)
+    const cx = 720, cy = 415;
+    const rx = 640, ry = 290;
 
+    // Outer Beach Sandy Shore
     ctx.fillStyle = "#b45309";
     ctx.beginPath();
-    ctx.ellipse(cx, cy + 30, rx + 10, ry + 12, 0, 0, Math.PI * 2);
+    ctx.ellipse(cx, cy + 32, rx + 14, ry + 16, 0, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = "#fde68a";
     ctx.beginPath();
-    ctx.ellipse(cx, cy + 24, rx + 6, ry + 8, 0, 0, Math.PI * 2);
+    ctx.ellipse(cx, cy + 24, rx + 8, ry + 10, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    const cliffGrad = ctx.createLinearGradient(0, cy, 0, cy + 30);
+    // 3D Cliff Drop Layer
+    const cliffGrad = ctx.createLinearGradient(0, cy, 0, cy + 32);
     cliffGrad.addColorStop(0, "#166534");
     cliffGrad.addColorStop(0.5, "#15803d");
     cliffGrad.addColorStop(1, "#14532d");
@@ -3177,39 +3709,50 @@ function drawLushCircularIsland(ctx, W, H) {{
     ctx.closePath();
     ctx.fill();
 
-    const meadowGrad = ctx.createRadialGradient(cx, cy - 30, 20, cx, cy, rx);
+    // Lush Green Island Meadow Top
+    const meadowGrad = ctx.createRadialGradient(cx, cy - 40, 30, cx, cy, rx);
     meadowGrad.addColorStop(0, "#4ade80");
     meadowGrad.addColorStop(0.4, "#22c55e");
     meadowGrad.addColorStop(0.85, "#16a34a");
     meadowGrad.addColorStop(1, "#15803d");
     ctx.fillStyle = meadowGrad;
     ctx.strokeStyle = "#166534";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 3.5;
     ctx.beginPath();
     ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
 
-    ISO_ROOMS.forEach(rm => {{
-        ctx.strokeStyle = "#fef08a";
-        ctx.lineWidth = 22;
+    // Radial Sandy Paths Connecting Central Plaza to All Outer Work Zones
+    const radialPaths = [
+        {{ x: 720, y: 240 }},  // Town Hall
+        {{ x: 440, y: 270 }},  // OpenClaw Pier
+        {{ x: 360, y: 420 }},  // Tech Studio
+        {{ x: 490, y: 540 }},  // Online Shirts & Store
+        {{ x: 950, y: 540 }},  // Meme Studio
+        {{ x: 1085, y: 420 }}  // What-If & Quant Studio
+    ];
+    radialPaths.forEach(pt => {{
+        ctx.strokeStyle = "#fde68a";
+        ctx.lineWidth = 26;
         ctx.lineCap = "round";
         ctx.beginPath();
         ctx.moveTo(cx, cy);
-        ctx.lineTo(rm.x, rm.y);
+        ctx.lineTo(pt.x, pt.y);
         ctx.stroke();
 
         ctx.strokeStyle = "#ca8a04";
-        ctx.lineWidth = 1.2;
-        ctx.setLineDash([4, 6]);
+        ctx.lineWidth = 1.4;
+        ctx.setLineDash([5, 6]);
         ctx.stroke();
         ctx.setLineDash([]);
     }});
 
-    const plazaRx = 138, plazaRy = 70;
-    ctx.fillStyle = "#fef08a";
+    // Central Circular Sandy Plaza
+    const plazaRx = 180, plazaRy = 88;
+    ctx.fillStyle = "#fde68a";
     ctx.strokeStyle = "#ca8a04";
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 2.8;
     ctx.beginPath();
     ctx.ellipse(cx, cy, plazaRx, plazaRy, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -3219,28 +3762,723 @@ function drawLushCircularIsland(ctx, W, H) {{
     ctx.lineWidth = 2;
     ctx.setLineDash([6, 6]);
     ctx.beginPath();
-    ctx.ellipse(cx, cy, plazaRx - 6, plazaRy - 3.5, 0, 0, Math.PI * 2);
+    ctx.ellipse(cx, cy, plazaRx - 8, plazaRy - 4.5, 0, 0, Math.PI * 2);
     ctx.stroke();
     ctx.setLineDash([]);
 
+    // Decorative Pines, Palms & Mushrooms on Meadow
     const pineSpots = [
-        {{ x: 145, y: 225, s: 1.15 }},
-        {{ x: 165, y: 360, s: 1.05 }},
-        {{ x: 425, y: 135, s: 1.0 }},
-        {{ x: 715, y: 135, s: 1.05 }},
-        {{ x: 995, y: 225, s: 1.2 }},
-        {{ x: 975, y: 365, s: 1.1 }},
-        {{ x: 445, y: 485, s: 1.1 }},
-        {{ x: 695, y: 485, s: 1.05 }}
+        {{ x: 130, y: 320, s: 1.15 }},
+        {{ x: 145, y: 480, s: 1.05 }},
+        {{ x: 540, y: 155, s: 1.0 }},
+        {{ x: 900, y: 155, s: 1.05 }},
+        {{ x: 1310, y: 320, s: 1.2 }},
+        {{ x: 1295, y: 490, s: 1.1 }},
+        {{ x: 620, y: 690, s: 1.1 }},
+        {{ x: 820, y: 690, s: 1.05 }}
     ];
     pineSpots.forEach(p => drawPineTree(ctx, p.x, p.y, p.s));
 
     const mushroomSpots = [
-        {{ x: 185, y: 260 }}, {{ x: 195, y: 266 }},
-        {{ x: 960, y: 250 }}, {{ x: 970, y: 256 }},
-        {{ x: 480, y: 460 }}, {{ x: 490, y: 465 }}
+        {{ x: 185, y: 350 }}, {{ x: 195, y: 356 }},
+        {{ x: 1250, y: 350 }}, {{ x: 1260, y: 356 }},
+        {{ x: 670, y: 680 }}, {{ x: 680, y: 685 }}
     ];
     mushroomSpots.forEach(m => drawMushroom(ctx, m.x, m.y));
+}}
+
+// 1. Neoclassical Town Hall Podium with The Boss & Speech Callout Box
+function drawTheBossPodium(ctx, x, y) {{
+    ctx.save();
+    // Wooden Lectern / Podium
+    ctx.fillStyle = "#78350f";
+    ctx.strokeStyle = "#451a03";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(x - 12, y + 6, 24, 20);
+    ctx.strokeRect(x - 12, y + 6, 24, 20);
+
+    ctx.fillStyle = "#fbbf24";
+    ctx.beginPath();
+    ctx.arc(x, y + 16, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // The Boss Chibi Body & Golden Crown
+    ctx.fillStyle = "#1e293b";
+    ctx.fillRect(x - 9, y - 6, 18, 16);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(x - 4, y - 6, 8, 7);
+    ctx.fillStyle = "#ef4444";
+    ctx.fillRect(x - 2, y - 3, 4, 8);
+
+    ctx.fillStyle = "#fed7aa";
+    ctx.beginPath();
+    ctx.arc(x, y - 12, 11, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#0f172a";
+    ctx.beginPath();
+    ctx.arc(x - 4, y - 12, 1.8, 0, Math.PI * 2);
+    ctx.arc(x + 4, y - 12, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#fbbf24";
+    ctx.strokeStyle = "#b45309";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 8, y - 19);
+    ctx.lineTo(x - 8, y - 28);
+    ctx.lineTo(x - 4, y - 22);
+    ctx.lineTo(x, y - 30);
+    ctx.lineTo(x + 4, y - 22);
+    ctx.lineTo(x + 8, y - 28);
+    ctx.lineTo(x + 8, y - 19);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Floating Speech Callout Box: "Cutaway #1 render APPROVED! Accuracy 96%..."
+    const speechText = "Cutaway #1 render APPROVED! Accuracy 96%...";
+    ctx.font = "bold 11px 'Segoe UI', sans-serif";
+    const tw = ctx.measureText(speechText).width;
+    const bw = tw + 28;
+    const bh = 28;
+    const bx = x - bw / 2;
+    const by = y - 68;
+
+    ctx.shadowColor = "rgba(0,0,0,0.22)";
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(bx, by, bw, bh, 8);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x - 6, by + bh);
+    ctx.lineTo(x, by + bh + 8);
+    ctx.lineTo(x + 6, by + bh);
+    ctx.fill();
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    ctx.fillStyle = "#16a34a";
+    ctx.beginPath();
+    ctx.arc(bx + 14, by + bh / 2, 6.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 9px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("✔", bx + 14, by + bh / 2 + 3);
+
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "800 11px 'Segoe UI', sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(speechText, bx + 25, by + bh / 2 + 4);
+
+    // Name badge: "👑 The Boss"
+    ctx.fillStyle = "#fef08a";
+    ctx.strokeStyle = "#ca8a04";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.roundRect(x - 34, y + 26, 68, 18, 9);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#78350f";
+    ctx.font = "bold 9.5px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("👑 The Boss", x, y + 38.5);
+
+    ctx.restore();
+}}
+
+// 2. Circular White Picket Fence enclosing each of the 4 outer work zones
+function drawCircularPicketFence(ctx, zx, zy, rx, ry, skipAngleStart, skipAngleEnd) {{
+    ctx.save();
+    const count = 32;
+    for (let i = 0; i < count; i++) {{
+        const a = (i / count) * Math.PI * 2;
+        if (skipAngleStart !== undefined && skipAngleEnd !== undefined) {{
+            const normA = (a + Math.PI * 2) % (Math.PI * 2);
+            if (normA >= skipAngleStart && normA <= skipAngleEnd) continue;
+        }}
+        const px = zx + Math.cos(a) * rx;
+        const py = zy + Math.sin(a) * ry;
+
+        ctx.fillStyle = "#ffffff";
+        ctx.strokeStyle = "#94a3b8";
+        ctx.lineWidth = 0.9;
+        ctx.beginPath();
+        ctx.moveTo(px - 2, py + 8);
+        ctx.lineTo(px - 2, py - 6);
+        ctx.lineTo(px, py - 9);
+        ctx.lineTo(px + 2, py - 6);
+        ctx.lineTo(px + 2, py + 8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    }}
+    ctx.strokeStyle = "#cbd5e1";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.ellipse(zx, zy, rx, ry, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+}}
+
+// 3. Wooden Arch Gate with Zone Label
+function drawWoodenArchGate(ctx, gx, gy, label) {{
+    ctx.save();
+    ctx.fillStyle = "#78350f";
+    ctx.strokeStyle = "#451a03";
+    ctx.lineWidth = 1.3;
+    ctx.fillRect(gx - 18, gy - 20, 6, 26);
+    ctx.strokeRect(gx - 18, gy - 20, 6, 26);
+    ctx.fillRect(gx + 12, gy - 20, 6, 26);
+    ctx.strokeRect(gx + 12, gy - 20, 6, 26);
+
+    ctx.fillStyle = "#92400e";
+    ctx.fillRect(gx - 22, gy - 28, 44, 9);
+    ctx.strokeRect(gx - 22, gy - 28, 44, 9);
+
+    if (label) {{
+        ctx.fillStyle = "#fef08a";
+        ctx.font = "bold 8px 'Segoe UI', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(label, gx, gy - 21.5);
+    }}
+    ctx.restore();
+}}
+
+// 4. White Comic Zone Pill Banner
+function drawZonePillBanner(ctx, zx, zy, text, textColor, bgColor) {{
+    ctx.save();
+    ctx.font = "900 11.5px 'Segoe UI', sans-serif";
+    const tw = ctx.measureText(text).width;
+    const pw = tw + 24;
+    const ph = 24;
+    const px = zx - pw / 2;
+    const py = zy - ph / 2;
+
+    ctx.shadowColor = "rgba(0,0,0,0.2)";
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 3;
+
+    ctx.fillStyle = bgColor || "#ffffff";
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(px, py, pw, ph, 12);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    ctx.fillStyle = textColor || "#1e293b";
+    ctx.textAlign = "center";
+    ctx.fillText(text, zx, zy + 4);
+    ctx.restore();
+}}
+
+// 5. Coastal Windmill with 4 Rotating Lattice Sails (Tech Studio)
+function drawCoastalWindmill(ctx, wx, wy) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.25)";
+    ctx.beginPath();
+    ctx.ellipse(wx, wy + 20, 26, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    const baseGrad = ctx.createLinearGradient(wx - 18, wy, wx + 18, wy);
+    baseGrad.addColorStop(0, "#e2e8f0");
+    baseGrad.addColorStop(0.5, "#ffffff");
+    baseGrad.addColorStop(1, "#cbd5e1");
+    ctx.fillStyle = baseGrad;
+    ctx.strokeStyle = "#64748b";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(wx - 20, wy + 18);
+    ctx.lineTo(wx - 12, wy - 32);
+    ctx.lineTo(wx + 12, wy - 32);
+    ctx.lineTo(wx + 20, wy + 18);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#78350f";
+    ctx.fillRect(wx - 5, wy + 4, 10, 14);
+    ctx.fillStyle = "#38bdf8";
+    ctx.fillRect(wx - 4, wy - 14, 8, 8);
+
+    ctx.fillStyle = "#0284c7";
+    ctx.strokeStyle = "#0369a1";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(wx - 15, wy - 32);
+    ctx.lineTo(wx, wy - 48);
+    ctx.lineTo(wx + 15, wy - 32);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    const angle = !isTownPaused ? (Date.now() / 900) : 0;
+    const axleY = wy - 30;
+    ctx.save();
+    ctx.translate(wx, axleY);
+    ctx.rotate(angle);
+
+    for (let s = 0; s < 4; s++) {{
+        ctx.save();
+        ctx.rotate(s * Math.PI / 2);
+        ctx.strokeStyle = "#78350f";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -42);
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+        ctx.strokeStyle = "#94a3b8";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.rect(2, -40, 10, 32);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+    }}
+    ctx.fillStyle = "#f59e0b";
+    ctx.beginPath();
+    ctx.arc(0, 0, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.restore();
+}}
+
+// 6. Red/White Striped Lighthouse with Rotating Beam (Online Store)
+function drawLighthouse(ctx, lx, ly) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.28)";
+    ctx.beginPath();
+    ctx.ellipse(lx, ly + 22, 28, 11, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    const bands = [
+        {{ y1: ly + 18, y2: ly + 5, w1: 38, w2: 34, col: "#dc2626" }},
+        {{ y1: ly + 5, y2: ly - 8, w1: 34, w2: 30, col: "#ffffff" }},
+        {{ y1: ly - 8, y2: ly - 21, w1: 30, w2: 26, col: "#dc2626" }},
+        {{ y1: ly - 21, y2: ly - 34, w1: 26, w2: 22, col: "#ffffff" }}
+    ];
+    bands.forEach(b => {{
+        ctx.fillStyle = b.col;
+        ctx.strokeStyle = "#1e293b";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(lx - b.w1 / 2, b.y1);
+        ctx.lineTo(lx - b.w2 / 2, b.y2);
+        ctx.lineTo(lx + b.w2 / 2, b.y2);
+        ctx.lineTo(lx + b.w1 / 2, b.y1);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    }});
+
+    ctx.fillStyle = "#1e293b";
+    ctx.fillRect(lx - 16, ly - 36, 32, 4);
+
+    ctx.fillStyle = "rgba(254, 240, 138, 0.9)";
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 1.2;
+    ctx.fillRect(lx - 11, ly - 50, 22, 14);
+    ctx.strokeRect(lx - 11, ly - 50, 22, 14);
+
+    ctx.fillStyle = "#dc2626";
+    ctx.beginPath();
+    ctx.arc(lx, ly - 50, 11, Math.PI, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#fbbf24";
+    ctx.beginPath();
+    ctx.arc(lx, ly - 62, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Rotating light beam sweeping across water
+    const beamAngle = !isTownPaused ? (Date.now() / 700) : 0;
+    const beamLen = 95;
+    const bx1 = lx + Math.cos(beamAngle - 0.22) * beamLen;
+    const by1 = (ly - 43) + Math.sin(beamAngle - 0.22) * (beamLen * 0.45);
+    const bx2 = lx + Math.cos(beamAngle + 0.22) * beamLen;
+    const by2 = (ly - 43) + Math.sin(beamAngle + 0.22) * (beamLen * 0.45);
+
+    const beamGrad = ctx.createRadialGradient(lx, ly - 43, 4, lx, ly - 43, beamLen);
+    beamGrad.addColorStop(0, "rgba(254, 240, 138, 0.7)");
+    beamGrad.addColorStop(0.7, "rgba(254, 240, 138, 0.25)");
+    beamGrad.addColorStop(1, "rgba(254, 240, 138, 0.0)");
+    ctx.fillStyle = beamGrad;
+    ctx.beginPath();
+    ctx.moveTo(lx, ly - 43);
+    ctx.lineTo(bx1, by1);
+    ctx.lineTo(bx2, by2);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+}}
+
+// 7. Red/White Striped Circus Tent with Fluttering Flag (Jester / Meme Studio)
+function drawCircusTent(ctx, tx, ty) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.26)";
+    ctx.beginPath();
+    ctx.ellipse(tx, ty + 24, 46, 16, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    const wallH = 22;
+    const w = 68;
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 1.4;
+    ctx.fillRect(tx - w / 2, ty, w, wallH);
+    ctx.strokeRect(tx - w / 2, ty, w, wallH);
+
+    for (let i = 0; i < 5; i++) {{
+        if (i % 2 === 0) {{
+            ctx.fillStyle = "#dc2626";
+            ctx.fillRect(tx - w / 2 + i * (w / 5), ty, w / 5, wallH);
+        }}
+    }}
+
+    ctx.fillStyle = "#1e293b";
+    ctx.beginPath();
+    ctx.arc(tx, ty + wallH, 8, Math.PI, 0);
+    ctx.fill();
+
+    const peakX = tx, peakY = ty - 42;
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.moveTo(tx - w / 2 - 4, ty);
+    ctx.lineTo(peakX, peakY);
+    ctx.lineTo(tx + w / 2 + 4, ty);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    for (let s = -2; s <= 2; s++) {{
+        if (s % 2 === 0) {{
+            ctx.fillStyle = "#dc2626";
+            ctx.beginPath();
+            ctx.moveTo(peakX, peakY);
+            ctx.lineTo(tx + s * 14 - 7, ty);
+            ctx.lineTo(tx + s * 14 + 7, ty);
+            ctx.closePath();
+            ctx.fill();
+        }}
+    }}
+
+    for (let sc = 0; sc < 7; sc++) {{
+        ctx.fillStyle = sc % 2 === 0 ? "#fbbf24" : "#dc2626";
+        ctx.beginPath();
+        ctx.arc(tx - w / 2 + 5 + sc * 9.7, ty, 4.8, 0, Math.PI);
+        ctx.fill();
+    }}
+
+    ctx.fillStyle = "#fbbf24";
+    ctx.fillRect(peakX - 1, peakY - 14, 2, 14);
+    ctx.fillStyle = "#ef4444";
+    ctx.beginPath();
+    ctx.moveTo(peakX + 1, peakY - 14);
+    ctx.lineTo(peakX + 16, peakY - 10);
+    ctx.lineTo(peakX + 1, peakY - 6);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#fef08a";
+    ctx.strokeStyle = "#ca8a04";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(tx - 28, ty + wallH + 4, 56, 17, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#78350f";
+    ctx.font = "bold 9px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("🤡 Jester", tx, ty + wallH + 16);
+
+    ctx.restore();
+}}
+
+// 8. Named Town Cottage with Badge, Roof, Window & Special Detail
+function drawTownCottage(ctx, cx, cy, name, roofCol, wallCol, badgeIcon, specialDetail) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.22)";
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + 18, 32, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = wallCol;
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 1.3;
+    ctx.fillRect(cx - 24, cy - 14, 48, 28);
+    ctx.strokeRect(cx - 24, cy - 14, 48, 28);
+
+    ctx.fillStyle = "#78350f";
+    ctx.fillRect(cx + 12, cy - 32, 6, 14);
+    const smokePhase = Math.sin((Date.now() / 350) + cx) * 2;
+    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+    ctx.beginPath();
+    ctx.arc(cx + 15 + smokePhase, cy - 36, 3, 0, Math.PI * 2);
+    ctx.arc(cx + 17 + smokePhase, cy - 42, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = roofCol;
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(cx - 28, cy - 14);
+    ctx.lineTo(cx, cy - 32);
+    ctx.lineTo(cx + 28, cy - 14);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = skyTheme === "NIGHT" ? "#fef08a" : "#bae6fd";
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 1;
+    ctx.fillRect(cx - 18, cy - 4, 11, 11);
+    ctx.strokeRect(cx - 18, cy - 4, 11, 11);
+
+    ctx.fillStyle = "#78350f";
+    ctx.fillRect(cx + 3, cy - 2, 12, 16);
+    ctx.fillStyle = "#fbbf24";
+    ctx.beginPath();
+    ctx.arc(cx + 5, cy + 6, 1.4, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (specialDetail === "NEON_CODE") {{
+        ctx.font = "bold 13px 'Consolas', monospace";
+        ctx.fillStyle = "#38bdf8";
+        ctx.shadowColor = "#38bdf8";
+        ctx.shadowBlur = 9;
+        ctx.textAlign = "center";
+        ctx.fillText("</>", cx - 2, cy - 20);
+        ctx.shadowBlur = 0;
+    }} else if (specialDetail === "GOLD_TRENDLINE") {{
+        const hx = cx, hy = cy - 44;
+        ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+        ctx.strokeStyle = "#fbbf24";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.roundRect(hx - 22, hy - 14, 44, 24, 4);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "#10b981";
+        ctx.fillRect(hx - 15, hy - 6, 3, 10);
+        ctx.fillRect(hx + 5, hy - 10, 3, 14);
+        ctx.fillStyle = "#ef4444";
+        ctx.fillRect(hx - 5, hy - 2, 3, 7);
+        ctx.strokeStyle = "#fbbf24";
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(hx - 16, hy + 4);
+        ctx.lineTo(hx - 4, hy + 2);
+        ctx.lineTo(hx + 6, hy - 8);
+        ctx.lineTo(hx + 17, hy - 11);
+        ctx.stroke();
+    }} else if (specialDetail === "STORE_AWNING") {{
+        const awY = cy - 4;
+        for (let a = 0; a < 4; a++) {{
+            ctx.fillStyle = a % 2 === 0 ? "#ef4444" : "#ffffff";
+            ctx.fillRect(cx - 2 + a * 4.5, awY, 4.5, 6);
+        }}
+    }}
+
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.roundRect(cx - 24, cy + 16, 48, 16, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "800 8.5px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(`${{badgeIcon || ''}} ${{name}}`, cx, cy + 27.5);
+
+    ctx.restore();
+}}
+
+// 9. OpenClaw Pier (Top-Left 10:00 Walkway & Gateway House)
+function drawOpenClawPier(ctx, px, py) {{
+    ctx.save();
+    const startX = 420, startY = 260;
+    const endX = 220, endY = 160;
+    const steps = 10;
+    for (let i = 0; i <= steps; i++) {{
+        const t = i / steps;
+        const x = startX + (endX - startX) * t;
+        const y = startY + (endY - startY) * t;
+        ctx.strokeStyle = "#78350f";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y + 22);
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+        ctx.beginPath();
+        ctx.ellipse(x, y + 22, 6, 2.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+    }}
+
+    ctx.fillStyle = "#fde68a";
+    ctx.strokeStyle = "#78350f";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(startX, startY - 8);
+    ctx.lineTo(endX, endY - 8);
+    ctx.lineTo(endX, endY + 8);
+    ctx.lineTo(startX, startY + 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.strokeStyle = "#ca8a04";
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= steps; i++) {{
+        const t = i / steps;
+        const x = startX + (endX - startX) * t;
+        const y = startY + (endY - startY) * t;
+        ctx.beginPath();
+        ctx.moveTo(x, y - 8);
+        ctx.lineTo(x, y + 8);
+        ctx.stroke();
+    }}
+
+    const hx = 260, hy = 160;
+    ctx.fillStyle = "#0f172a";
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(hx - 22, hy - 26, 44, 28);
+    ctx.strokeRect(hx - 22, hy - 26, 44, 28);
+
+    ctx.fillStyle = "#0284c7";
+    ctx.beginPath();
+    ctx.moveTo(hx - 26, hy - 26);
+    ctx.lineTo(hx, hy - 42);
+    ctx.lineTo(hx + 26, hy - 26);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#fbbf24";
+    ctx.beginPath();
+    ctx.arc(hx - 14, hy - 14, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.roundRect(hx - 42, hy - 58, 84, 18, 9);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "800 8.5px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("🌉 OpenClaw", hx, hy - 46);
+
+    ctx.restore();
+}}
+
+// 10. Outer Fenced Zone 1: TECH STUDIO (Left 8:30)
+function drawTechStudioZone(ctx) {{
+    const zx = 260, zy = 420;
+    drawCircularPicketFence(ctx, zx, zy, 105, 80);
+    drawWoodenArchGate(ctx, 350, 420, "TECH");
+    drawZonePillBanner(ctx, 260, 315, "💻 TECH STUDIO", "#0284c7", "#e0f2fe");
+    drawCoastalWindmill(ctx, 175, 395);
+    drawTownCottage(ctx, 230, 370, "Sprocket", "#0284c7", "#090d16", "⚙️", "NEON_CODE");
+    drawTownCottage(ctx, 300, 395, "Ada", "#0369a1", "#0f172a", "🤖", "");
+    drawTownCottage(ctx, 245, 460, "Bit", "#0284c7", "#1e293b", "💾", "");
+}}
+
+// 11. Outer Fenced Zone 2: ONLINE SHIRTS & STORE (Bottom-Left 6:30)
+function drawOnlineShirtsZone(ctx) {{
+    const zx = 440, zy = 610;
+    drawCircularPicketFence(ctx, zx, zy, 110, 80);
+    drawWoodenArchGate(ctx, 490, 540, "STORE");
+    drawZonePillBanner(ctx, 440, 505, "👕 ONLINE SHIRTS", "#16a34a", "#dcfce7");
+    drawLighthouse(ctx, 330, 620);
+    drawTownCottage(ctx, 410, 575, "Whiskers", "#15803d", "#dcfce7", "🐱", "STORE_AWNING");
+    drawTownCottage(ctx, 480, 585, "Calico", "#16a34a", "#f0fdf4", "🐈", "STORE_AWNING");
+    drawTownCottage(ctx, 415, 645, "Mittens", "#059669", "#dcfce7", "🐾", "");
+    drawTownCottage(ctx, 490, 645, "Biscuit", "#10b981", "#f0fdf4", "🍪", "");
+}}
+
+// 12. Outer Fenced Zone 3: MEME STUDIO (Bottom-Right 5:00)
+function drawMemeStudioZone(ctx) {{
+    const zx = 1000, zy = 610;
+    drawCircularPicketFence(ctx, zx, zy, 110, 80);
+    drawWoodenArchGate(ctx, 950, 540, "MEME");
+    drawZonePillBanner(ctx, 1000, 505, "🎬 MEME STUDIO", "#ea580c", "#ffedd5");
+    drawCircusTent(ctx, 970, 575);
+
+    // Floating party balloons
+    const bPhase = Math.sin(Date.now() / 400) * 3;
+    ctx.save();
+    ctx.strokeStyle = "#cbd5e1";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(1055, 560);
+    ctx.lineTo(1050, 530 + bPhase);
+    ctx.stroke();
+    ctx.fillStyle = "#f43f5e";
+    ctx.beginPath();
+    ctx.ellipse(1050, 528 + bPhase, 7, 9, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#fbbf24";
+    ctx.beginPath();
+    ctx.ellipse(1058, 522 + bPhase, 6, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Video camera on tripod ● REC
+    const camX = 990, camY = 660;
+    ctx.save();
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(camX, camY);
+    ctx.lineTo(camX - 6, camY + 16);
+    ctx.moveTo(camX, camY);
+    ctx.lineTo(camX + 6, camY + 16);
+    ctx.stroke();
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(camX - 6, camY - 7, 13, 9);
+    ctx.fillStyle = (Math.floor(Date.now() / 400) % 2 === 0) ? "#ef4444" : "#7f1d1d";
+    ctx.beginPath();
+    ctx.arc(camX - 4, camY - 9, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    drawTownCottage(ctx, 940, 635, "Giggle", "#ea580c", "#ffedd5", "😂", "");
+    drawTownCottage(ctx, 1030, 635, "Chuckles", "#f97316", "#fff7ed", "🤣", "");
+}}
+
+// 13. Outer Fenced Zone 4: WHAT IF & QUANT STUDIO (Right 3:30)
+function drawWhatIfQuantZone(ctx) {{
+    const zx = 1180, zy = 420;
+    drawCircularPicketFence(ctx, zx, zy, 110, 80);
+    drawWoodenArchGate(ctx, 1085, 420, "QUANT");
+    drawZonePillBanner(ctx, 1180, 315, "🔮 WHAT IF STUDIO", "#7c3aed", "#f3e8ff");
+    drawQuantObservatoryBuilding(ctx, 1170, 355);
+    drawTownCottage(ctx, 1130, 425, "Atlas", "#7c3aed", "#1e1b4b", "📈", "GOLD_TRENDLINE");
+    drawTownCottage(ctx, 1215, 390, "Iso", "#6d28d9", "#faf5ff", "📐", "");
+    drawTownCottage(ctx, 1220, 455, "Vector", "#8b5cf6", "#f3e8ff", "🧭", "");
+    drawTownCottage(ctx, 1150, 485, "Pixel", "#a855f7", "#faf5ff", "👾", "");
 }}
 
 // Collaborating Studio Pipelines for Task Envelopes & Light Rays
@@ -3257,31 +4495,40 @@ const STUDIO_COLLAB_PIPELINES = [
 function renderIsometricCompany() {{
     if (!isoCtx || !isoCanvas) return;
     const W = isoCanvas.width, H = isoCanvas.height;
-    wavePhase += 0.04;
+    if (!isTownPaused) wavePhase += 0.04;
     isoCtx.clearRect(0, 0, W, H);
 
     // 1. Draw Lush Circular Island Meadow, Shore, Ocean & Plaza
     drawLushCircularIsland(isoCtx, W, H);
 
-    // 2. Draw Central Town Square Building between the 2 Batteries
-    drawCentralSquareBuilding(isoCtx, 570, 275);
+    // 2. OpenClaw Pier (Top-Left 10:00)
+    drawOpenClawPier(isoCtx, 260, 160);
 
-    // 3. Draw the 2 Giant Upright Glowing Green Battery Cylinders in the Central Plaza (Exmple.mp4)
-    drawGiantBattery(isoCtx, 492, 292, "2-HOUR 99%", 99, false);
-    drawGiantBattery(isoCtx, 648, 292, "7-DAY 100%", 100, true);
+    // 3. Central Plaza Civic Hall (blue roof, red clock tower)
+    drawCentralSquareBuilding(isoCtx, 720, 390);
 
-    // 4. Draw the 8 Specialized Studio Buildings around the Plaza
-    drawTownHallBuilding(isoCtx, 570, 130);
-    drawQuantObservatoryBuilding(isoCtx, 850, 185);
-    drawTradingWarRoomBuilding(isoCtx, 925, 290);
-    drawOnlineStoreBuilding(isoCtx, 815, 395);
-    drawMemeStudioBuilding(isoCtx, 570, 440);
-    drawGrowthStudioBuilding(isoCtx, 325, 395);
-    drawTechStudioBuilding(isoCtx, 215, 290);
-    drawCriticStudioBuilding(isoCtx, 290, 185);
+    // 4. Two Giant Glowing Green Battery Cylinders ("5-HOUR 99%" and "7-DAY 100%")
+    drawGiantBattery(isoCtx, 615, 415, "5-HOUR 99%", 99, false);
+    drawGiantBattery(isoCtx, 825, 415, "7-DAY 100%", 100, true);
 
-    // 5. Animated Glowing Task Light Rays & Flying Task Envelopes between Studios
-    taskPacketPhase = (taskPacketPhase + 0.005) % 1.0;
+    // 5. Town Hall at 12:00 (Neoclassical columns, green dome, stairs & The Boss)
+    drawTownHallBuilding(isoCtx, 720, 165);
+    drawTheBossPodium(isoCtx, 720, 215);
+
+    // 6. Outer Fenced Zone 1: TECH STUDIO (Left 8:30)
+    drawTechStudioZone(isoCtx);
+
+    // 7. Outer Fenced Zone 2: ONLINE SHIRTS & STORE (Bottom-Left 6:30)
+    drawOnlineShirtsZone(isoCtx);
+
+    // 8. Outer Fenced Zone 3: MEME STUDIO (Bottom-Right 5:00)
+    drawMemeStudioZone(isoCtx);
+
+    // 9. Outer Fenced Zone 4: WHAT IF & QUANT STUDIO (Right 3:30)
+    drawWhatIfQuantZone(isoCtx);
+
+    // 10. Animated Glowing Task Light Rays & Flying Task Envelopes between Studios
+    if (!isTownPaused) taskPacketPhase = (taskPacketPhase + 0.005) % 1.0;
     STUDIO_COLLAB_PIPELINES.forEach((pipe, pIdx) => {{
         const fromRm = ISO_ROOMS.find(r => r.id === pipe.from);
         const toRm = ISO_ROOMS.find(r => r.id === pipe.to);
@@ -3289,12 +4536,12 @@ function renderIsometricCompany() {{
         const x1 = fromRm.x, y1 = fromRm.y + 10;
         const x2 = toRm.x, y2 = toRm.y + 10;
         const midX = (x1 + x2) / 2;
-        const midY = (y1 + y2) / 2 - 32;
+        const midY = (y1 + y2) / 2 - 38;
 
         isoCtx.save();
         isoCtx.strokeStyle = pipe.color;
         isoCtx.lineWidth = 1.8;
-        isoCtx.globalAlpha = 0.5;
+        isoCtx.globalAlpha = 0.55;
         isoCtx.setLineDash([5, 6]);
         isoCtx.lineDashOffset = -taskPacketPhase * 36;
         isoCtx.beginPath();
@@ -3307,12 +4554,12 @@ function renderIsometricCompany() {{
         const ex = (1 - t) * (1 - t) * x1 + 2 * (1 - t) * t * midX + t * t * x2;
         const ey = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * midY + t * t * y2;
 
-        const envGlow = isoCtx.createRadialGradient(ex, ey, 1, ex, ey, 14);
-        envGlow.addColorStop(0, "rgba(251, 191, 36, 0.7)");
+        const envGlow = isoCtx.createRadialGradient(ex, ey, 1, ex, ey, 15);
+        envGlow.addColorStop(0, "rgba(251, 191, 36, 0.75)");
         envGlow.addColorStop(1, "rgba(251, 191, 36, 0.0)");
         isoCtx.fillStyle = envGlow;
         isoCtx.beginPath();
-        isoCtx.arc(ex, ey, 14, 0, Math.PI * 2);
+        isoCtx.arc(ex, ey, 15, 0, Math.PI * 2);
         isoCtx.fill();
 
         isoCtx.fillStyle = "#ffffff";
@@ -3333,28 +4580,57 @@ function renderIsometricCompany() {{
         isoCtx.fill();
     }});
 
-    // 6. Sort & Draw Full-Body Chibi AI Characters by Y-depth
+    // 11. Zone Highlight Spotlight Beacon (when quick switcher button clicked)
+    if (focusedZoneTimer > 0 && focusedZone) {{
+        focusedZoneTimer--;
+        const targetRoom = ISO_ROOMS.find(r => r.id === focusedZone);
+        if (targetRoom) {{
+            isoCtx.save();
+            const pulse = (Math.sin(Date.now() / 150) + 1) / 2;
+            const rad = 80 + pulse * 18;
+            const spotGrad = isoCtx.createRadialGradient(targetRoom.x, targetRoom.y, 10, targetRoom.x, targetRoom.y, rad);
+            spotGrad.addColorStop(0, "rgba(251, 191, 36, 0.45)");
+            spotGrad.addColorStop(0.7, "rgba(251, 191, 36, 0.15)");
+            spotGrad.addColorStop(1, "rgba(251, 191, 36, 0.0)");
+            isoCtx.fillStyle = spotGrad;
+            isoCtx.beginPath();
+            isoCtx.arc(targetRoom.x, targetRoom.y, rad, 0, Math.PI * 2);
+            isoCtx.fill();
+
+            isoCtx.strokeStyle = "#f59e0b";
+            isoCtx.lineWidth = 2.5;
+            isoCtx.setLineDash([6, 6]);
+            isoCtx.beginPath();
+            isoCtx.arc(targetRoom.x, targetRoom.y, rad, 0, Math.PI * 2);
+            isoCtx.stroke();
+            isoCtx.restore();
+        }}
+    }}
+
+    // 12. Sort & Draw Full-Body Chibi AI Characters by Y-depth
     const sortedSprites = [...isoSprites].sort((a, b) => a.y - b.y);
     sortedSprites.forEach(sp => {{
-        const dx = sp.tx - sp.x;
-        const dy = sp.ty - sp.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist > 2.2) {{
-            sp.x += (dx / dist) * 2.1;
-            sp.y += (dy / dist) * 2.1;
-        }} else if (Math.random() < 0.012) {{
-            const nextRm = ISO_ROOMS[Math.floor(Math.random() * ISO_ROOMS.length)];
-            sp.tx = nextRm.x + (Math.random() - 0.5) * 44;
-            sp.ty = nextRm.y + 36 + (Math.random() - 0.5) * 16;
-            if (Math.random() < 0.35) {{
-                sp.speech = `ส่งงานไป ${{nextRm.name.split(' ')[0]}} ✔`;
-                sp.speechTimer = 110;
+        if (!isTownPaused) {{
+            const dx = sp.tx - sp.x;
+            const dy = sp.ty - sp.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist > 2.2) {{
+                sp.x += (dx / dist) * 2.1;
+                sp.y += (dy / dist) * 2.1;
+            }} else if (Math.random() < 0.012) {{
+                const nextRm = ISO_ROOMS[Math.floor(Math.random() * ISO_ROOMS.length)];
+                sp.tx = nextRm.x + (Math.random() - 0.5) * 44;
+                sp.ty = nextRm.y + 36 + (Math.random() - 0.5) * 16;
+                if (Math.random() < 0.35) {{
+                    sp.speech = `ส่งงานไป ${{nextRm.name.split(' ')[0]}} ✔`;
+                    sp.speechTimer = 110;
+                }}
             }}
         }}
         drawChibiAgent(isoCtx, sp);
     }});
 
-    // 7. Floating Studio Status Badges on Top
+    // 13. Floating Studio Status Badges on Top
     ISO_ROOMS.forEach(rm => {{
         drawRoundedBadge(isoCtx, rm.x, rm.y - 48, rm.name, rm.sub, rm.badgeDot);
     }});

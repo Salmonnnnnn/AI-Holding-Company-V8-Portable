@@ -15,28 +15,42 @@
 - **Multi-Stream Revenue Breakdown (`#challengeVenturesStrip`)**: Breaks down the revenue across the 4 specialized venture streams (Trading War Room, Online Store, Tech Studio Micro-SaaS/Bots, and Meme Studio Viral Content). Returns `"ventures"` dict in `compute_challenge_state`.
 
 ## 🏝️ Multi-Venture AI Agent Town Architecture (`Exmple.mp4`)
-- **Lush Circular Green Meadow Island (`drawLushCircularIsland`)**:
-  - Oval hill at center `(570, 290)` with 3D extruded shaded rim/cliff in bright turquoise/azure ocean with animated wave ripples and foam lines.
-  - Central circular sandy plaza with warm cobblestone ring and 8 radial sandy paths radiating outward like spokes on a wheel.
-  - Layered forest pine trees (`drawPineTree`), red-and-white spotted mushrooms (`drawMushroom`), white picket fences (`drawPicketFence`), and flower blossoms.
-- **2 Giant Upright Glowing Green Battery Cylinders (`drawGiantBattery`)**:
-  - Positioned in the central plaza flanking the central civic building:
-    * Left battery: Labeled with white badge **"2-HOUR 99%"**
-    * Right battery: Labeled with white badge **"7-DAY 100%"**
-  - Metallic pedestals, translucent glass chambers, glowing green plasma energy (`#4ade80` → `#15803d`), animated electric sparks, and pulsating green auras.
-- **Central Civic Hall Building (`drawCentralSquareBuilding`)**:
-  - Located in the center plaza at `(570, 275)` between the 2 giant batteries, featuring blue slate pitched roof, red brick belltower steeple with gold cross, and working clock face.
-- **8 Specialized Studio Buildings (`ISO_ROOMS`)**:
-  1. `TOWN_HALL` (12:00, Top Center): 🏛️ ทำเนียบผู้บริหาร — Neoclassical white building with 6 marble columns, triangular pediment, entrance stairs, emerald green dome with cupola and fluttering flag. Podium with "The Boss" (Arthur Pendelton).
-  2. `TECH_STUDIO` (9:00, Left): 💻 สตูดิโอโค้ดดิ้ง — Cyber dark cube with glowing bright cyan neon trim, roof antenna with blinking red beacon, and large glowing neon `</>` emblem (Dr. Kenji Sato & AutoBot X-1).
-  3. `MEME_STUDIO` (6:00, Bottom Center): 🎬 มีมสตูดิโอ — Straight path leading through wooden arch labeled "MEME STUDIO" into fenced green yard with red-and-white striped circus tent / big top, floating colorful party balloons, camera on tripod with `● REC`, studio cottage (Maya Lin & Sarah Jenkins).
-  4. `ONLINE_STORE` (4:30, Bottom Right): 🏪 ร้านค้าดิจิทัล — Storefront with striped red/white awning, display window with merchandise, "AI STORE" sign (Nova Vance).
-  5. `TRADING_LAB` (3:00, Right): 📈 วอร์รูมเทรดดิ้ง — Red brick cottage, multi-monitor terminals, satellite dish, floating 3D holographic gold candlestick chart with `$3,900` ticker (Alex Vance & Dr. Marcus Sterling).
-  6. `COURIER_DISPATCH` (1:30, Upper Right): 🔬 ควอนต์ & หอดูดาว — White cylindrical stone observatory tower with revolving dome, brass telescope pointing to stars, cargo parcel depot.
-  7. `CRITIC_STUDIO` (10:30, Upper Left): 🛡️ สตูดิโอตรวจงาน — Stone cottage with picket fence, golden audit shield, and magnifying glass (Viktor Kane & Elena Rostova).
-  8. `GROWTH_STUDIO` (7:30, Bottom Left): ⚡ สตูดิโอยิงการตลาด — Purple cottage with golden megaphone / horn on roof, broadcast antennas, viral hype banner.
-- **Collaborating Pipelines & Animated Task Envelopes (`STUDIO_COLLAB_PIPELINES`)**:
-  - Curved light arcs flowing from Town Hall dome to studios with flying white-and-gold envelopes with red wax seals.
+- **Single-Page Fullscreen AI Town View (`#townFullscreenCard`)**:
+  - Interactive canvas `#isometricOfficeCanvas` (`width="1440" height="820"`) filling a full-bleed viewport card (`height: calc(100vh - 100px); min-height: 720px; border-radius: 16px; position: relative; overflow: hidden;`).
+  - **Floating Top-Left Bar (Comic Pop-Art Style)**:
+    * Title: `🏰 AI Office • Aurum Isle`
+    * Status pill: `▶ 11 working` (`btnTownStatus`, triggers `runLiveCompanyWorkflowAnimation()`)
+    * Pause pill: `⏸ Pause` / `▶ Resume` (`btnTownPause`, triggers `toggleTownPause()`)
+    * White comic pill buttons: `👥 View all` (opens directory drawer of 11 agents & 5 studios), `📊 Stats` (toggles 30-day $1,000 challenge banner), `📬 Inbox` with red badge `8` (triggers `openStudioDeliverablesModal()`), `🗂️ 6 แท็บระบบ (Menu)` (toggles lower enterprise tabs and panels).
+  - **Floating Top-Right Bar & Atmosphere Switcher (`#atmosphereSegmentBar`)**:
+    * Sleek 3-button segmented pill bar replacing clumsy select:
+      - `☀️ กลางวัน (Day)` — **Default starting atmosphere!** Deep vibrant cartoon sky/ocean blue (`#22a6f2`).
+      - `🌅 ยามเย็น (Sunset)` — Warm golden-pink sky and peach ocean.
+      - `🌙 กลางคืน (Night)` — Starry cyber night sky with glowing yellow windows.
+    * Synchronized with hidden `<select id="skyTimeSelect">` for backward compatibility.
+    * Real-time Revenue & Challenge HUD: `🪙 $0 / $1,000` • `DAY 1 OF 30` • `Lv 8 • ⚡ 5-HR 99% | 7-DAY 100%`.
+  - **Floating Bottom-Left `💬 Messages` Box (`#townMessagesBox`)**:
+    * White translucent card (`320px x 230px`, `backdrop-filter: blur(8px)`), header with minimize `[ − ]` button (`toggleTownMessagesBox()`).
+    * Live task handoff feed (`Forge ➔ Hype`, `Critic ➔ Iso`, `Atlas ➔ Vector`, `Jester ➔ Mittens`). Clicking opens that studio's Deliverables Modal.
+  - **Floating Bottom-Right Quick Zone Switcher Bar (`#townZoneSwitcherBar`)**:
+    * 5 core zone pills: `🏛️ Town Hall`, `💻 Tech Studio`, `👕 Online Store`, `🎬 Meme Studio`, `🔮 What-If & Quant`.
+    * Clicking focuses that zone with an animated golden locator beacon spotlight (`focusedZoneTimer = 240`).
+- **Island Canvas Render Loop & 4 Fenced Work Zones (`1440 x 820`)**:
+  - Oval hill at center `(720, 415)` with lush green meadow, sand beach, and ocean with animated wave ripples and drifting cartoon clouds.
+  - Central circular sandy plaza with cobblestone ring pattern.
+  - Central Civic Hall (`drawCentralSquareBuilding`) at `(720, 390)` with blue roof, red clock tower, and clock face.
+  - 2 Giant Glowing Green Battery Cylinders (`drawGiantBattery`):
+    * Left battery: **"5-HOUR 99%"** at `(615, 415)`
+    * Right battery: **"7-DAY 100%"** at `(825, 415)`
+  - Town Hall (12:00, Top Center): Neoclassical white building with 6 white columns, green dome, cupola and flag. Podium with "The Boss" and floating speech callout box: `Cutaway #1 render APPROVED! Accuracy 96%...`
+  - 4 Outer Fenced Work Zones:
+    1. `💻 TECH STUDIO` (Left — 8:30, `260, 420`): Blue zone pill banner, circular white picket fence, wooden arch gate, coastal windmill with 4 rotating lattice sails, and cottages (`Sprocket` with glowing neon `</>`, `Ada`, `Bit`).
+    2. `👕 ONLINE SHIRTS & STORE` (Bottom-Left — 6:30, `440, 610`): Green zone pill banner, circular white picket fence, wooden arch gate, red/white striped Lighthouse with rotating beam, and shop cottages (`Whiskers`, `Calico`, `Mittens`, `Biscuit`).
+    3. `🎬 MEME STUDIO` (Bottom-Right — 5:00, `1000, 610`): Orange zone pill banner, circular white picket fence, wooden arch gate, red-and-white striped Circus Tent (`Jester`), floating party balloons, camera ● REC, and cottages (`Giggle`, `Chuckles`).
+    4. `🔮 WHAT IF & QUANT STUDIO` (Right — 3:30, `1180, 420`): Purple zone pill banner, circular white picket fence, wooden arch gate, observatory tower with telescope, and cottages (`Atlas` with 3D holographic gold trendline, `Iso`, `Vector`, `Pixel`).
+    5. `🌉 OpenClaw Pier` (Top-Left — 10:00, `260, 160`): Wooden walkway extending out into the ocean with pilings, foam splashes, lanterns, and coastal gateway house `OpenClaw`.
+  - Collaborating pipelines with animated parabolic curved light rays and flying task envelopes (✉️).
+  - Full-body chibi AI agents walking paths between zones.
 - **Interactive Deliverables Viewer Modal (`#studioDeliverablesModal`)**:
   - Clicking any building or character opens the modal with real specialized deliverables:
     * Meme Studio: Smartphone mockup with viral Instagram Reel / TikTok preview, script, and engagement stats.

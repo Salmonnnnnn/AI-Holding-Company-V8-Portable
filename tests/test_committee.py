@@ -221,6 +221,27 @@ def test_multi_venture_ai_town_studios_and_deliverables_modal(tmp_path):
     assert "VIP Gold Signal Bot" in html_text
     assert "STUDIO_COLLAB_PIPELINES" in html_text
 
+    # 5. ยืนยัน Single-Page Fullscreen Town Model HUD, 3-Button Segmented Atmosphere Bar และ 4 Outer Fenced Zones
+    assert "atmosphereSegmentBar" in html_text
+    assert "setTownSkyAtmosphere" in html_text
+    assert "toggleTownPause" in html_text
+    assert "toggleTownMessagesBox" in html_text
+    assert "TECH STUDIO" in html_text
+    assert "ONLINE SHIRTS" in html_text
+    assert "MEME STUDIO" in html_text
+    assert "WHAT IF STUDIO" in html_text
+    assert "OpenClaw" in html_text
+    assert "5-HOUR 99%" in html_text
+    assert "7-DAY 100%" in html_text
+    assert "The Boss" in html_text
+    assert "Cutaway #1 render APPROVED!" in html_text
+    assert "Sprocket" in html_text
+    assert "Whiskers" in html_text
+    assert "Jester" in html_text
+    assert "Atlas" in html_text
+    assert "townMessagesBox" in html_text
+    assert "townZoneSwitcherBar" in html_text
+
 
 
 def test_obsidian_knowledge_graph_and_token_saving_router(tmp_path):
