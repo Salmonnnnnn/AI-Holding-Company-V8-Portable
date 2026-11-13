@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Read-only Codex CLI advisor wrapper for architecture review, planning,
+# diff inspection, debugging analysis, and second opinions.
+
+for brew_dir in /opt/homebrew/bin /usr/local/bin; do
+  if [[ -d "$brew_dir" && ":$PATH:" != *":$brew_dir:"* ]]; then
+    export PATH="$brew_dir:$PATH"
+  fi
+done
+
+usage() {
+  cat >&2 <<'EOF'
+Usage: bin/ask-codex "<question or review prompt>"
+
+Read-only Codex CLI advisor for architecture analysis, planning, diff review,
+and second opinions against the current repository.
+EOF
+}
+
+if [[ $# -eq 0 || -z "${*//[[:space:]]/}" ]]; then
+  usage
+  exit 2
+fi
+
+if ! command -v codex >/dev/null 2>&1; then
+  echo "Error: 'codex' CLI not found in PATH." >&2
+  exit 127
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+exec codex exec --sandbox read-only --ephemeral --cd "$REPO_ROOT" "$*"

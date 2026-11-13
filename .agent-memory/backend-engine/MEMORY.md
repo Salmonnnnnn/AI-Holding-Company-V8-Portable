@@ -20,3 +20,4 @@
 ## 📝 Recent Engine Updates
 - Verified python 3.14+ compatibility for `requirements.txt`.
 - Created native macOS launch daemon / shell scripts (`setup_and_start.sh`).
+- Added `bin/ask-codex` read-only advisor wrapper (`codex exec --sandbox read-only --ephemeral --cd <repo>`) and contract test in `tests/test_committee.py`.

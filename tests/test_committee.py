@@ -5,6 +5,7 @@ Ultra-Detailed Cozy Isometric AI Visualizer (@ong_stw style), Light/Dark Theme S
 True Historical Candle/Shift Replay, Token Treasury Allocator & Autonomous Skill Harvester.
 """
 import os
+import subprocess
 import pytest
 from data.market_data import MarketDataEngine
 from data.database import CompanyDatabase
@@ -180,4 +181,27 @@ def test_obsidian_knowledge_graph_and_token_saving_router(tmp_path):
     assert os.path.exists(obs["graph_topology_file"])
     assert os.path.exists(obs["canvas_file"])
     assert obs["canvas_file"].endswith("AI_Company_Knowledge_Map.canvas")
+
+
+def test_ask_codex_advisor_script_contract():
+    """ยืนยันว่าสคริปต์ที่ปรึกษา bin/ask-codex มีอยู่จริง รันได้ บังคับ read-only ephemeral sandbox และแสดง Usage เมื่อไม่ส่งคำถาม"""
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    script_path = os.path.join(repo_root, "bin", "ask-codex")
+
+    assert os.path.isfile(script_path), "bin/ask-codex must exist"
+    assert os.access(script_path, os.X_OK), "bin/ask-codex must be executable"
+
+    with open(script_path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    assert "--sandbox read-only" in content
+    assert "--ephemeral" in content
+    assert "--cd" in content
+    assert "danger-full-access" not in content
+
+    proc = subprocess.run([script_path], capture_output=True, text=True)
+    assert proc.returncode != 0
+    combined_out = (proc.stdout or "") + (proc.stderr or "")
+    assert "usage:" in combined_out.lower()
+
 
