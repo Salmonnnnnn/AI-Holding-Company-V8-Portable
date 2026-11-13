@@ -1674,25 +1674,23 @@ let wavePhase = 0;
 
 // 8 Specialized AI Studios forming the Multi-Venture AI Agent Town (Exmple.mp4)
 const ISO_ROOMS = [
-    {{ id: "TOWN_HALL", name: "🏛️ ทำเนียบผู้บริหาร (The Boss)", sub: "กำกับทิศทาง $1,000", gx: 0, gy: 0, floorCol: "#fef3c7", floorAlt: "#fde68a", wallCol: "#d97706", wallTop: "#fffbeb", badgeDot: "#10b981", propType: "TOWN_HALL" }},
-    {{ id: "TECH_STUDIO", name: "💻 สตูดิโอโค้ดดิ้ง (Tech Studio </ >)", sub: "Micro-SaaS & Bot", gx: 1, gy: 0, floorCol: "#0f172a", floorAlt: "#1e293b", wallCol: "#0284c7", wallTop: "#38bdf8", badgeDot: "#38bdf8", propType: "TECH_STUDIO" }},
-    {{ id: "MEME_STUDIO", name: "🎬 มีมสตูดิโอ (Meme Studio)", sub: "คลิปไวรัล Reels/TikTok", gx: 2, gy: 0, floorCol: "#ffe4e6", floorAlt: "#fecdd3", wallCol: "#f43f5e", wallTop: "#fff1f2", badgeDot: "#f43f5e", propType: "MEME_STUDIO" }},
-    {{ id: "ONLINE_STORE", name: "🏪 ร้านค้าดิจิทัล (Online Store)", sub: "VIP Signal & Prompt", gx: 3, gy: 0, floorCol: "#dcfce7", floorAlt: "#bbf7d0", wallCol: "#10b981", wallTop: "#f0fdf4", badgeDot: "#10b981", propType: "ONLINE_STORE" }},
-    {{ id: "TRADING_LAB", name: "📈 วอร์รูมเทรดดิ้ง (Quant Lab)", sub: "เทรดทองคำ XAUUSD", gx: 0, gy: 1, floorCol: "#e0f2fe", floorAlt: "#bae6fd", wallCol: "#2563eb", wallTop: "#eff6ff", badgeDot: "#10b981", propType: "TRADING_LAB" }},
-    {{ id: "CRITIC_STUDIO", name: "🛡️ สตูดิโอตรวจงาน (Critic & Risk)", sub: "Audit คุณภาพ 100%", gx: 1, gy: 1, floorCol: "#fce7f3", floorAlt: "#fbcfe8", wallCol: "#db2777", wallTop: "#fdf2f8", badgeDot: "#10b981", propType: "CRITIC_STUDIO" }},
-    {{ id: "GROWTH_STUDIO", name: "⚡ สตูดิโอยิงการตลาด (Growth)", sub: "แคมเปญไวรัล & ชุมชน", gx: 2, gy: 1, floorCol: "#ffedd5", floorAlt: "#fed7aa", wallCol: "#ea580c", wallTop: "#fff7ed", badgeDot: "#10b981", propType: "GROWTH_STUDIO" }},
-    {{ id: "COURIER_DISPATCH", name: "📦 ศูนย์กระจายงาน (Dispatch)", sub: "ซิงค์ API & GitHub", gx: 3, gy: 1, floorCol: "#f3e8ff", floorAlt: "#e9d5ff", wallCol: "#7c3aed", wallTop: "#faf5ff", badgeDot: "#10b981", propType: "COURIER_DISPATCH" }}
+    {{ id: "TOWN_HALL", name: "🏛️ ทำเนียบผู้บริหาร (The Boss)", sub: "กำกับทิศทาง $1,000", gx: 0, gy: 0, x: 570, y: 130, floorCol: "#fef3c7", floorAlt: "#fde68a", wallCol: "#d97706", wallTop: "#fffbeb", badgeDot: "#10b981", propType: "TOWN_HALL" }},
+    {{ id: "COURIER_DISPATCH", name: "🔬 ควอนต์ & หอดูดาว (Observatory & Dispatch)", sub: "ซิงค์ API & ลิควิดิตี้", gx: 3, gy: 1, x: 850, y: 185, floorCol: "#f3e8ff", floorAlt: "#e9d5ff", wallCol: "#7c3aed", wallTop: "#faf5ff", badgeDot: "#10b981", propType: "COURIER_DISPATCH" }},
+    {{ id: "TRADING_LAB", name: "📈 วอร์รูมเทรดดิ้ง (Quant Lab)", sub: "เทรดทองคำ XAUUSD", gx: 0, gy: 1, x: 925, y: 290, floorCol: "#e0f2fe", floorAlt: "#bae6fd", wallCol: "#2563eb", wallTop: "#eff6ff", badgeDot: "#10b981", propType: "TRADING_LAB" }},
+    {{ id: "ONLINE_STORE", name: "🏪 ร้านค้าดิจิทัล (Online Store)", sub: "VIP Signal & Prompt", gx: 3, gy: 0, x: 815, y: 395, floorCol: "#dcfce7", floorAlt: "#bbf7d0", wallCol: "#10b981", wallTop: "#f0fdf4", badgeDot: "#10b981", propType: "ONLINE_STORE" }},
+    {{ id: "MEME_STUDIO", name: "🎬 มีมสตูดิโอ (Meme Studio)", sub: "คลิปไวรัล Reels/TikTok", gx: 2, gy: 0, x: 570, y: 440, floorCol: "#ffe4e6", floorAlt: "#fecdd3", wallCol: "#f43f5e", wallTop: "#fff1f2", badgeDot: "#f43f5e", propType: "MEME_STUDIO" }},
+    {{ id: "GROWTH_STUDIO", name: "⚡ สตูดิโอยิงการตลาด (Growth)", sub: "แคมเปญไวรัล & ชุมชน", gx: 2, gy: 1, x: 325, y: 395, floorCol: "#ffedd5", floorAlt: "#fed7aa", wallCol: "#ea580c", wallTop: "#fff7ed", badgeDot: "#10b981", propType: "GROWTH_STUDIO" }},
+    {{ id: "TECH_STUDIO", name: "💻 สตูดิโอโค้ดดิ้ง (Tech Studio </ >)", sub: "Micro-SaaS & Bot", gx: 1, gy: 0, x: 215, y: 290, floorCol: "#0f172a", floorAlt: "#1e293b", wallCol: "#0284c7", wallTop: "#38bdf8", badgeDot: "#38bdf8", propType: "TECH_STUDIO" }},
+    {{ id: "CRITIC_STUDIO", name: "🛡️ สตูดิโอตรวจงาน (Critic & Risk)", sub: "Audit คุณภาพ 100%", gx: 1, gy: 1, x: 290, y: 185, floorCol: "#fce7f3", floorAlt: "#fbcfe8", wallCol: "#db2777", wallTop: "#fdf2f8", badgeDot: "#10b981", propType: "CRITIC_STUDIO" }}
 ];
 
-// Connected zero-gap Isometric grid projection
+// Connected circular town coordinate projection
 function isoProject(gx, gy) {{
-    const originX = 485;
-    const originY = 148;
-    const tileW = 204;
-    const tileH = 104;
-    const sx = originX + (gx - gy) * (tileW / 2);
-    const sy = originY + (gx + gy) * (tileH / 2);
-    return {{ x: sx, y: sy, w: tileW, h: tileH }};
+    const rm = ISO_ROOMS.find(r => r.gx === gx && r.gy === gy);
+    if (rm && rm.x !== undefined) {{
+        return {{ x: rm.x, y: rm.y, w: 140, h: 80 }};
+    }}
+    return {{ x: 570 + (gx - gy) * 80, y: 280 + (gx + gy) * 45, w: 140, h: 80 }};
 }}
 
 // Hair & Outfit customization for each of the 11 Chibi AI Agents
@@ -1713,19 +1711,57 @@ const CHIBI_STYLES = [
 const isoSprites = APP.office.agents_roster.map((ag, idx) => {{
     const rmIdx = idx % ISO_ROOMS.length;
     const rm = ISO_ROOMS[rmIdx];
-    const p = isoProject(rm.gx, rm.gy);
+    let initX = rm.x + ((idx % 3) - 1) * 20;
+    let initY = rm.y + 36 + ((idx % 2) * 8);
+    let initSpeech = "";
+
+    if (idx === 0) {{
+        initX = 570; initY = 166;
+        initSpeech = "Directing all 8 studios...";
+    }} else if (idx === 1) {{
+        initX = 598; initY = 168;
+        initSpeech = "Checking Daily Memo ✔";
+    }} else if (idx === 2) {{
+        initX = 538; initY = 462;
+        initSpeech = "Writing viral Reel hook...";
+    }} else if (idx === 3) {{
+        initX = 205; initY = 322;
+        initSpeech = "Building lead harvester bot...";
+    }} else if (idx === 4) {{
+        initX = 905; initY = 322;
+        initSpeech = "Gold XAUUSD testing $3,900 support...";
+    }} else if (idx === 5) {{
+        initX = 945; initY = 322;
+        initSpeech = "Yields down, gold breakout!";
+    }} else if (idx === 6) {{
+        initX = 602; initY = 462;
+        initSpeech = "Rendering 9:16 video...";
+    }} else if (idx === 7) {{
+        initX = 275; initY = 216;
+        initSpeech = "Reviewing code pull request...";
+    }} else if (idx === 8) {{
+        initX = 312; initY = 216;
+        initSpeech = "Audit checklist 100% verified!";
+    }} else if (idx === 9) {{
+        initX = 245; initY = 322;
+        initSpeech = "Compiling API...";
+    }} else if (idx === 10) {{
+        initX = 825; initY = 422;
+        initSpeech = "New order: VIP Signal $29!";
+    }}
+
     return {{
         ag: ag,
         style: CHIBI_STYLES[idx % CHIBI_STYLES.length],
         rmIdx: rmIdx,
-        x: p.x + ((idx % 3) - 1) * 24,
-        y: p.y + 52 + ((idx % 2) * 12),
-        tx: p.x + ((idx % 3) - 1) * 24,
-        ty: p.y + 52 + ((idx % 2) * 12),
+        x: initX,
+        y: initY,
+        tx: initX,
+        ty: initY,
         walkPhase: idx * 1.1,
         facingRight: true,
-        speech: idx === 0 ? `สั่ง ${{APP.cio.action}}!` : (idx === 3 ? "วิจัยสกิล o1-Pro..." : ""),
-        speechTimer: idx % 3 === 0 ? 180 : 0
+        speech: initSpeech,
+        speechTimer: 240
     }};
 }});
 
@@ -2221,7 +2257,6 @@ function computeAgentEnergyPct(ag) {{
 // Draw Aurum Isle AI Agent Town House Roof Gable + 3D Glowing Green Battery Cylinder & % Badge
 function drawAgentTownHouseAndBattery(ctx, rm, p, energyPct, codeLabel) {{
     const wallH = 38;
-    // 1. Cozy Pitched Town-House Roof Gable on Back Apex (preserves cutaway interior view)
     const rx = p.x;
     const ry = p.y - wallH;
     ctx.fillStyle = rm.wallCol;
@@ -2236,13 +2271,11 @@ function drawAgentTownHouseAndBattery(ctx, rm, p, energyPct, codeLabel) {{
     ctx.fill();
     ctx.stroke();
 
-    // Roof ridge highlight
     ctx.fillStyle = rm.wallTop;
     ctx.beginPath();
     ctx.arc(rx, ry - 5, 3.5, 0, Math.PI * 2);
     ctx.fill();
 
-    // 2. 3D Glowing Cylindrical Green Energy Battery Pillar (inspired by @not_nang AI Town Reel)
     const bx = p.x + 54;
     const by = p.y + 46;
     const radX = 9.5;
@@ -2250,7 +2283,6 @@ function drawAgentTownHouseAndBattery(ctx, rm, p, energyPct, codeLabel) {{
     const cylH = 26;
     const fillH = Math.max(6, Math.round((Math.min(100, Math.max(10, energyPct)) / 100) * cylH));
 
-    // Outer neon green aura
     const glow = ctx.createRadialGradient(bx, by - cylH / 2, 2, bx, by - cylH / 2, 22);
     glow.addColorStop(0, "rgba(34, 197, 94, 0.42)");
     glow.addColorStop(1, "rgba(34, 197, 94, 0.0)");
@@ -2259,7 +2291,6 @@ function drawAgentTownHouseAndBattery(ctx, rm, p, energyPct, codeLabel) {{
     ctx.arc(bx, by - cylH / 2, 22, 0, Math.PI * 2);
     ctx.fill();
 
-    // Dark metallic base platform
     ctx.fillStyle = "#1e293b";
     ctx.strokeStyle = "#475569";
     ctx.lineWidth = 1.2;
@@ -2268,11 +2299,9 @@ function drawAgentTownHouseAndBattery(ctx, rm, p, energyPct, codeLabel) {{
     ctx.fill();
     ctx.stroke();
 
-    // Cylinder glass shell background
     ctx.fillStyle = "rgba(15, 23, 42, 0.55)";
     ctx.fillRect(bx - radX, by - cylH, radX * 2, cylH);
 
-    // Glowing green energy cylinder body
     const bodyGrad = ctx.createLinearGradient(bx - radX, by - fillH, bx + radX, by);
     bodyGrad.addColorStop(0, "#4ade80");
     bodyGrad.addColorStop(0.5, "#22c55e");
@@ -2287,7 +2316,6 @@ function drawAgentTownHouseAndBattery(ctx, rm, p, energyPct, codeLabel) {{
     ctx.closePath();
     ctx.fill();
 
-    // Cylinder top glowing ellipse
     ctx.fillStyle = "#86efac";
     ctx.strokeStyle = "#16a34a";
     ctx.lineWidth = 1;
@@ -2296,13 +2324,11 @@ function drawAgentTownHouseAndBattery(ctx, rm, p, energyPct, codeLabel) {{
     ctx.fill();
     ctx.stroke();
 
-    // Dark battery terminal cap on top
     ctx.fillStyle = "#1e293b";
     ctx.beginPath();
     ctx.ellipse(bx, by - cylH - 2, 4.5, 2.2, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Floating white % badge above the battery pillar (e.g. "98%" / "100%")
     const pctTxt = `${{energyPct}}%`;
     ctx.font = "bold 9.5px 'Segoe UI', sans-serif";
     const tw = Math.max(ctx.measureText(pctTxt).width, ctx.measureText(codeLabel).width) + 10;
@@ -2326,218 +2352,895 @@ function drawAgentTownHouseAndBattery(ctx, rm, p, energyPct, codeLabel) {{
     ctx.fillText(pctTxt, bx, tagY + 16);
 }}
 
-function renderIsometricCompany() {{
-    if (!isoCtx || !isoCanvas) return;
-    const W = isoCanvas.width, H = isoCanvas.height;
-    wavePhase += 0.04;
-    isoCtx.clearRect(0, 0, W, H);
+// Draw Layered Forest Pine Tree
+function drawPineTree(ctx, px, py, scale) {{
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.scale(scale, scale);
+    ctx.fillStyle = "#78350f";
+    ctx.fillRect(-3.5, -10, 7, 10);
+    const layers = [
+        {{ y: -8, w: 26, h: 18, col: "#14532d" }},
+        {{ y: -19, w: 21, h: 16, col: "#166534" }},
+        {{ y: -29, w: 15, h: 14, col: "#15803d" }}
+    ];
+    layers.forEach(l => {{
+        ctx.fillStyle = l.col;
+        ctx.beginPath();
+        ctx.moveTo(0, l.y - l.h);
+        ctx.lineTo(l.w / 2, l.y);
+        ctx.quadraticCurveTo(0, l.y - 3, -l.w / 2, l.y);
+        ctx.closePath();
+        ctx.fill();
+    }});
+    ctx.fillStyle = "#86efac";
+    ctx.beginPath();
+    ctx.arc(0, -42, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}}
 
-    // 1. Sky & Ocean Background (Aurum Isle — Beachside AI Agent Town)
-    const skyGrad = isoCtx.createLinearGradient(0, 0, 0, H);
+// Draw Red and White Spotted Mushroom
+function drawMushroom(ctx, mx, my) {{
+    ctx.save();
+    ctx.fillStyle = "#fef08a";
+    ctx.fillRect(mx - 1.8, my - 5, 3.6, 5);
+    ctx.fillStyle = "#ef4444";
+    ctx.beginPath();
+    ctx.arc(mx, my - 5, 5, Math.PI, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(mx - 2, my - 7, 1.1, 0, Math.PI * 2);
+    ctx.arc(mx + 2, my - 7, 1.1, 0, Math.PI * 2);
+    ctx.arc(mx, my - 9, 1.1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}}
+
+// Draw White Picket Fence Segment
+function drawPicketFence(ctx, x1, y1, x2, y2) {{
+    ctx.save();
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1 - 4);
+    ctx.lineTo(x2, y2 - 4);
+    ctx.moveTo(x1, y1 - 9);
+    ctx.lineTo(x2, y2 - 9);
+    ctx.stroke();
+    const count = Math.max(3, Math.round(Math.hypot(x2 - x1, y2 - y1) / 7));
+    for (let i = 0; i <= count; i++) {{
+        const t = i / count;
+        const px = x1 + (x2 - x1) * t;
+        const py = y1 + (y2 - y1) * t;
+        ctx.fillStyle = "#ffffff";
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(px - 1.8, py);
+        ctx.lineTo(px - 1.8, py - 12);
+        ctx.lineTo(px, py - 15);
+        ctx.lineTo(px + 1.8, py - 12);
+        ctx.lineTo(px + 1.8, py);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    }}
+    ctx.restore();
+}}
+
+// Draw Giant 3D Glowing Green Battery Cylinder in Central Plaza (Exmple.mp4)
+function drawGiantBattery(ctx, bx, by, labelText, pctVal, isOverclock) {{
+    const radX = 17;
+    const radY = 8.5;
+    const cylH = 58;
+    const fillH = Math.round((pctVal / 100) * cylH);
+
+    // 1. Outer pulsating green aura
+    const glow = ctx.createRadialGradient(bx, by - cylH / 2, 6, bx, by - cylH / 2, 48);
+    glow.addColorStop(0, "rgba(74, 222, 128, 0.55)");
+    glow.addColorStop(0.5, "rgba(34, 197, 94, 0.25)");
+    glow.addColorStop(1, "rgba(34, 197, 94, 0.0)");
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(bx, by - cylH / 2, 48, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. Heavy dark metallic pedestal
+    ctx.fillStyle = "#0f172a";
+    ctx.strokeStyle = "#22c55e";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(bx, by + 4, radX + 5, radY + 2.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // 3. Cylinder transparent glass shell
+    ctx.fillStyle = "rgba(15, 23, 42, 0.65)";
+    ctx.fillRect(bx - radX, by - cylH, radX * 2, cylH);
+
+    // 4. Glowing green plasma energy fill
+    const grad = ctx.createLinearGradient(bx - radX, by - fillH, bx + radX, by);
+    grad.addColorStop(0, "#86efac");
+    grad.addColorStop(0.3, "#4ade80");
+    grad.addColorStop(0.7, "#22c55e");
+    grad.addColorStop(1, "#15803d");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(bx - radX, by);
+    ctx.lineTo(bx - radX, by - fillH);
+    ctx.ellipse(bx, by - fillH, radX, radY, 0, Math.PI, 0, true);
+    ctx.lineTo(bx + radX, by);
+    ctx.ellipse(bx, by, radX, radY, 0, 0, Math.PI, false);
+    ctx.closePath();
+    ctx.fill();
+
+    // 5. Animated electrical sparks inside cylinder
+    const sparkPhase = (Date.now() / 200) % 6;
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    const sy1 = by - 8 - sparkPhase * 6;
+    ctx.moveTo(bx - 6, sy1);
+    ctx.lineTo(bx + 2, sy1 - 5);
+    ctx.lineTo(bx - 3, sy1 - 10);
+    ctx.lineTo(bx + 6, sy1 - 15);
+    ctx.stroke();
+
+    // 6. Cylinder top glowing ellipse & metallic cap
+    ctx.fillStyle = "#86efac";
+    ctx.strokeStyle = "#4ade80";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.ellipse(bx, by - cylH, radX, radY, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#1e293b";
+    ctx.strokeStyle = "#64748b";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(bx, by - cylH - 3, 7, 3.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // 7. Floating White Rounded Status Badge above Cylinder ("2-HOUR 99%" or "7-DAY 100%")
+    const badgeW = 98;
+    const badgeH = 26;
+    const tagX = bx - badgeW / 2;
+    const tagY = by - cylH - 36;
+
+    ctx.fillStyle = "rgba(15, 23, 42, 0.25)";
+    ctx.beginPath();
+    ctx.roundRect(tagX + 2, tagY + 2, badgeW, badgeH, 7);
+    ctx.fill();
+
+    ctx.fillStyle = "rgba(255, 255, 255, 0.98)";
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.roundRect(tagX, tagY, badgeW, badgeH, 7);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "900 11.5px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(labelText, bx, tagY + 17.5);
+}}
+
+// Draw Central Town Square Building between the 2 Giant Batteries
+function drawCentralSquareBuilding(ctx, cx, cy) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.22)";
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + 22, 38, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#fef3c7";
+    ctx.strokeStyle = "#78350f";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(cx - 30, cy - 14, 60, 32);
+    ctx.strokeRect(cx - 30, cy - 14, 60, 32);
+
+    ctx.fillStyle = "#92400e";
+    ctx.beginPath();
+    ctx.arc(cx, cy + 8, 7, Math.PI, 0);
+    ctx.rect(cx - 7, cy + 8, 14, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#1e3a8a";
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx - 38, cy - 14);
+    ctx.lineTo(cx, cy - 36);
+    ctx.lineTo(cx + 38, cy - 14);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#b91c1c";
+    ctx.fillRect(cx - 10, cy - 54, 20, 20);
+    ctx.strokeRect(cx - 10, cy - 54, 20, 20);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#f59e0b";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(cx, cy - 44, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#7f1d1d";
+    ctx.beginPath();
+    ctx.moveTo(cx - 11, cy - 54);
+    ctx.lineTo(cx, cy - 72);
+    ctx.lineTo(cx + 11, cy - 54);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.strokeStyle = "#fbbf24";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 72);
+    ctx.lineTo(cx, cy - 80);
+    ctx.moveTo(cx - 3.5, cy - 77);
+    ctx.lineTo(cx + 3.5, cy - 77);
+    ctx.stroke();
+    ctx.restore();
+}}
+
+// 1. Town Hall (Neoclassical white building with 6 marble columns, triangular pediment, entrance stairs, green dome with cupola & flag)
+function drawTownHallBuilding(ctx, x, y) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.26)";
+    ctx.beginPath();
+    ctx.ellipse(x, y + 26, 68, 22, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    for (let i = 0; i < 3; i++) {{
+        ctx.fillStyle = i === 2 ? "#e2e8f0" : "#f8fafc";
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 1;
+        ctx.fillRect(x - 52 + i * 4, y + 16 + i * 4, 104 - i * 8, 5);
+        ctx.strokeRect(x - 52 + i * 4, y + 16 + i * 4, 104 - i * 8, 5);
+    }}
+
+    ctx.fillStyle = "#f8fafc";
+    ctx.strokeStyle = "#94a3b8";
+    ctx.lineWidth = 1.4;
+    ctx.fillRect(x - 46, y - 24, 92, 40);
+    ctx.strokeRect(x - 46, y - 24, 92, 40);
+
+    const colXs = [-40, -24, -8, 8, 24, 40];
+    colXs.forEach(cx => {{
+        ctx.fillStyle = "#f1f5f9";
+        ctx.fillRect(x + cx - 3, y - 22, 6, 38);
+        ctx.fillStyle = "#fbbf24";
+        ctx.fillRect(x + cx - 4.5, y - 24, 9, 3);
+        ctx.fillRect(x + cx - 4.5, y + 13, 9, 3);
+    }});
+
+    ctx.fillStyle = "#f8fafc";
+    ctx.strokeStyle = "#94a3b8";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x - 48, y - 24);
+    ctx.lineTo(x, y - 46);
+    ctx.lineTo(x + 48, y - 24);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#fbbf24";
+    ctx.beginPath();
+    ctx.arc(x, y - 32, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    const domeGrad = ctx.createRadialGradient(x - 6, y - 62, 4, x, y - 52, 28);
+    domeGrad.addColorStop(0, "#4ade80");
+    domeGrad.addColorStop(0.35, "#22c55e");
+    domeGrad.addColorStop(0.8, "#16a34a");
+    domeGrad.addColorStop(1, "#14532d");
+    ctx.fillStyle = domeGrad;
+    ctx.beginPath();
+    ctx.arc(x, y - 46, 26, Math.PI, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = "#0f172a";
+    ctx.stroke();
+
+    ctx.fillStyle = "#f8fafc";
+    ctx.fillRect(x - 6, y - 76, 12, 6);
+    ctx.fillStyle = "#fbbf24";
+    ctx.fillRect(x - 1, y - 88, 2, 12);
+    ctx.fillStyle = "#ef4444";
+    ctx.beginPath();
+    ctx.moveTo(x + 1, y - 88);
+    ctx.lineTo(x + 15, y - 84);
+    ctx.lineTo(x + 1, y - 80);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#78350f";
+    ctx.fillRect(x - 8, y + 20, 16, 10);
+    ctx.fillStyle = "#fbbf24";
+    ctx.beginPath();
+    ctx.arc(x, y + 19, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}}
+
+// 2. Tech Studio / Forge (Cyber dark cube with cyan neon trim, roof antenna, glowing </> emblem)
+function drawTechStudioBuilding(ctx, x, y) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.28)";
+    ctx.beginPath();
+    ctx.ellipse(x, y + 24, 46, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#090d16";
+    ctx.strokeStyle = "#0284c7";
+    ctx.lineWidth = 2;
+    ctx.fillRect(x - 34, y - 24, 68, 44);
+    ctx.strokeRect(x - 34, y - 24, 68, 44);
+
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(x - 31, y - 21, 62, 38);
+
+    const isBlink = (Math.floor(Date.now() / 250) % 2 === 0);
+    for (let r = 0; r < 4; r++) {{
+        const ry = y - 14 + r * 8;
+        ctx.fillStyle = (r % 2 === 0 ? (isBlink ? "#38bdf8" : "#0284c7") : "#10b981");
+        ctx.fillRect(x - 24, ry, 6, 3.5);
+        ctx.fillStyle = "#38bdf8";
+        ctx.fillRect(x + 18, ry, 6, 3.5);
+    }}
+
+    ctx.fillStyle = "#1e293b";
+    ctx.fillRect(x - 10, y + 2, 20, 18);
+    ctx.strokeStyle = "#06b6d4";
+    ctx.strokeRect(x - 10, y + 2, 20, 18);
+
+    ctx.strokeStyle = "#64748b";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x + 18, y - 24);
+    ctx.lineTo(x + 18, y - 44);
+    ctx.stroke();
+    ctx.fillStyle = (Math.floor(Date.now() / 350) % 2 === 0) ? "#ef4444" : "#7f1d1d";
+    ctx.beginPath();
+    ctx.arc(x + 18, y - 45, 3.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.font = "900 20px 'Consolas', monospace";
+    ctx.fillStyle = "#38bdf8";
+    ctx.textAlign = "center";
+    ctx.shadowColor = "#38bdf8";
+    ctx.shadowBlur = 12;
+    ctx.fillText("</>", x - 6, y - 32);
+    ctx.shadowBlur = 0;
+    ctx.restore();
+}}
+
+// 3. Meme Studio (Entrance arch, circus tent/big top, balloons, camera on tripod ● REC)
+function drawMemeStudioBuilding(ctx, x, y) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.24)";
+    ctx.beginPath();
+    ctx.ellipse(x, y + 24, 62, 20, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#78350f";
+    ctx.fillRect(x - 48, y - 8, 6, 30);
+    ctx.fillRect(x + 42, y - 8, 6, 30);
+    ctx.fillStyle = "#92400e";
+    ctx.fillRect(x - 52, y - 18, 104, 12);
+    ctx.fillStyle = "#fef08a";
+    ctx.font = "bold 9px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("🎪 MEME STUDIO", x, y - 9.5);
+
+    const tx = x - 22;
+    const ty = y - 4;
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.moveTo(tx - 26, ty + 12);
+    ctx.lineTo(tx, ty - 26);
+    ctx.lineTo(tx + 26, ty + 12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#ef4444";
+    for (let s = -2; s <= 2; s++) {{
+        if (s % 2 === 0) {{
+            ctx.beginPath();
+            ctx.moveTo(tx, ty - 26);
+            ctx.lineTo(tx + s * 10 - 5, ty + 12);
+            ctx.lineTo(tx + s * 10 + 5, ty + 12);
+            ctx.closePath();
+            ctx.fill();
+        }}
+    }}
+    ctx.fillStyle = "#fef08a";
+    ctx.beginPath();
+    ctx.arc(tx, ty - 28, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#ffe4e6";
+    ctx.strokeStyle = "#f43f5e";
+    ctx.lineWidth = 1.4;
+    ctx.fillRect(x + 10, y - 8, 32, 26);
+    ctx.strokeRect(x + 10, y - 8, 32, 26);
+    ctx.fillStyle = "#f43f5e";
+    ctx.beginPath();
+    ctx.moveTo(x + 6, y - 8);
+    ctx.lineTo(x + 26, y - 24);
+    ctx.lineTo(x + 46, y - 8);
+    ctx.closePath();
+    ctx.fill();
+
+    const camX = x - 38, camY = y + 10;
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(camX, camY);
+    ctx.lineTo(camX - 6, camY + 16);
+    ctx.moveTo(camX, camY);
+    ctx.lineTo(camX + 6, camY + 16);
+    ctx.stroke();
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(camX - 6, camY - 7, 13, 9);
+    ctx.fillStyle = "#38bdf8";
+    ctx.beginPath();
+    ctx.arc(camX + 8, camY - 2.5, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = (Math.floor(Date.now() / 400) % 2 === 0) ? "#ef4444" : "#7f1d1d";
+    ctx.beginPath();
+    ctx.arc(camX - 4, camY - 9, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    const bPhase = Math.sin(Date.now() / 400) * 3;
+    ctx.strokeStyle = "#cbd5e1";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 36, y - 6);
+    ctx.lineTo(x + 32, y - 36 + bPhase);
+    ctx.stroke();
+    ctx.fillStyle = "#f43f5e";
+    ctx.beginPath();
+    ctx.ellipse(x + 32, y - 38 + bPhase, 7, 9, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#fbbf24";
+    ctx.beginPath();
+    ctx.ellipse(x + 40, y - 44 + bPhase, 6, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#38bdf8";
+    ctx.beginPath();
+    ctx.ellipse(x + 24, y - 42 + bPhase, 6, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}}
+
+// 4. Online Store (Storefront with striped red/white awning, display window, store sign)
+function drawOnlineStoreBuilding(ctx, x, y) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.25)";
+    ctx.beginPath();
+    ctx.ellipse(x, y + 24, 48, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#dcfce7";
+    ctx.strokeStyle = "#10b981";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(x - 34, y - 20, 68, 40);
+    ctx.strokeRect(x - 34, y - 20, 68, 40);
+
+    ctx.fillStyle = "#065f46";
+    ctx.beginPath();
+    ctx.moveTo(x - 40, y - 20);
+    ctx.lineTo(x, y - 40);
+    ctx.lineTo(x + 40, y - 20);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#1e293b";
+    ctx.fillRect(x - 28, y - 30, 56, 12);
+    ctx.fillStyle = "#fbbf24";
+    ctx.font = "bold 8.5px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("🏪 AI STORE", x, y - 21);
+
+    const awY = y - 12;
+    for (let i = 0; i < 7; i++) {{
+        ctx.fillStyle = (i % 2 === 0) ? "#ef4444" : "#ffffff";
+        ctx.fillRect(x - 32 + i * 9.2, awY, 9.2, 11);
+        ctx.beginPath();
+        ctx.arc(x - 32 + i * 9.2 + 4.6, awY + 11, 4.6, 0, Math.PI);
+        ctx.fill();
+    }}
+
+    ctx.fillStyle = "#fef08a";
+    ctx.fillRect(x - 26, y + 3, 24, 14);
+    ctx.strokeStyle = "#b45309";
+    ctx.strokeRect(x - 26, y + 3, 24, 14);
+    ctx.fillStyle = "#2563eb";
+    ctx.fillRect(x - 23, y + 7, 6, 8);
+    ctx.fillStyle = "#10b981";
+    ctx.fillRect(x - 14, y + 6, 8, 9);
+
+    ctx.fillStyle = "#78350f";
+    ctx.fillRect(x + 6, y + 2, 18, 18);
+
+    ctx.fillStyle = "#d97706";
+    ctx.fillRect(x + 26, y + 10, 10, 10);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(x + 29, y + 12, 4, 3);
+    ctx.restore();
+}}
+
+// 5. Trading War Room (Brick cottage, multi-monitor terminals, holographic gold candlestick chart)
+function drawTradingWarRoomBuilding(ctx, x, y) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.25)";
+    ctx.beginPath();
+    ctx.ellipse(x, y + 24, 48, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#991b1b";
+    ctx.strokeStyle = "#450a0a";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(x - 34, y - 20, 68, 40);
+    ctx.strokeRect(x - 34, y - 20, 68, 40);
+
+    ctx.strokeStyle = "#7f1d1d";
+    ctx.lineWidth = 1;
+    for (let b = 0; b < 3; b++) {{
+        ctx.beginPath();
+        ctx.moveTo(x - 34, y - 10 + b * 10);
+        ctx.lineTo(x + 34, y - 10 + b * 10);
+        ctx.stroke();
+    }}
+
+    ctx.fillStyle = "#1e293b";
+    ctx.beginPath();
+    ctx.moveTo(x - 40, y - 20);
+    ctx.lineTo(x, y - 42);
+    ctx.lineTo(x + 40, y - 20);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#475569";
+    ctx.fillRect(x + 18, y - 46, 8, 14);
+    const smPhase = Math.sin(Date.now() / 300) * 2;
+    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+    ctx.beginPath();
+    ctx.arc(x + 22 + smPhase, y - 52, 3.5, 0, Math.PI * 2);
+    ctx.arc(x + 24 + smPhase, y - 58, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(x - 28, y - 2, 30, 18);
+    ctx.strokeStyle = "#38bdf8";
+    ctx.strokeRect(x - 28, y - 2, 30, 18);
+    ctx.fillStyle = "#10b981";
+    ctx.fillRect(x - 24, y + 4, 3, 8);
+    ctx.fillRect(x - 14, y + 2, 3, 10);
+    ctx.fillStyle = "#ef4444";
+    ctx.fillRect(x - 19, y + 6, 3, 6);
+
+    const hcX = x + 16, hcY = y - 4;
+    ctx.fillStyle = "rgba(15, 23, 42, 0.75)";
+    ctx.strokeStyle = "#fbbf24";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.roundRect(hcX - 12, hcY - 14, 30, 24, 4);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#10b981";
+    ctx.fillRect(hcX - 8, hcY - 6, 2.5, 10);
+    ctx.fillRect(hcX + 6, hcY - 10, 2.5, 14);
+    ctx.fillStyle = "#ef4444";
+    ctx.fillRect(hcX - 1, hcY - 2, 2.5, 7);
+    ctx.fillStyle = "#fbbf24";
+    ctx.font = "900 7px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("$3,900", hcX + 3, hcY + 8);
+    ctx.restore();
+}}
+
+// 6. Quant Observatory & Dispatch Hub (Cylindrical tower, revolving dome, telescope, parcels)
+function drawQuantObservatoryBuilding(ctx, x, y) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.25)";
+    ctx.beginPath();
+    ctx.ellipse(x, y + 24, 48, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#f8fafc";
+    ctx.strokeStyle = "#94a3b8";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(x - 24, y - 22, 48, 42);
+    ctx.strokeRect(x - 24, y - 22, 48, 42);
+
+    ctx.strokeStyle = "#cbd5e1";
+    ctx.beginPath();
+    ctx.moveTo(x - 24, y - 8); ctx.lineTo(x + 24, y - 8);
+    ctx.moveTo(x - 24, y + 6); ctx.lineTo(x + 24, y + 6);
+    ctx.stroke();
+
+    const dGrad = ctx.createRadialGradient(x - 6, y - 36, 4, x, y - 28, 26);
+    dGrad.addColorStop(0, "#f1f5f9");
+    dGrad.addColorStop(0.5, "#cbd5e1");
+    dGrad.addColorStop(1, "#64748b");
+    ctx.fillStyle = dGrad;
+    ctx.beginPath();
+    ctx.arc(x, y - 22, 24, Math.PI, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = "#475569";
+    ctx.stroke();
+
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(x - 4, y - 44, 8, 22);
+
+    ctx.strokeStyle = "#fbbf24";
+    ctx.lineWidth = 4;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x - 2, y - 32);
+    ctx.lineTo(x + 26, y - 56);
+    ctx.stroke();
+
+    ctx.fillStyle = "#7c3aed";
+    ctx.fillRect(x + 24, y + 2, 18, 18);
+    ctx.fillStyle = "#fbbf24";
+    ctx.fillRect(x + 28, y + 8, 10, 8);
+    ctx.restore();
+}}
+
+// 7. Critic Studio (Stone cottage with picket fence, golden audit shield, magnifying glass)
+function drawCriticStudioBuilding(ctx, x, y) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.25)";
+    ctx.beginPath();
+    ctx.ellipse(x, y + 24, 46, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#fce7f3";
+    ctx.strokeStyle = "#db2777";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(x - 32, y - 20, 64, 40);
+    ctx.strokeRect(x - 32, y - 20, 64, 40);
+
+    ctx.fillStyle = "#831843";
+    ctx.beginPath();
+    ctx.moveTo(x - 38, y - 20);
+    ctx.lineTo(x, y - 40);
+    ctx.lineTo(x + 38, y - 20);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#fbbf24";
+    ctx.strokeStyle = "#d97706";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(x, y - 32);
+    ctx.lineTo(x + 9, y - 27);
+    ctx.lineTo(x + 6, y - 17);
+    ctx.lineTo(x, y - 12);
+    ctx.lineTo(x - 6, y - 17);
+    ctx.lineTo(x - 9, y - 27);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#4c0519";
+    ctx.fillRect(x - 8, y + 2, 16, 18);
+    ctx.fillStyle = "#fbbf24";
+    ctx.beginPath();
+    ctx.arc(x + 14, y + 6, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawPicketFence(ctx, x - 34, y + 22, x + 34, y + 22);
+    ctx.restore();
+}}
+
+// 8. Growth & Hype Studio (Purple cottage with golden megaphone / horn on roof, viral hype banners)
+function drawGrowthStudioBuilding(ctx, x, y) {{
+    ctx.save();
+    ctx.fillStyle = "rgba(15, 23, 42, 0.25)";
+    ctx.beginPath();
+    ctx.ellipse(x, y + 24, 46, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#7c3aed";
+    ctx.strokeStyle = "#4c1d95";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(x - 32, y - 20, 64, 40);
+    ctx.strokeRect(x - 32, y - 20, 64, 40);
+
+    ctx.fillStyle = "#ea580c";
+    ctx.beginPath();
+    ctx.moveTo(x - 38, y - 20);
+    ctx.lineTo(x, y - 40);
+    ctx.lineTo(x + 38, y - 20);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#fbbf24";
+    ctx.strokeStyle = "#b45309";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x - 8, y - 42);
+    ctx.lineTo(x + 12, y - 50);
+    ctx.lineTo(x + 12, y - 34);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    const ringPhase = (Date.now() / 250) % 3;
+    ctx.strokeStyle = "#fef08a";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(x + 16, y - 42, 4 + ringPhase * 3, -Math.PI * 0.4, Math.PI * 0.4);
+    ctx.stroke();
+
+    ctx.fillStyle = "#fed7aa";
+    ctx.fillRect(x - 24, y - 8, 48, 12);
+    ctx.fillStyle = "#ea580c";
+    ctx.font = "bold 8.5px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("⚡ VIRAL HYPE", x, y + 1);
+
+    ctx.fillStyle = "#ffedd5";
+    ctx.fillRect(x - 8, y + 6, 16, 14);
+    ctx.restore();
+}}
+
+// Draw Lush Circular Island Meadow, Shore, Ocean & Central Plaza (Exmple.mp4)
+function drawLushCircularIsland(ctx, W, H) {{
+    const skyGrad = ctx.createLinearGradient(0, 0, 0, H);
     if (skyTheme === "SUNSET") {{
         skyGrad.addColorStop(0, "#f472b6");
         skyGrad.addColorStop(0.24, "#fdba74");
         skyGrad.addColorStop(0.46, "#38bdf8");
         skyGrad.addColorStop(1, "#0284c7");
-    }} else if (skyTheme === "MORNING") {{
-        skyGrad.addColorStop(0, "#38bdf8");
-        skyGrad.addColorStop(0.45, "#7dd3fc");
-        skyGrad.addColorStop(1, "#0369a1");
-    }} else {{
+    }} else if (skyTheme === "NIGHT") {{
         skyGrad.addColorStop(0, "#050811");
         skyGrad.addColorStop(0.45, "#0f172a");
         skyGrad.addColorStop(1, "#1e1b4b");
+    }} else {{
+        skyGrad.addColorStop(0, "#38bdf8");
+        skyGrad.addColorStop(0.38, "#7dd3fc");
+        skyGrad.addColorStop(0.65, "#0ea5e9");
+        skyGrad.addColorStop(1, "#0284c7");
     }}
-    isoCtx.fillStyle = skyGrad;
-    isoCtx.fillRect(0, 0, W, H);
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, W, H);
 
-    // Glowing Sun / Moon
-    isoCtx.fillStyle = skyTheme === "NIGHT" ? "#fef08a" : "#fb923c";
-    isoCtx.beginPath();
-    isoCtx.arc(920, 74, 34, 0, Math.PI * 2);
-    isoCtx.fill();
+    ctx.fillStyle = skyTheme === "NIGHT" ? "#fef08a" : "#fb923c";
+    ctx.beginPath();
+    ctx.arc(920, 74, 34, 0, Math.PI * 2);
+    ctx.fill();
 
-    // Animated Ocean Waves on Left & Right Shoreline
-    isoCtx.strokeStyle = "rgba(255, 255, 255, 0.35)";
-    isoCtx.lineWidth = 2;
-    for (let i = 0; i < 5; i++) {{
-        const wy = 220 + i * 55 + Math.sin(wavePhase + i) * 4;
-        isoCtx.beginPath();
-        isoCtx.moveTo(20, wy);
-        isoCtx.quadraticCurveTo(90, wy - 8, 160, wy);
-        isoCtx.moveTo(960, wy);
-        isoCtx.quadraticCurveTo(1040, wy - 8, 1110, wy);
-        isoCtx.stroke();
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.42)";
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 7; i++) {{
+        const wy = 200 + i * 48 + Math.sin(wavePhase + i * 1.2) * 5;
+        ctx.beginPath();
+        ctx.moveTo(30, wy);
+        ctx.quadraticCurveTo(110, wy - 9, 190, wy);
+        ctx.moveTo(930, wy);
+        ctx.quadraticCurveTo(1010, wy - 9, 1090, wy);
+        ctx.stroke();
     }}
 
-    // Drifting Clouds
     clouds.forEach(cl => {{
         cl.x += cl.v;
         if (cl.x > W + 80) cl.x = -80;
-        isoCtx.fillStyle = skyTheme === "NIGHT" ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.82)";
-        isoCtx.beginPath();
-        isoCtx.arc(cl.x, cl.y, 18 * cl.s, 0, Math.PI * 2);
-        isoCtx.arc(cl.x + 16 * cl.s, cl.y - 5 * cl.s, 22 * cl.s, 0, Math.PI * 2);
-        isoCtx.arc(cl.x + 34 * cl.s, cl.y, 16 * cl.s, 0, Math.PI * 2);
-        isoCtx.fill();
+        ctx.fillStyle = skyTheme === "NIGHT" ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.85)";
+        ctx.beginPath();
+        ctx.arc(cl.x, cl.y, 18 * cl.s, 0, Math.PI * 2);
+        ctx.arc(cl.x + 16 * cl.s, cl.y - 5 * cl.s, 22 * cl.s, 0, Math.PI * 2);
+        ctx.arc(cl.x + 34 * cl.s, cl.y, 16 * cl.s, 0, Math.PI * 2);
+        ctx.fill();
     }});
 
-    // 2. Sandy Beach Island Base & Golden Town Plaza Ring
-    isoCtx.fillStyle = skyTheme === "NIGHT" ? "#1e293b" : "#fde68a";
-    isoCtx.strokeStyle = skyTheme === "NIGHT" ? "#38bdf8" : "#f59e0b";
-    isoCtx.lineWidth = 3;
-    isoCtx.beginPath();
-    isoCtx.moveTo(490, 95);
-    isoCtx.lineTo(1065, 345);
-    isoCtx.lineTo(575, 545);
-    isoCtx.lineTo(85, 295);
-    isoCtx.closePath();
-    isoCtx.fill();
-    isoCtx.stroke();
+    const cx = 570, cy = 290;
+    const rx = 485, ry = 210;
 
-    // Palm Trees on Beach Corners
-    drawPalmTree(isoCtx, 155, 285, 1.0);
-    drawPalmTree(isoCtx, 995, 335, 1.05);
-    drawPalmTree(isoCtx, 285, 455, 0.9);
-    drawPalmTree(isoCtx, 865, 465, 0.95);
+    ctx.fillStyle = "#b45309";
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + 30, rx + 10, ry + 12, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-    // 3. Draw Connected Isometric AI Town Houses (Floors + 3D Cutaway Walls + Roof Gable + Furniture + Energy Battery Pillar)
-    ISO_ROOMS.forEach((rm, idx) => {{
-        const p = isoProject(rm.gx, rm.gy);
-        const hw = p.w / 2;
-        const hh = p.h / 2;
-        const wallH = 38;
+    ctx.fillStyle = "#fde68a";
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + 24, rx + 6, ry + 8, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-        // Isometric Diamond Floor Tile
-        isoCtx.fillStyle = rm.floorCol;
-        isoCtx.strokeStyle = rm.floorAlt;
-        isoCtx.lineWidth = 1.5;
-        isoCtx.beginPath();
-        isoCtx.moveTo(p.x, p.y);
-        isoCtx.lineTo(p.x + hw, p.y + hh);
-        isoCtx.lineTo(p.x, p.y + p.h);
-        isoCtx.lineTo(p.x - hw, p.y + hh);
-        isoCtx.closePath();
-        isoCtx.fill();
-        isoCtx.stroke();
+    const cliffGrad = ctx.createLinearGradient(0, cy, 0, cy + 30);
+    cliffGrad.addColorStop(0, "#166534");
+    cliffGrad.addColorStop(0.5, "#15803d");
+    cliffGrad.addColorStop(1, "#14532d");
+    ctx.fillStyle = cliffGrad;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + 18, rx, ry, 0, 0, Math.PI);
+    ctx.lineTo(cx - rx, cy);
+    ctx.ellipse(cx, cy, rx, ry, 0, Math.PI, 0, true);
+    ctx.closePath();
+    ctx.fill();
 
-        // Subtle Interior Floor Grid Lines (gives true Isometric game look)
-        isoCtx.strokeStyle = "rgba(15, 23, 42, 0.06)";
-        isoCtx.lineWidth = 1;
-        for (let g = 1; g <= 3; g++) {{
-            const f = g / 4.0;
-            isoCtx.beginPath();
-            isoCtx.moveTo(p.x - hw * f, p.y + hh * f);
-            isoCtx.lineTo(p.x + hw * (1 - f), p.y + hh * (1 + f));
-            isoCtx.moveTo(p.x + hw * f, p.y + hh * f);
-            isoCtx.lineTo(p.x - hw * (1 - f), p.y + hh * (1 + f));
-            isoCtx.stroke();
-        }}
+    const meadowGrad = ctx.createRadialGradient(cx, cy - 30, 20, cx, cy, rx);
+    meadowGrad.addColorStop(0, "#4ade80");
+    meadowGrad.addColorStop(0.4, "#22c55e");
+    meadowGrad.addColorStop(0.85, "#16a34a");
+    meadowGrad.addColorStop(1, "#15803d");
+    ctx.fillStyle = meadowGrad;
+    ctx.strokeStyle = "#166534";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
 
-        // Back-Left & Back-Right 3D Extruded Cutaway Walls (with doorway gaps between interior rooms!)
-        drawIsoWallWithDoor(isoCtx, p.x - hw, p.y + hh, p.x, p.y, wallH, 5, rm.floorAlt, rm.wallTop, rm.gy > 0);
-        drawIsoWallWithDoor(isoCtx, p.x, p.y, p.x + hw, p.y + hh, wallH, 5, rm.wallCol, rm.wallTop, rm.gx > 0);
-
-        // Detailed 3D Room Furniture & Monitors
-        drawRoomFurniture3D(isoCtx, p.x, p.y + hh, rm.propType, rm.wallCol);
-
-        // AI Town House Roof Gable + Glowing Green Energy Battery Cylinder
-        const linkedAg = APP.office.agents_roster[idx % APP.office.agents_roster.length];
-        const energyPct = computeAgentEnergyPct(linkedAg);
-        const shortCode = rm.id.split('_')[0];
-        drawAgentTownHouseAndBattery(isoCtx, rm, p, energyPct, shortCode);
-    }});
-
-    // 3.5 Animated Glowing Task Light Rays & Floating Task Envelopes (Exmple.mp4 Studio Pipelines)
-    taskPacketPhase = (taskPacketPhase + 0.005) % 1.0;
-    STUDIO_COLLAB_PIPELINES.forEach((pipe, pIdx) => {{
-        const fromRm = ISO_ROOMS.find(r => r.id === pipe.from);
-        const toRm = ISO_ROOMS.find(r => r.id === pipe.to);
-        if (!fromRm || !toRm) return;
-        const p1 = isoProject(fromRm.gx, fromRm.gy);
-        const p2 = isoProject(toRm.gx, toRm.gy);
-        const x1 = p1.x, y1 = p1.y + 42;
-        const x2 = p2.x, y2 = p2.y + 42;
-        const midX = (x1 + x2) / 2;
-        const midY = (y1 + y2) / 2 - 28;
-
-        // Glowing curved task light ray
-        isoCtx.save();
-        isoCtx.strokeStyle = pipe.color;
-        isoCtx.lineWidth = 1.6;
-        isoCtx.globalAlpha = 0.45;
-        isoCtx.setLineDash([4, 6]);
-        isoCtx.lineDashOffset = -taskPacketPhase * 36;
-        isoCtx.beginPath();
-        isoCtx.moveTo(x1, y1);
-        isoCtx.quadraticCurveTo(midX, midY, x2, y2);
-        isoCtx.stroke();
-        isoCtx.restore();
-
-        // Animated floating task envelope along quadratic bezier
-        const t = (taskPacketPhase + pIdx * 0.16) % 1.0;
-        const ex = (1 - t) * (1 - t) * x1 + 2 * (1 - t) * t * midX + t * t * x2;
-        const ey = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * midY + t * t * y2;
-
-        // Glowing halo around envelope
-        const envGlow = isoCtx.createRadialGradient(ex, ey, 1, ex, ey, 12);
-        envGlow.addColorStop(0, "rgba(251, 191, 36, 0.65)");
-        envGlow.addColorStop(1, "rgba(251, 191, 36, 0.0)");
-        isoCtx.fillStyle = envGlow;
-        isoCtx.beginPath();
-        isoCtx.arc(ex, ey, 12, 0, Math.PI * 2);
-        isoCtx.fill();
-
-        // Mini White Envelope with Gold Border
-        isoCtx.fillStyle = "#ffffff";
-        isoCtx.strokeStyle = "#b45309";
-        isoCtx.lineWidth = 1;
-        isoCtx.beginPath();
-        isoCtx.rect(ex - 6.5, ey - 4.5, 13, 9);
-        isoCtx.fill();
-        isoCtx.stroke();
-        // Envelope flap fold
-        isoCtx.beginPath();
-        isoCtx.moveTo(ex - 6.5, ey - 4.5);
-        isoCtx.lineTo(ex, ey + 1);
-        isoCtx.lineTo(ex + 6.5, ey - 4.5);
-        isoCtx.stroke();
-        // Tiny red wax seal dot
-        isoCtx.fillStyle = "#ef4444";
-        isoCtx.beginPath();
-        isoCtx.arc(ex, ey + 0.5, 1.2, 0, Math.PI * 2);
-        isoCtx.fill();
-    }});
-
-    // 4. Sort & Draw Full-Body Chibi AI Characters by Y-depth
-    const sortedSprites = [...isoSprites].sort((a, b) => a.y - b.y);
-    sortedSprites.forEach(sp => {{
-        const dx = sp.tx - sp.x;
-        const dy = sp.ty - sp.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist > 2.2) {{
-            sp.x += (dx / dist) * 2.1;
-            sp.y += (dy / dist) * 2.1;
-        }} else if (Math.random() < 0.014) {{
-            const nextRm = ISO_ROOMS[Math.floor(Math.random() * ISO_ROOMS.length)];
-            const np = isoProject(nextRm.gx, nextRm.gy);
-            sp.tx = np.x + (Math.random() - 0.5) * 42;
-            sp.ty = np.y + 48 + (Math.random() - 0.5) * 18;
-            if (Math.random() < 0.35) {{
-                sp.speech = `ส่งงานไป ${{nextRm.name.split(' ')[0]}} ✔`;
-                sp.speechTimer = 110;
-            }}
-        }}
-        drawChibiAgent(isoCtx, sp);
-    }});
-
-    // 5. Floating White Rounded Room Status Badges on Top
     ISO_ROOMS.forEach(rm => {{
-        const p = isoProject(rm.gx, rm.gy);
-        drawRoundedBadge(isoCtx, p.x, p.y - 26, rm.name, rm.sub, rm.badgeDot);
+        ctx.strokeStyle = "#fef08a";
+        ctx.lineWidth = 22;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(rm.x, rm.y);
+        ctx.stroke();
+
+        ctx.strokeStyle = "#ca8a04";
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([4, 6]);
+        ctx.stroke();
+        ctx.setLineDash([]);
     }});
 
-    requestAnimationFrame(renderIsometricCompany);
+    const plazaRx = 138, plazaRy = 70;
+    ctx.fillStyle = "#fef08a";
+    ctx.strokeStyle = "#ca8a04";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, plazaRx, plazaRy, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.strokeStyle = "#d97706";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, plazaRx - 6, plazaRy - 3.5, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const pineSpots = [
+        {{ x: 145, y: 225, s: 1.15 }},
+        {{ x: 165, y: 360, s: 1.05 }},
+        {{ x: 425, y: 135, s: 1.0 }},
+        {{ x: 715, y: 135, s: 1.05 }},
+        {{ x: 995, y: 225, s: 1.2 }},
+        {{ x: 975, y: 365, s: 1.1 }},
+        {{ x: 445, y: 485, s: 1.1 }},
+        {{ x: 695, y: 485, s: 1.05 }}
+    ];
+    pineSpots.forEach(p => drawPineTree(ctx, p.x, p.y, p.s));
+
+    const mushroomSpots = [
+        {{ x: 185, y: 260 }}, {{ x: 195, y: 266 }},
+        {{ x: 960, y: 250 }}, {{ x: 970, y: 256 }},
+        {{ x: 480, y: 460 }}, {{ x: 490, y: 465 }}
+    ];
+    mushroomSpots.forEach(m => drawMushroom(ctx, m.x, m.y));
 }}
 
 // Collaborating Studio Pipelines for Task Envelopes & Light Rays
@@ -2550,6 +3253,114 @@ const STUDIO_COLLAB_PIPELINES = [
     {{ from: "TRADING_LAB", to: "COURIER_DISPATCH", color: "#a855f7" }},
     {{ from: "TECH_STUDIO", to: "COURIER_DISPATCH", color: "#06b6d4" }}
 ];
+
+function renderIsometricCompany() {{
+    if (!isoCtx || !isoCanvas) return;
+    const W = isoCanvas.width, H = isoCanvas.height;
+    wavePhase += 0.04;
+    isoCtx.clearRect(0, 0, W, H);
+
+    // 1. Draw Lush Circular Island Meadow, Shore, Ocean & Plaza
+    drawLushCircularIsland(isoCtx, W, H);
+
+    // 2. Draw Central Town Square Building between the 2 Batteries
+    drawCentralSquareBuilding(isoCtx, 570, 275);
+
+    // 3. Draw the 2 Giant Upright Glowing Green Battery Cylinders in the Central Plaza (Exmple.mp4)
+    drawGiantBattery(isoCtx, 492, 292, "2-HOUR 99%", 99, false);
+    drawGiantBattery(isoCtx, 648, 292, "7-DAY 100%", 100, true);
+
+    // 4. Draw the 8 Specialized Studio Buildings around the Plaza
+    drawTownHallBuilding(isoCtx, 570, 130);
+    drawQuantObservatoryBuilding(isoCtx, 850, 185);
+    drawTradingWarRoomBuilding(isoCtx, 925, 290);
+    drawOnlineStoreBuilding(isoCtx, 815, 395);
+    drawMemeStudioBuilding(isoCtx, 570, 440);
+    drawGrowthStudioBuilding(isoCtx, 325, 395);
+    drawTechStudioBuilding(isoCtx, 215, 290);
+    drawCriticStudioBuilding(isoCtx, 290, 185);
+
+    // 5. Animated Glowing Task Light Rays & Flying Task Envelopes between Studios
+    taskPacketPhase = (taskPacketPhase + 0.005) % 1.0;
+    STUDIO_COLLAB_PIPELINES.forEach((pipe, pIdx) => {{
+        const fromRm = ISO_ROOMS.find(r => r.id === pipe.from);
+        const toRm = ISO_ROOMS.find(r => r.id === pipe.to);
+        if (!fromRm || !toRm) return;
+        const x1 = fromRm.x, y1 = fromRm.y + 10;
+        const x2 = toRm.x, y2 = toRm.y + 10;
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2 - 32;
+
+        isoCtx.save();
+        isoCtx.strokeStyle = pipe.color;
+        isoCtx.lineWidth = 1.8;
+        isoCtx.globalAlpha = 0.5;
+        isoCtx.setLineDash([5, 6]);
+        isoCtx.lineDashOffset = -taskPacketPhase * 36;
+        isoCtx.beginPath();
+        isoCtx.moveTo(x1, y1);
+        isoCtx.quadraticCurveTo(midX, midY, x2, y2);
+        isoCtx.stroke();
+        isoCtx.restore();
+
+        const t = (taskPacketPhase + pIdx * 0.16) % 1.0;
+        const ex = (1 - t) * (1 - t) * x1 + 2 * (1 - t) * t * midX + t * t * x2;
+        const ey = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * midY + t * t * y2;
+
+        const envGlow = isoCtx.createRadialGradient(ex, ey, 1, ex, ey, 14);
+        envGlow.addColorStop(0, "rgba(251, 191, 36, 0.7)");
+        envGlow.addColorStop(1, "rgba(251, 191, 36, 0.0)");
+        isoCtx.fillStyle = envGlow;
+        isoCtx.beginPath();
+        isoCtx.arc(ex, ey, 14, 0, Math.PI * 2);
+        isoCtx.fill();
+
+        isoCtx.fillStyle = "#ffffff";
+        isoCtx.strokeStyle = "#b45309";
+        isoCtx.lineWidth = 1.1;
+        isoCtx.beginPath();
+        isoCtx.rect(ex - 7, ey - 5, 14, 10);
+        isoCtx.fill();
+        isoCtx.stroke();
+        isoCtx.beginPath();
+        isoCtx.moveTo(ex - 7, ey - 5);
+        isoCtx.lineTo(ex, ey + 1);
+        isoCtx.lineTo(ex + 7, ey - 5);
+        isoCtx.stroke();
+        isoCtx.fillStyle = "#ef4444";
+        isoCtx.beginPath();
+        isoCtx.arc(ex, ey + 1, 1.4, 0, Math.PI * 2);
+        isoCtx.fill();
+    }});
+
+    // 6. Sort & Draw Full-Body Chibi AI Characters by Y-depth
+    const sortedSprites = [...isoSprites].sort((a, b) => a.y - b.y);
+    sortedSprites.forEach(sp => {{
+        const dx = sp.tx - sp.x;
+        const dy = sp.ty - sp.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 2.2) {{
+            sp.x += (dx / dist) * 2.1;
+            sp.y += (dy / dist) * 2.1;
+        }} else if (Math.random() < 0.012) {{
+            const nextRm = ISO_ROOMS[Math.floor(Math.random() * ISO_ROOMS.length)];
+            sp.tx = nextRm.x + (Math.random() - 0.5) * 44;
+            sp.ty = nextRm.y + 36 + (Math.random() - 0.5) * 16;
+            if (Math.random() < 0.35) {{
+                sp.speech = `ส่งงานไป ${{nextRm.name.split(' ')[0]}} ✔`;
+                sp.speechTimer = 110;
+            }}
+        }}
+        drawChibiAgent(isoCtx, sp);
+    }});
+
+    // 7. Floating Studio Status Badges on Top
+    ISO_ROOMS.forEach(rm => {{
+        drawRoundedBadge(isoCtx, rm.x, rm.y - 48, rm.name, rm.sub, rm.badgeDot);
+    }});
+
+    requestAnimationFrame(renderIsometricCompany);
+}}
 
 if (isoCanvas) {{
     isoCanvas.addEventListener('click', e => {{
@@ -2573,9 +3384,8 @@ if (isoCanvas) {{
         // 2. Check if clicked on a Studio House / Building (Exmple.mp4 interactive building click)
         let clickedRm = null, bestRmD = 999;
         ISO_ROOMS.forEach(rm => {{
-            const p = isoProject(rm.gx, rm.gy);
-            const d = Math.hypot(p.x - mx, (p.y + 40) - my);
-            if (d < bestRmD && d < 65) {{
+            const d = Math.hypot(rm.x - mx, (rm.y + 10) - my);
+            if (d < bestRmD && d < 75) {{
                 bestRmD = d;
                 clickedRm = rm;
             }}
