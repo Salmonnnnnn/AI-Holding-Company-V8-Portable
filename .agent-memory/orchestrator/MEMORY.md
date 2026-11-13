@@ -29,6 +29,7 @@
 - [x] Installed Homebrew `node`/`npx`, `@openai/codex` CLI, `bin/ask-codex` read-only wrapper, and `find-skills` + `obra/superpowers` (`.agents/skills/`).
 - [x] Multi-Venture AI Town Studios & Deliverables Viewer (`Exmple.mp4`) with animated task pipelines & multi-stream revenue breakdown (commit `f5dfe32`).
 - [x] Full circular 3D green island town canvas redesign with 2 giant glowing batteries, 8 specialized outer studios, and central plaza matching Exmple.mp4 (commit `0668363`).
+- [x] Single-Page Fullscreen AI Town Model with 4 Fenced Outer Zones, 3-Button Segmented Atmosphere Bar, and elite `ui-inspector` subagent (commit `029e468`).
 
 ## ⚠️ Known Pitfalls
 - Sandbox blocks writes to `.git/` → git branch/worktree/commit need sandbox bypass.
