@@ -10,6 +10,12 @@ env/
 # Secrets (never commit real API keys)
 .env
 
+# Git Worktrees
+.worktrees/
+.claude/worktrees/
+*.worktree
+
 # OS files
 .DS_Store
 Thumbs.db
+

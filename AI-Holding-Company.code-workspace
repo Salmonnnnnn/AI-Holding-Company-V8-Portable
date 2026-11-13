@@ -1,0 +1,18 @@
+{
+  "folders": [
+    {
+      "name": "AI Holding Company V8 (Main)",
+      "path": "."
+    },
+    {
+      "name": "คลังสมอง Obsidian Vault",
+      "path": "obsidian_vault"
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder:AI Holding Company V8 (Main)}/venv/bin/python",
+    "terminal.integrated.env.osx": {
+      "PYTHONPATH": "${workspaceFolder:AI Holding Company V8 (Main)}"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🚀 Start Company (macOS)",
+      "type": "shell",
+      "command": "./start_company.sh",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "⚡ Setup & Start (One-Click)",
+      "type": "shell",
+      "command": "./setup_and_start.sh",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "🧪 Run Pytest Suite",
+      "type": "shell",
+      "command": "./run_tests.sh",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🌿 Worktree: Status Check",
+      "type": "shell",
+      "command": "./scripts/worktree_manager.sh status",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "📋 Worktree: List All",
+      "type": "shell",
+      "command": "./scripts/worktree_manager.sh list",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    }
+  ]
+}
