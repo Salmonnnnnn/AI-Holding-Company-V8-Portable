@@ -158,10 +158,10 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             "avg_watch": "28s",
             "hashtags": "#ai #money #trading #aurumisle #gold #algorithmictrading #passiveincome",
             "hook_script": (
-                "[00:00 - 00:03] Hook: คุณเคยคิดมั้ยว่าถ้าปล่อยบอท AI 11 ตัวไปอยู่บนเกาะร้าง แล้วสั่งให้หาเงิน $1,000 ใน 30 วัน จะเกิดอะไรขึ้น?\\n"
-                "[00:03 - 00:09] Scene 1: นี่คือ Aurum Isle! บอทตัวแรกเป็น CIO วางแผน, ตัวสองเขียนโค้ด Micro-SaaS, ตัวสามเป็นมีมครีเอเตอร์ทำคลิปนี้ที่คุณกำลังดูอยู่!\\n"
-                "[00:09 - 00:18] Scene 2: วันนี้บอทเทรดทองสแกนกราฟ H1 เจอจังหวะ Breakout ยิง Buy ที่ $2,685 ฟันกำไรเข้าพอร์ตไปอีก $145!\\n"
-                "[00:18 - 00:25] Scene 3: บอทร้านค้าออนไลน์ขาย Signal Bot และชุด Prompt ได้อีก 3 ออเดอร์ กระจายรายได้ 4 ช่องทางพร้อมกัน!\\n"
+                "[00:00 - 00:03] Hook: คุณเคยคิดมั้ยว่าถ้าปล่อยบอท AI 11 ตัวไปอยู่บนเกาะร้าง แล้วสั่งให้หาเงิน $1,000 ใน 30 วัน จะเกิดอะไรขึ้น?\n"
+                "[00:03 - 00:09] Scene 1: นี่คือ Aurum Isle! บอทตัวแรกเป็น CIO วางแผน, ตัวสองเขียนโค้ด Micro-SaaS, ตัวสามเป็นมีมครีเอเตอร์ทำคลิปนี้ที่คุณกำลังดูอยู่!\n"
+                "[00:09 - 00:18] Scene 2: วันนี้บอทเทรดทองสแกนกราฟ H1 เจอจังหวะ Breakout ยิง Buy ที่ $2,685 ฟันกำไรเข้าพอร์ตไปอีก $145!\n"
+                "[00:18 - 00:25] Scene 3: บอทร้านค้าออนไลน์ขาย Signal Bot และชุด Prompt ได้อีก 3 ออเดอร์ กระจายรายได้ 4 ช่องทางพร้อมกัน!\n"
                 "[00:25 - 00:30] CTA: อยากดูบอททำงานสดๆ กดลิงก์หน้าโปรไฟล์มาแอบส่องหลังบ้านฟรี!"
             ),
             "caption": f"ทดสอบรันระบบ Multi-Venture AI Town บน Aurum Isle วันที่ {chal_day}: บอทเทรดทอง + บอทเขียนโค้ด + สตูดิโอทำคลิป ทำงานประสานงานกันอัตโนมัติ 100%! #ai #money #trading #aurumisle",
@@ -177,31 +177,31 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             "tests_passed": "12/12 Passed",
             "token_saving": "84% via Graph-RAG",
             "code": (
-                "import asyncio\\n"
-                "from dataclasses import dataclass\\n"
-                "from typing import Optional\\n\\n"
-                "@dataclass\\n"
-                "class LiquidityZone:\\n"
-                "    price_level: float\\n"
-                "    volume_delta: float\\n"
-                "    imbalance_ratio: float\\n"
-                "    is_swept: bool = False\\n\\n"
-                "class LiquiditySweepBot:\\n"
-                "    \\\"\\\"\\\"Auto-detects institutional liquidity pools & order-book sweeps for XAUUSD.\\\"\\\"\\\"\\n"
-                "    def __init__(self, symbol: str = \\\"XAUUSD\\\", threshold_usd: float = 500_000.0):\\n"
-                "        self.symbol = symbol\\n"
-                "        self.threshold = threshold_usd\\n"
-                "        self.active_sweeps = []\\n\\n"
-                "    async def scan_orderflow(self, tick_stream) -> Optional[LiquidityZone]:\\n"
-                "        async for tick in tick_stream:\\n"
-                "            if tick.delta_volume >= self.threshold:\\n"
-                "                zone = LiquidityZone(\\n"
-                "                    price_level=tick.price,\\n"
-                "                    volume_delta=tick.delta_volume,\\n"
-                "                    imbalance_ratio=tick.ask_vol / max(1.0, tick.bid_vol)\\n"
-                "                )\\n"
-                "                self.active_sweeps.append(zone)\\n"
-                "                return zone\\n"
+                "import asyncio\n"
+                "from dataclasses import dataclass\n"
+                "from typing import Optional\n\n"
+                "@dataclass\n"
+                "class LiquidityZone:\n"
+                "    price_level: float\n"
+                "    volume_delta: float\n"
+                "    imbalance_ratio: float\n"
+                "    is_swept: bool = False\n\n"
+                "class LiquiditySweepBot:\n"
+                '    """Auto-detects institutional liquidity pools & order-book sweeps for XAUUSD."""\n'
+                '    def __init__(self, symbol: str = "XAUUSD", threshold_usd: float = 500_000.0):\n'
+                "        self.symbol = symbol\n"
+                "        self.threshold = threshold_usd\n"
+                "        self.active_sweeps = []\n\n"
+                "    async def scan_orderflow(self, tick_stream) -> Optional[LiquidityZone]:\n"
+                "        async for tick in tick_stream:\n"
+                "            if tick.delta_volume >= self.threshold:\n"
+                "                zone = LiquidityZone(\n"
+                "                    price_level=tick.price,\n"
+                "                    volume_delta=tick.delta_volume,\n"
+                "                    imbalance_ratio=tick.ask_vol / max(1.0, tick.bid_vol)\n"
+                "                )\n"
+                "                self.active_sweeps.append(zone)\n"
+                "                return zone\n"
                 "        return None"
             ),
         },
@@ -271,8 +271,8 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             "directive_title": f"คำสั่งปฏิบัติการประจำวัน: ปั้นกำไรสะสม $1,000 (Day {chal_day}/30)",
             "mandate": (
                 f"1. บูรณาการ 4 แหล่งรายได้: ทุกสตูดิโอต้องทำงานประสานกัน ทั้งพอร์ตเทรดทอง (${v_trading:+,.2f}), "
-                f"ร้านค้าออนไลน์ (${v_store:+,.2f}), เครื่องมือซอฟต์แวร์ (${v_tech:+,.2f}), และสื่อไวรัล (${v_media:+,.2f})\\n"
-                "2. วินัยโทเคนสูงสุด: ใช้โมเดลตระกูล Reasoning เผาโทเคนเฉพาะงานสำคัญ และบันทึกลง Obsidian Knowledge Graph\\n"
+                f"ร้านค้าออนไลน์ (${v_store:+,.2f}), เครื่องมือซอฟต์แวร์ (${v_tech:+,.2f}), และสื่อไวรัล (${v_media:+,.2f})\n"
+                "2. วินัยโทเคนสูงสุด: ใช้โมเดลตระกูล Reasoning เผาโทเคนเฉพาะงานสำคัญ และบันทึกลง Obsidian Knowledge Graph\n"
                 "3. คุณภาพไร้ที่ติ: ทุกชิ้นงานต้องได้รับการประทับตราอนุมัติจาก Critic Studio 100% ก่อนส่งมอบ"
             ),
             "signatories": "Arthur Pendelton (CIO / The Boss) & Sophia Chen (Chief of Staff)",
@@ -550,15 +550,26 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             cursor: pointer;
             object-fit: cover;
         }}
-        .town-top-left-bar {{
+        .town-top-nav-bar {{
             position: absolute;
-            top: 16px;
+            top: 12px;
             left: 16px;
+            right: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 25;
+            pointer-events: none;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }}
+        .town-top-left-bar {{
             display: flex;
             align-items: center;
-            gap: 8px;
-            z-index: 25;
-            flex-wrap: wrap;
+            gap: 6px;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
+            pointer-events: auto;
         }}
         .comic-pill-title {{
             background: #0f172a;
@@ -566,29 +577,34 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             border: 2px solid #1e293b;
             border-radius: 999px;
             box-shadow: 0 3px 0 #1e293b;
-            padding: 6px 14px;
+            padding: 5px 12px;
             font-weight: 900;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             letter-spacing: 0.02em;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            pointer-events: auto;
         }}
         .comic-pill-btn {{
             border: 2px solid #1e293b;
             border-radius: 999px;
             box-shadow: 0 3px 0 #1e293b;
-            padding: 6px 14px;
+            padding: 5px 12px;
             font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             background: #ffffff;
             color: #1e293b;
             cursor: pointer;
             transition: transform 0.1s, box-shadow 0.1s, background-color 0.15s;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             white-space: nowrap;
+            flex-shrink: 0;
+            pointer-events: auto;
         }}
         .comic-pill-btn:hover {{
             transform: translateY(-1px);
@@ -620,28 +636,28 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             box-shadow: 0 1px 3px rgba(0,0,0,0.25);
         }}
         .town-top-right-bar {{
-            position: absolute;
-            top: 16px;
-            right: 16px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            z-index: 25;
-            flex-wrap: wrap;
+            gap: 8px;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
+            pointer-events: auto;
         }}
         .comic-hud-pill {{
             background: rgba(255, 255, 255, 0.96);
             border: 2px solid #1e293b;
             border-radius: 999px;
             box-shadow: 0 3px 0 #1e293b;
-            padding: 6px 14px;
-            font-size: 0.8rem;
+            padding: 5px 12px;
+            font-size: 0.78rem;
             font-weight: 800;
             color: #1e293b;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             white-space: nowrap;
+            flex-shrink: 0;
+            pointer-events: auto;
         }}
         .comic-hud-pill .hud-gold {{ color: #b45309; font-weight: 900; }}
         .comic-hud-pill .hud-sep {{ color: #94a3b8; }}
@@ -1070,7 +1086,8 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             border-radius: 18px;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
             overflow: hidden;
-            animation: modalFadeIn 0.2s ease-out;
+            opacity: 1;
+            animation: modalFadeIn 0.2s ease-out forwards;
         }}
         @keyframes modalFadeIn {{
             from {{ opacity: 0; transform: scale(0.96); }}
@@ -1427,37 +1444,38 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <div id="threeContainer"></div>
         </div>
 
-        <!-- Floating Top-Left Bar (exact layout of unmirrored_frame_0_0s.jpg) -->
-        <div class="town-top-left-bar">
-            <div class="comic-pill-title">🏰 AI Office • Aurum Isle</div>
-            <button class="comic-pill-btn active-green" id="btnTownStatus" onclick="runLiveCompanyWorkflowAnimation()" title="รันภารกิจบริษัทสดๆ">▶ 11 working</button>
-            <button class="comic-pill-btn" id="btnTownPause" onclick="toggleTownPause()" title="หยุด/เริ่มอนิเมชัน">⏸ Pause</button>
-            <button class="comic-pill-btn" id="btnTownViewAll" onclick="toggleAgentsDirectoryDrawer()">👥 View all</button>
-            <button class="comic-pill-btn" id="btnTownStats" onclick="toggleChallengeStatsHUD()">📊 Stats</button>
-            <button class="comic-pill-btn" id="btnTownInbox" onclick="openStudioDeliverablesModal()">📬 Inbox <span class="comic-badge-red">8</span></button>
-            <button class="comic-pill-btn" id="btnTownEnterpriseMenu" onclick="toggleEnterpriseTabsBar()">🗂️ 6 แท็บระบบ (Menu)</button>
-        </div>
+        <!-- Floating Unified Top Nav Bar -->
+        <div class="town-top-nav-bar">
+            <!-- Left pill group -->
+            <div class="town-top-left-bar">
+                <div class="comic-pill-title">🏰 AI Office • Aurum Isle</div>
+                <button class="comic-pill-btn active-green" id="btnTownStatus" onclick="runLiveCompanyWorkflowAnimation()" title="รันภารกิจบริษัทสดๆ">▶ 11 working</button>
+                <button class="comic-pill-btn" id="btnTownPause" onclick="toggleTownPause()" title="หยุด/เริ่มอนิเมชัน">⏸ Pause</button>
+                <button class="comic-pill-btn" id="btnTownViewAll" onclick="toggleAgentsDirectoryDrawer()">👥 View all</button>
+                <button class="comic-pill-btn" id="btnTownStats" onclick="toggleChallengeStatsHUD()">📊 Stats</button>
+                <button class="comic-pill-btn" id="btnTownInbox" onclick="openStudioDeliverablesModal()">📬 Inbox <span class="comic-badge-red">8</span></button>
+                <button class="comic-pill-btn" id="btnTownEnterpriseMenu" onclick="toggleEnterpriseTabsBar()">🗂️ 6 แท็บระบบ (Menu)</button>
+            </div>
 
-        <!-- Floating Top-Right Bar & Atmosphere Switcher -->
-        <div class="town-top-right-bar">
-            <div class="comic-hud-pill">
-                <span class="hud-gold">🪙 {chal_profit_disp} / $1,000</span>
-                <span class="hud-sep">•</span>
-                <span class="hud-day">DAY {chal_day} OF 30</span>
-                <span class="hud-sep">•</span>
-                <span class="hud-batt">Lv 8 • ⚡ 5-HR 99% | 7-DAY 100%</span>
+            <!-- Right pill & Atmosphere Switcher -->
+            <div class="town-top-right-bar">
+                <div class="comic-hud-pill">
+                    <span class="hud-gold">🪙 {chal_profit_disp} / $1,000</span>
+                    <span class="hud-sep">•</span>
+                    <span class="hud-day">DAY {chal_day} OF 30</span>
+                </div>
+                <!-- 3-Button Segmented Atmosphere Bar -->
+                <div class="atmosphere-segmented-bar" id="atmosphereSegmentBar">
+                    <button type="button" class="segment-btn active" data-sky="DAY" onclick="setTownSkyAtmosphere('DAY')">☀️ กลางวัน (Day)</button>
+                    <button type="button" class="segment-btn" data-sky="SUNSET" onclick="setTownSkyAtmosphere('SUNSET')">🌅 ยามเย็น (Sunset)</button>
+                    <button type="button" class="segment-btn" data-sky="NIGHT" onclick="setTownSkyAtmosphere('NIGHT')">🌙 กลางคืน (Night)</button>
+                </div>
+                <select id="skyTimeSelect" style="display:none;" onchange="setTownSkyAtmosphere(this.value)">
+                    <option value="DAY" selected>☀️ กลางวัน (Day)</option>
+                    <option value="SUNSET">🌅 ยามเย็น (Sunset)</option>
+                    <option value="NIGHT">🌙 กลางคืน (Night)</option>
+                </select>
             </div>
-            <!-- 3-Button Segmented Atmosphere Bar -->
-            <div class="atmosphere-segmented-bar" id="atmosphereSegmentBar">
-                <button type="button" class="segment-btn active" data-sky="DAY" onclick="setTownSkyAtmosphere('DAY')">☀️ กลางวัน (Day)</button>
-                <button type="button" class="segment-btn" data-sky="SUNSET" onclick="setTownSkyAtmosphere('SUNSET')">🌅 ยามเย็น (Sunset)</button>
-                <button type="button" class="segment-btn" data-sky="NIGHT" onclick="setTownSkyAtmosphere('NIGHT')">🌙 กลางคืน (Night)</button>
-            </div>
-            <select id="skyTimeSelect" style="display:none;" onchange="setTownSkyAtmosphere(this.value)">
-                <option value="DAY" selected>☀️ กลางวัน (Day)</option>
-                <option value="SUNSET">🌅 ยามเย็น (Sunset)</option>
-                <option value="NIGHT">🌙 กลางคืน (Night)</option>
-            </select>
         </div>
 
         <!-- Floating Bottom-Left Messages Box -->
