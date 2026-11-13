@@ -24,5 +24,12 @@
 - [x] Initial portable migration & setup (V8).
 - [x] macOS / POSIX native execution environment (`setup_and_start.sh`, `venv`).
 - [x] Multi-Agent Memory & Git Worktree workspace integration.
+- [x] Adopted `docs/ORCHESTRATION_PROTOCOL.md` (2026-11-13) — agent defs in `.claude/agents/`.
+- [ ] Aurum Isle rebrand + 30-day $1,000 Agent Town challenge (branch `orchestrator/aurum-isle-town`).
+
+## ⚠️ Known Pitfalls
+- Sandbox blocks writes to `.git/` → git branch/worktree/commit need sandbox bypass.
+- User keeps uncommitted runtime changes on `main` (`data/company_hq.db`, `obsidian_vault/`, `reports/`) — never stage them.
+- `codex` and `npx` not installed → no `bin/ask-codex`, superpowers skills not installed.
 - [ ] Real MT5 bridge webhook testing (optional live demo).
 - [ ] Graph-RAG latency profiling and token optimization metrics.
