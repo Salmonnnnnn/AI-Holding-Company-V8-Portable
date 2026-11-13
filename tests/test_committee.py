@@ -15,7 +15,8 @@ from engine.token_economy import TokenEconomyEngine
 from engine.skill_harvester import SkillHarvesterEngine
 from engine.offline_catchup import OfflineCatchupEngine
 from engine.committee_room import TradingCommitteeRoom
-from engine.dashboard_generator import generate_html_dashboard
+from engine.dashboard_generator import generate_html_dashboard, compute_challenge_state
+from datetime import datetime
 
 
 def test_market_data_engine_multi_tf():
@@ -112,6 +113,49 @@ def test_v7_isometric_visualizer_dark_light_theme_and_obsidian(tmp_path):
     assert "triggerOfflineCatchupSim" in html_text
     assert "openGitHubPushModal" in html_text
     assert "triggerGitHubPush" in html_text
+    assert "Aurum Isle" in html_text
+    assert "เกาะ AI ล่าทองคำ" in html_text
+    assert "CAN A TOWN OF AI AGENTS MAKE US $1,000?" in html_text
+    assert "OF 30" in html_text
+    assert "drawAgentTownHouseAndBattery" in html_text
+    assert "first_trade_at" in report["portfolio_state"]
+
+
+def test_aurum_isle_challenge_state_calculation():
+    """ยืนยันการคำนวณภารกิจ 30 วัน ปั้นกำไร $1,000 ของเมือง AI (Aurum Isle)"""
+    now = datetime(2026, 11, 13, 12, 0, 0)
+
+    # กรณีเพิ่งเริ่มหรือไม่มี first_trade_at -> Day 1, Profit $0
+    s0 = compute_challenge_state({"initial_capital": 1000.0, "equity": 1000.0, "first_trade_at": None}, now)
+    assert s0["day"] == 1
+    assert s0["days_left"] == 29
+    assert s0["profit"] == 0.0
+    assert s0["pct"] == 0.0
+    assert s0["is_negative"] is False
+
+    # กรณีผ่านไป 4 วัน กำไร +$250 -> Day 5, 25.0%
+    s1 = compute_challenge_state({
+        "initial_capital": 1000.0,
+        "equity": 1250.0,
+        "first_trade_at": "2026-11-09 09:30:00"
+    }, now)
+    assert s1["day"] == 5
+    assert s1["days_left"] == 25
+    assert s1["profit"] == 250.0
+    assert s1["pct"] == 25.0
+    assert s1["is_negative"] is False
+
+    # กรณีติดลบ -> is_negative = True, pct clamp ที่ 0.0
+    s_neg = compute_challenge_state({
+        "initial_capital": 1000.0,
+        "equity": 945.5,
+        "first_trade_at": "2026-11-12 08:00:00"
+    }, now)
+    assert s_neg["day"] == 2
+    assert s_neg["profit"] == -54.5
+    assert s_neg["pct"] == 0.0
+    assert s_neg["is_negative"] is True
+
 
 
 def test_obsidian_knowledge_graph_and_token_saving_router(tmp_path):

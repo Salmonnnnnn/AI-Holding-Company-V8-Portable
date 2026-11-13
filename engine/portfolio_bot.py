@@ -165,6 +165,11 @@ class AutoPortfolioBot:
 
             cur.execute("SELECT * FROM portfolio_trades WHERE status NOT IN ('OPEN', 'TP1_PARTIAL') ORDER BY id DESC LIMIT 10")
             recent_closed_positions = [dict(r) for r in cur.fetchall()]
+
+            # วันเริ่มชาเลนจ์ 30 วัน = เวลาเปิดออเดอร์แรกสุดของพอร์ต (None หากยังไม่มีออเดอร์)
+            cur.execute("SELECT MIN(opened_at) AS first_opened FROM portfolio_trades")
+            first_row = cur.fetchone()
+            first_trade_at = first_row["first_opened"] if first_row else None
             conn.commit()
 
         summary_msg = "; ".join(actions_taken) if actions_taken else f"ตรวจสอบพอร์ตเรียบร้อย ถือออเดอร์ {len(current_open_positions)} ไม้ (Floating PnL: ${floating_pnl_total:+.2f})"
@@ -191,7 +196,8 @@ class AutoPortfolioBot:
             "open_positions": current_open_positions,
             "closed_positions": recent_closed_positions,
             "actions_taken": actions_taken,
-            "summary_message": summary_msg
+            "summary_message": summary_msg,
+            "first_trade_at": first_trade_at
         }
 
     def _close_trade(self, cur, trade_id: int, closed_at: str, close_price: float, status: str, pnl_dollar: float, pnl_r: float):

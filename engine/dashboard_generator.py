@@ -1,12 +1,54 @@
 """
-V7 Cozy Isometric AI Agent Visualizer (Ultra-Detailed @ong_stw Style) +
-Light/Dark Theme Switcher + 12 Frontier Models & Custom Model Adder +
-Offline Shift Auto-Catchup (for when PC is turned off) + True Historical Candle/Shift Replay +
-Token Treasury Allocator & Autonomous Live Skill Harvester.
+Aurum Isle — เกาะ AI ล่าทองคำ (single-file dashboard renderer).
+Cozy isometric island town (each AI agent has a house + energy battery) with a
+30-day "$1,000 challenge" banner, Light/Dark theme, Token Treasury & Skill Harvester,
+Historical Shift Replay, Agent Profiles, Copilot Chat and MT5 Demo / Obsidian Vault.
 """
 import html
 import json
 from datetime import datetime, timedelta
+
+BRAND_NAME = "Aurum Isle"
+BRAND_TAGLINE = "เกาะ AI ล่าทองคำ"
+CHALLENGE_GOAL_USD = 1000.0
+CHALLENGE_DAYS = 30
+
+
+def compute_challenge_state(port: dict | None, now: datetime | None = None) -> dict:
+    """30-Day $1,000 challenge numbers derived from the existing portfolio state.
+
+    - profit  = equity - initial_capital (fallback 0 when missing/invalid)
+    - day     = days since first_trade_at + 1, clamped 1..30 (missing -> Day 1)
+    - pct     = profit / goal * 100, clamped 0..100
+    """
+    port = port or {}
+    now = now or datetime.now()
+    try:
+        profit = round(float(port.get("equity")) - float(port.get("initial_capital")), 2)
+    except (TypeError, ValueError):
+        profit = 0.0
+
+    day = 1
+    first = port.get("first_trade_at")
+    if first:
+        try:
+            started = datetime.fromisoformat(str(first).strip())
+            day = (now.date() - started.date()).days + 1
+        except ValueError:
+            day = 1
+    day = max(1, min(CHALLENGE_DAYS, day))
+
+    pct = max(0.0, min(100.0, (profit / CHALLENGE_GOAL_USD) * 100.0))
+    return {
+        "goal": CHALLENGE_GOAL_USD,
+        "days_total": CHALLENGE_DAYS,
+        "day": day,
+        "days_left": CHALLENGE_DAYS - day,
+        "profit": profit,
+        "pct": round(pct, 1),
+        "is_negative": profit < 0,
+        "started_at": str(first) if first else None,
+    }
 
 
 def generate_html_dashboard(report: dict, filepath: str) -> str:
@@ -36,9 +78,27 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     d_m2 = (today_dt - timedelta(days=2)).strftime("%Y-%m-%d")
     d_m3 = (today_dt - timedelta(days=3)).strftime("%Y-%m-%d")
     d_m5 = (today_dt - timedelta(days=5)).strftime("%Y-%m-%d")
+    challenge = compute_challenge_state(port, today_dt)
+    chal_profit = float(challenge.get("profit", 0.0))
+    chal_goal = float(challenge.get("goal", CHALLENGE_GOAL_USD))
+    chal_pct = float(challenge.get("pct", 0.0))
+    chal_day = int(challenge.get("day", 1))
+    chal_days_total = int(challenge.get("days_total", CHALLENGE_DAYS))
+    chal_days_left = int(challenge.get("days_left", CHALLENGE_DAYS - 1))
+    chal_is_neg = bool(challenge.get("is_negative", False))
+    chal_profit_col = "#ef4444" if chal_is_neg else "#fbbf24"
+    chal_pill_bg = "rgba(239, 68, 68, 0.18)" if chal_is_neg else "rgba(16, 185, 129, 0.18)"
+    chal_pill_col = "#fca5a5" if chal_is_neg else "#6ee7b7"
+    chal_status_txt = "กำลังติดลบ (รอจังหวะแก้พอร์ต)" if chal_is_neg else f"ก้าวหน้า {chal_pct:.1f}% ของเป้า $1,000"
+    port_equity = float(port.get("equity", 1000.0))
+    port_winrate = float(port.get("live_win_rate_pct", 100.0))
+    port_closed = int(port.get("total_closed_trades", 0))
 
     report_json = json.dumps({
         "session_time": report.get("session_time"),
+        "brand_name": BRAND_NAME,
+        "brand_tagline": BRAND_TAGLINE,
+        "challenge": challenge,
         "market": market,
         "cio": cio,
         "deb": deb,
@@ -65,12 +125,12 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         strat_rows_html += f"""
         <tr style="{row_style}">
             <td><strong>{trophy}{html.escape(str(s.get('strategy_name')))}</strong><br><small style="color:var(--text-sub)">{html.escape(str(s.get('reference')))}</small></td>
-            <td><span class="pill">{html.escape(str(s.get('best_regime')))}</span></td>
-            <td>{s.get('published_win_rate')}% (PF {s.get('published_pf')})</td>
-            <td style="color:#10b981;font-weight:700">{s.get('live_win_rate')}% ({s.get('live_trades')} ไม้)</td>
-            <td style="font-weight:700">{s.get('live_pf')}</td>
-            <td style="color:{'#10b981' if float(s.get('live_net_r', 0)) >= 0 else '#ef4444'};font-weight:700">{s.get('live_net_r'):+}R</td>
-            <td><strong>{html.escape(str(s.get('live_signal_now')))}</strong></td>
+            <td class="num"><span class="pill">{html.escape(str(s.get('best_regime')))}</span></td>
+            <td class="num">{s.get('published_win_rate')}% (PF {s.get('published_pf')})</td>
+            <td class="num" style="color:#10b981;font-weight:700">{s.get('live_win_rate')}% ({s.get('live_trades')} ไม้)</td>
+            <td class="num" style="font-weight:700">{s.get('live_pf')}</td>
+            <td class="num" style="color:{'#10b981' if float(s.get('live_net_r', 0)) >= 0 else '#ef4444'};font-weight:700">{s.get('live_net_r'):+}R</td>
+            <td class="num"><strong>{html.escape(str(s.get('live_signal_now')))}</strong></td>
         </tr>
         """
 
@@ -79,10 +139,10 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Agent Visualizer V7 — Cozy Isometric Company, Light/Dark Theme, Frontier Brains & Offline Catch-up</title>
+    <title>{BRAND_NAME} — {BRAND_TAGLINE} | 30-Day $1,000 AI Agent Town Challenge</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        /* LIGHT THEME (Default Cozy Pastel like @ong_stw's TikTok) */
+        /* LIGHT THEME (Default Cozy Pastel Island Town) */
         :root, [data-theme="light"] {{
             --bg-body: #f1f5f9;
             --bg-card: #ffffff;
@@ -119,39 +179,40 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             transition: background 0.25s, color 0.25s;
         }}
         .top-header {{
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px 16px;
             background: var(--bg-card);
             border-bottom: 1px solid var(--border-col);
             padding: 10px 20px;
             position: sticky; top: 0; z-index: 100;
             box-shadow: var(--shadow-card);
         }}
-        .brand-wrap {{ display: flex; align-items: center; gap: 10px; }}
+        .brand-wrap {{ display: flex; align-items: center; gap: 10px; min-width: 0; }}
         .brand-avatar {{
-            width: 38px; height: 38px; border-radius: 50%;
-            background: linear-gradient(135deg, #f59e0b, #ec4899);
+            width: 40px; height: 40px; border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 1.2rem; font-weight: 900;
+            color: #fff; font-size: 1.25rem; font-weight: 900; flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3);
         }}
-        .status-pills-bar {{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }}
+        .status-pills-bar {{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }}
         .top-pill {{
             background: var(--bg-sub); border: 1px solid var(--border-col); border-radius: 999px;
-            padding: 5px 12px; font-size: 0.8rem; font-weight: 600; color: var(--text-main);
-            display: flex; align-items: center; gap: 6px;
+            padding: 5px 11px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);
+            display: flex; align-items: center; gap: 6px; white-space: nowrap;
         }}
         .dot-green {{ width: 9px; height: 9px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 6px #10b981; }}
-        .progress-bar-mini {{ width: 68px; height: 7px; background: var(--border-col); border-radius: 99px; overflow: hidden; }}
+        .progress-bar-mini {{ width: 64px; height: 7px; background: var(--border-col); border-radius: 99px; overflow: hidden; }}
         .progress-fill-mini {{ height: 100%; background: #10b981; width: 100%; transition: width 0.3s; }}
 
         .nav-tabs {{
-            display: flex; gap: 6px; padding: 8px 20px;
+            display: flex; gap: 8px; padding: 8px 20px;
             background: var(--bg-card); border-bottom: 1px solid var(--border-soft);
-            overflow-x: auto;
+            overflow-x: auto; flex-wrap: wrap;
         }}
         .nav-tab {{
             background: var(--bg-sub); color: var(--text-sub);
             border: 1px solid var(--border-col); border-radius: 10px;
-            padding: 8px 14px; font-weight: 700; font-size: 0.84rem;
+            padding: 8px 14px; font-weight: 700; font-size: 0.83rem;
             cursor: pointer; transition: all 0.18s; white-space: nowrap;
         }}
         .nav-tab:hover {{ color: var(--text-main); border-color: #f59e0b; }}
@@ -163,6 +224,89 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 
         .page-view {{ display: none; padding: 14px 20px; max-width: 1680px; width: 100%; margin: 0 auto; flex: 1; }}
         .page-view.active {{ display: block; }}
+
+        /* 30-Day $1,000 AI Agent Town Challenge Banner (Reel-inspired) */
+        .challenge-banner {{
+            background: linear-gradient(135deg, #090d16 0%, #1e293b 55%, #0f172a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 14px 20px;
+            margin-bottom: 12px;
+            color: #f8fafc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px 24px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22);
+        }}
+        .challenge-day-badge {{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(180deg, #fde68a 0%, #f59e0b 100%);
+            color: #0f172a;
+            font-weight: 900;
+            font-size: 0.78rem;
+            letter-spacing: 0.06em;
+            padding: 4px 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.45);
+        }}
+        .challenge-headline {{
+            font-size: 1.18rem;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            color: #ffffff;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.45);
+            margin-top: 4px;
+            line-height: 1.25;
+        }}
+        .challenge-sub {{
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            margin-top: 3px;
+        }}
+        .challenge-right {{
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            min-width: 280px;
+            flex: 1;
+            justify-content: flex-end;
+        }}
+        .challenge-goal-figure {{
+            text-align: right;
+        }}
+        .challenge-goal-big {{
+            font-size: 1.55rem;
+            font-weight: 900;
+            background: linear-gradient(180deg, #fef08a 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.15;
+        }}
+        .challenge-progress-wrap {{
+            min-width: 230px;
+            max-width: 340px;
+            flex: 1;
+        }}
+        .challenge-progress-track {{
+            width: 100%;
+            height: 11px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 6px;
+        }}
+        .challenge-progress-fill {{
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #fbbf24 100%);
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }}
 
         /* Offline Auto-Catchup Banner */
         .catchup-banner {{
@@ -184,6 +328,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             border-radius: 18px;
             overflow: hidden;
             box-shadow: var(--shadow-card);
+            min-width: 0;
         }}
         .iso-canvas-wrap {{
             position: relative;
@@ -212,6 +357,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             cursor: pointer;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             transition: all 0.15s;
+            white-space: nowrap;
         }}
         .cozy-btn:hover {{ transform: translateY(-1px); border-color: #f59e0b; }}
         .cozy-btn.primary {{ background: #0f172a; color: #fbbf24; border-color: #334155; }}
@@ -220,7 +366,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         .cozy-btn.purple {{ background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; border: none; }}
 
         .dialogue-banner {{
-            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
             padding: 12px 18px;
             background: var(--bg-sub);
             border-top: 1px solid var(--border-soft);
@@ -252,6 +398,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             padding: 16px;
             box-shadow: var(--shadow-card);
             display: flex; flex-direction: column; gap: 14px;
+            min-width: 0;
         }}
         .mission-item {{
             display: flex; align-items: flex-start; gap: 10px;
@@ -285,19 +432,31 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             background: var(--bg-card); border: 1px solid var(--border-col);
             border-radius: 16px; padding: 20px; margin-bottom: 16px;
             box-shadow: var(--shadow-card);
+            min-width: 0;
         }}
         .white-card h2 {{
-            font-size: 1.12rem; color: var(--text-main); margin-bottom: 12px;
-            border-bottom: 1px solid var(--border-soft); padding-bottom: 8px;
+            font-size: 1.06rem; color: var(--text-main); margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-soft); padding-bottom: 9px;
+            line-height: 1.38; display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 8px;
+        }}
+        .section-head {{
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 10px 16px; margin-bottom: 14px;
+            padding-bottom: 10px; border-bottom: 1px solid var(--border-soft);
+        }}
+        .section-head h2 {{
+            border-bottom: none; padding-bottom: 0; margin-bottom: 0;
         }}
         .grid-2 {{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }}
+        .grid-2 > * {{ min-width: 0; }}
         .grid-4 {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }}
         .stat-metric-box {{
             background: var(--bg-sub); border: 1px solid var(--border-col);
-            border-radius: 12px; padding: 14px;
+            border-radius: 12px; padding: 14px; min-width: 0;
         }}
-        .stat-metric-box .lbl {{ font-size: 0.77rem; color: var(--text-sub); font-weight: 700; }}
-        .stat-metric-box .val {{ font-size: 1.3rem; font-weight: 900; color: var(--text-main); margin-top: 4px; }}
+        .stat-metric-box .lbl {{ font-size: 0.77rem; color: var(--text-sub); font-weight: 700; line-height: 1.3; }}
+        .stat-metric-box .val {{ font-size: 1.25rem; font-weight: 900; color: var(--text-main); margin-top: 4px; line-height: 1.25; }}
 
         .input-clean {{
             background: var(--bg-sub); border: 1px solid var(--border-col);
@@ -305,16 +464,26 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         }}
         .shift-pill {{
             background: var(--bg-sub); border: 1px solid var(--border-col); color: var(--text-main);
-            padding: 9px 15px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: 0.83rem;
+            padding: 8px 14px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: 0.82rem;
         }}
         .shift-pill.active {{
             background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; border-color: #f59e0b;
         }}
-        .pill {{ background: var(--pill-bg); color: var(--pill-txt); padding: 3px 9px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }}
-        table {{ width: 100%; border-collapse: collapse; font-size: 0.86rem; }}
-        th, td {{ padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-soft); }}
-        th {{ background: var(--bg-sub); color: var(--text-main); font-weight: 800; }}
-        @media (max-width: 1100px) {{ .visualizer-layout, .grid-2 {{ grid-template-columns: 1fr; }} }}
+        .pill {{
+            background: var(--pill-bg); color: var(--pill-txt);
+            padding: 3px 9px; border-radius: 6px; font-size: 0.74rem; font-weight: 700;
+            display: inline-block; white-space: nowrap;
+        }}
+        .table-wrap {{
+            width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--border-soft); border-radius: 12px;
+        }}
+        table {{ width: 100%; border-collapse: collapse; font-size: 0.84rem; }}
+        th, td {{ padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-soft); vertical-align: middle; line-height: 1.4; }}
+        th {{ background: var(--bg-sub); color: var(--text-main); font-weight: 800; white-space: nowrap; }}
+        td.num {{ white-space: nowrap; }}
+        tbody tr:hover {{ background: rgba(245, 158, 11, 0.05); }}
+        @media (max-width: 1180px) {{ .visualizer-layout, .grid-2 {{ grid-template-columns: 1fr; }} }}
     </style>
 </head>
 <body>
@@ -326,8 +495,8 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     <div class="brand-wrap">
         <div class="brand-avatar">🏝️</div>
         <div>
-            <div style="font-weight:900;font-size:1.05rem">AI HOLDING COMPANY V7 — AI AGENT VISUALIZER</div>
-            <div style="font-size:0.75rem;color:var(--text-sub)">บริษัท AI เทรดทองคำ • โหมดมืด/สว่าง • 12 โมเดลตัวท็อป • เก็บตกงานอัตโนมัติแม้ปิดคอม</div>
+            <div style="font-weight:900;font-size:1.05rem;line-height:1.2">{BRAND_NAME} — {BRAND_TAGLINE}</div>
+            <div style="font-size:0.74rem;color:var(--text-sub);margin-top:2px">เมือง AI เทรดทองคำ • ภารกิจ $1,000 ใน 30 วัน • 12+ โมเดลตัวท็อป • โหมดมืด/สว่าง & เก็บตกงานอัตโนมัติ</div>
         </div>
     </div>
 
@@ -350,17 +519,17 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <strong id="topTokenUsedText" style="color:#f59e0b">{tok_econ.get('total_tokens_used', 279200):,}</strong> / <span id="topTokenBudgetText">{tok_econ.get('daily_budget_tokens', 1000000):,}</span>
         </div>
         <!-- Theme Switcher & GitHub Push Buttons -->
-        <button class="cozy-btn purple" onclick="openGitHubPushModal()" id="topGithubBtn">🚀 อัปโหลดขึ้น GitHub (1-Click)</button>
+        <button class="cozy-btn purple" onclick="openGitHubPushModal()" id="topGithubBtn">🚀 อัปโหลด GitHub</button>
         <button class="cozy-btn amber" onclick="toggleThemeMode()" id="themeToggleBtn">🌙 สลับโหมดมืด (Dark Mode)</button>
-        <button class="cozy-btn primary" onclick="switchPage('page-replay')">▶ ดูสรุปย้อนหลัง</button>
+        <button class="cozy-btn primary" onclick="switchPage('page-replay')">▶ สรุปย้อนหลัง</button>
     </div>
 </div>
 
 <!-- GITHUB 1-CLICK PUSH MODAL -->
 <div id="githubPushModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.72);z-index:9999;align-items:center;justify-content:center;padding:16px">
     <div class="white-card" style="max-width:620px;width:100%;margin:0;border:2px solid #8b5cf6;box-shadow:0 20px 50px rgba(0,0,0,0.45)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:1px solid var(--border-soft);padding-bottom:10px">
-            <h2 style="margin:0;border:none">🚀 อัปโหลดโปรเจกต์ทั้งหมดขึ้น GitHub (1-Click Cloud Sync)</h2>
+        <div class="section-head">
+            <h2>🚀 อัปโหลดโปรเจกต์ขึ้น GitHub (1-Click Cloud Sync)</h2>
             <button class="cozy-btn" onclick="closeGitHubPushModal()">✖ ปิด</button>
         </div>
         <p style="font-size:0.85rem;color:var(--text-sub);margin-bottom:12px">
@@ -391,18 +560,51 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 
 <!-- 6 DEDICATED NAVIGATION PAGES -->
 <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchPage('page-visualizer')" id="tab-page-visualizer">🏝️ 1. บริษัท AI น่ารัก (Isometric Island @ong_stw)</button>
-    <button class="nav-tab" onclick="switchPage('page-tokens')" id="tab-page-tokens">🪙 2. จัดสรรงบ Token, เพิ่มโมเดล & เรียนสกิลใหม่</button>
-    <button class="nav-tab" onclick="switchPage('page-replay')" id="tab-page-replay">📅 3. ดูสรุปย้อนหลังตามกราฟจริง (Historical Replay)</button>
-    <button class="nav-tab" onclick="switchPage('page-profiles')" id="tab-page-profiles">🪪 4. โปรไฟล์พนักงาน & สมองกล (o1-Pro / Claude 3.7 / GPT-4.5)</button>
-    <button class="nav-tab" onclick="switchPage('page-chat')" id="tab-page-chat">💬 5. แชทถามสดกับผม & ทีม AI (Live Copilot Chat)</button>
-    <button class="nav-tab" onclick="switchPage('page-mt5')" id="tab-page-mt5">🤖 6. ยิง MT5 Demo สด, 4 กลยุทธ์วิจัย & Obsidian Vault</button>
+    <button class="nav-tab active" onclick="switchPage('page-visualizer')" id="tab-page-visualizer">🏝️ 1. เมือง AI (Aurum Isle)</button>
+    <button class="nav-tab" onclick="switchPage('page-tokens')" id="tab-page-tokens">🪙 2. คลังโทเคน & สกิล</button>
+    <button class="nav-tab" onclick="switchPage('page-replay')" id="tab-page-replay">📅 3. ย้อนหลังตามกราฟจริง</button>
+    <button class="nav-tab" onclick="switchPage('page-profiles')" id="tab-page-profiles">🪪 4. ทำเนียบพนักงาน AI</button>
+    <button class="nav-tab" onclick="switchPage('page-chat')" id="tab-page-chat">💬 5. แชทกับทีม AI</button>
+    <button class="nav-tab" onclick="switchPage('page-mt5')" id="tab-page-mt5">🤖 6. MT5 Demo & Obsidian</button>
 </div>
 
 <!-- ====================================================================== -->
-<!-- PAGE 1: ULTRA-DETAILED ISOMETRIC ISLAND VISUALIZER (@ong_stw STYLE)    -->
+<!-- PAGE 1: AURUM ISLE — AI AGENT TOWN & 30-DAY $1,000 CHALLENGE           -->
 <!-- ====================================================================== -->
 <div class="page-view active" id="page-visualizer">
+    <!-- 30-Day $1,000 AI Agent Town Challenge Banner -->
+    <div class="challenge-banner" id="challengeBanner">
+        <div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span class="challenge-day-badge" id="challengeDayBadge">DAY {chal_day} OF {chal_days_total}</span>
+                <span style="font-size:0.76rem;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,0.1);color:#fde68a;font-weight:700">⏳ เหลืออีก {chal_days_left} วัน</span>
+                <span style="font-size:0.75rem;padding:3px 10px;border-radius:999px;background:{chal_pill_bg};color:{chal_pill_col};font-weight:700">{chal_status_txt}</span>
+            </div>
+            <div class="challenge-headline">CAN A TOWN OF AI AGENTS MAKE US $1,000?</div>
+            <div class="challenge-sub">🏝️ <strong>{BRAND_NAME} — {BRAND_TAGLINE}:</strong> ภารกิจเมือง AI ล่าทองคำ ปั้นกำไรสะสม <strong>$1,000</strong> ใน 30 วัน (พอร์ตจริง Equity <strong>${port_equity:,.2f}</strong> • Win Rate <strong>{port_winrate:.1f}%</strong> • ปิดแล้ว <strong>{port_closed} ไม้</strong>)</div>
+        </div>
+
+        <div class="challenge-right">
+            <div class="challenge-goal-figure">
+                <div style="font-size:0.74rem;color:#94a3b8;font-weight:700">กำไรสะสม (Cumulative Profit)</div>
+                <div style="font-size:1.35rem;font-weight:900;color:{chal_profit_col}" id="challengeProfitText">${chal_profit:+,.2f} <span style="font-size:0.85rem;color:#cbd5e1">/ ${chal_goal:,.0f}</span></div>
+            </div>
+            <div class="challenge-progress-wrap">
+                <div style="display:flex;justify-content:space-between;font-size:0.76rem;font-weight:800;color:#fde68a">
+                    <span>เป้าหมาย $1,000 Challenge</span>
+                    <span id="challengePctText">{chal_pct:.1f}%</span>
+                </div>
+                <div class="challenge-progress-track">
+                    <div class="challenge-progress-fill" id="challengeProgressBar" style="width:{chal_pct:.1f}%"></div>
+                </div>
+            </div>
+            <div class="challenge-goal-figure">
+                <div class="challenge-goal-big">$1,000?</div>
+                <div style="font-size:0.7rem;color:#fde68a;font-weight:700">30-DAY GOAL</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Offline Auto-Catchup Status Bar -->
     <div class="catchup-banner">
         <div>
@@ -511,7 +713,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         <!-- Left: Autonomous Live Skill Discovery Lab + Custom Model Adder -->
         <div>
             <div class="white-card" style="border:2px solid #8b5cf6">
-                <h2>🔬 ห้องแล็บสั่ง AI ออกไปเรียนรู้สกิลใหม่ที่เกี่ยวข้อง (Autonomous Skill Harvester)</h2>
+                <h2>🔬 ห้องแล็บวิจัยสกิลใหม่ (Autonomous Skill Harvester)</h2>
                 <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-radius:12px;padding:14px;margin-bottom:14px">
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
                         <div>
@@ -529,12 +731,12 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                     </div>
 
                     <label style="font-size:0.78rem;font-weight:700">3. พิมพ์ชื่อสกิลหรือเทคนิคใหม่ที่ต้องการให้ AI ไปศึกษาและสร้างสูตร:</label>
-                    <div style="display:flex;gap:8px;margin-top:4px">
-                        <input type="text" id="harvestTopicInput" class="input-clean" style="flex:1" placeholder="เช่น ICT Silver Bullet NY Session, Wyckoff Spring Volume, Orderblock + FVG...">
+                    <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+                        <input type="text" id="harvestTopicInput" class="input-clean" style="flex:1;min-width:220px" placeholder="เช่น ICT Silver Bullet NY Session, Wyckoff Spring Volume, Orderblock + FVG...">
                         <button class="cozy-btn purple" onclick="triggerLearnNewSkill()">🔬 ส่งไปเรียนสกิลใหม่เดี๋ยวนี้!</button>
                     </div>
 
-                    <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+                    <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
                         <span style="font-size:0.75rem;color:var(--text-sub);font-weight:700">คลิกหัวข้อฮิต:</span>
                         <button class="cozy-btn" style="padding:3px 9px;font-size:0.74rem" onclick="setSkillTopic('ICT Killzone Silver Bullet & FVG Sniper')">⚡ ICT Silver Bullet</button>
                         <button class="cozy-btn" style="padding:3px 9px;font-size:0.74rem" onclick="setSkillTopic('Wyckoff Accumulation Spring & Volume Profile POC')">📊 Wyckoff + Volume POC</button>
@@ -549,21 +751,21 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 
             <!-- Add Custom AI Model Card -->
             <div class="white-card" style="border:2px solid #ec4899">
-                <h2>➕ เพิ่มโมเดล AI รุ่นใหม่เข้าบริษัทเองได้ตามใจ (Custom Frontier Model Adder)</h2>
+                <h2>➕ เพิ่มโมเดล AI เข้าเมือง (Custom Frontier Model Adder)</h2>
                 <p style="font-size:0.82rem;color:var(--text-sub);margin-bottom:10px">
-                    อยากใส่โมเดลใหม่ล่าสุดตัวไหนเพิ่มเติม (เช่น <code>GPT-5 Preview</code>, <code>Claude 4 Opus</code>, <code>Gemini 3 Ultra</code> หรือรหัสโมเดลจาก OpenRouter) พิมพ์เพิ่มเข้าคลังสมองบริษัทได้ทันที:
+                    อยากใส่โมเดลใหม่ล่าสุดตัวไหนเพิ่มเติม (เช่น <code>GPT-5 Preview</code>, <code>Claude 4 Opus</code>, <code>Gemini 3 Ultra</code> หรือรหัสโมเดลจาก OpenRouter) พิมพ์เพิ่มเข้าคลังสมองเมือง AI ได้ทันที:
                 </p>
                 <div style="display:grid;grid-template-columns:1.3fr 1fr auto;gap:8px">
                     <input type="text" id="customModelNameInput" class="input-clean" placeholder="ชื่อโมเดล เช่น GPT-5 Reasoning (256K)">
                     <input type="text" id="customModelSpecInput" class="input-clean" placeholder="จุดเด่น เช่น วิเคราะห์กราฟและข่าวความเร็วสูง">
-                    <button class="cozy-btn amber" onclick="addNewCustomModel()">➕ เพิ่มโมเดลเข้าบริษัท</button>
+                    <button class="cozy-btn amber" onclick="addNewCustomModel()">➕ เพิ่มโมเดลเข้าเมือง</button>
                 </div>
             </div>
         </div>
 
         <!-- Right: Per-Agent Token Budget & Compute Mode Allocator -->
         <div class="white-card">
-            <h2>🪙 จัดสรรโควต้าโทเคน & เลือกสมองกลตัวท็อปรายตัว (12+ Frontier Models)</h2>
+            <h2>🪙 จัดสรรโควต้าโทเคน & สมองกลรายตัว (12+ Frontier Models)</h2>
             <p style="font-size:0.83rem;color:var(--text-sub);margin-bottom:12px">
                 สลับสมองกล (`o1-Pro`, `GPT-4.5`, `Claude 3.7 Extended Thinking`, `Grok-3 Thinking`, `DeepSeek-R1 671B`) และปรับโหมด <strong>🌱 ECO / ⚖️ BALANCED / 🔥 OVERCLOCK</strong>:
             </p>
@@ -577,15 +779,15 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 <!-- ====================================================================== -->
 <div class="page-view" id="page-replay">
     <div class="white-card" style="border:2px solid #0ea5e9">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+        <div class="section-head">
             <div>
-                <h2 style="border:none;margin:0">📅 ระบบดูสรุปย้อนหลังตามกราฟแท่งเทียนจริง & แยกตามกะเวลา (True Historical Shift Replay)</h2>
-                <p style="font-size:0.85rem;color:var(--text-sub)">
-                    ดึงข้อมูลแท่งเทียนทองคำ (Open / High / Low / Close / RSI / ATR) และไทม์ไลน์การทำงานของวันที่และกะเวลาที่คุณเลือกจริงๆ <strong>(ไม่ซ้ำกัน 100%)</strong>
+                <h2>📅 สรุปย้อนหลังตามกราฟจริง & กะเวลา (Historical Shift Replay)</h2>
+                <p style="font-size:0.84rem;color:var(--text-sub);margin-top:3px">
+                    ดึงข้อมูลแท่งเทียนทองคำ (Open / High / Low / Close / RSI / ATR) และไทม์ไลน์การทำงานของวันที่และกะเวลาที่เลือกจริง <strong>(ไม่ซ้ำกัน 100%)</strong>
                 </p>
             </div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <label style="font-weight:800">📅 เลือกวันที่:</label>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                <label style="font-weight:800;font-size:0.84rem">📅 วันที่:</label>
                 <input type="date" id="sumDateInput" class="input-clean" value="{today_str}" onchange="generateCuteSummary()">
                 <button class="cozy-btn" onclick="pickQuickReplayDate('{today_str}')">วันนี้ ({today_str[-5:]})</button>
                 <button class="cozy-btn" onclick="pickQuickReplayDate('{d_m1}')">เมื่อวาน ({d_m1[-5:]})</button>
@@ -596,7 +798,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         </div>
 
         <div style="margin-bottom:14px">
-            <div style="font-size:0.84rem;font-weight:800;margin-bottom:8px">⏰ เลือกกะเวลาทำงานของบริษัท:</div>
+            <div style="font-size:0.84rem;font-weight:800;margin-bottom:8px">⏰ เลือกกะเวลาทำงานของเมือง AI (Aurum Isle):</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap" id="shiftPillsWrap">
                 <div class="shift-pill active" data-slot="FULL_24H" onclick="selectShiftPill(this)">✨ ภาพรวมครบ 24 ชม. (Full 24h)</div>
                 <div class="shift-pill" data-slot="MORNING_ASIA" onclick="selectShiftPill(this)">🌅 กะเช้า ตลาดเอเชีย (06:00-12:00)</div>
@@ -635,7 +837,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                 <button class="cozy-btn amber" onclick="generateCuteSummary('TRADING_ACTION')">🎯 สไตล์เน้นจุดเข้าเทรด (Entry/SL/TP)</button>
                 <button class="cozy-btn purple" onclick="generateCuteSummary('OBSIDIAN_NOTE')">💎 สไตล์โน้ต Obsidian (YAML + Wikilinks)</button>
             </div>
-            <div style="display:flex;gap:8px">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
                 <button class="cozy-btn green" onclick="copySummaryText()">📋 คัดลอกข้อความสรุป</button>
                 <button class="cozy-btn" onclick="syncObsidianNow()">💎 ซิงค์ลง Obsidian Vault</button>
             </div>
@@ -651,7 +853,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 <div class="page-view" id="page-profiles">
     <div class="visualizer-layout" style="grid-template-columns: 320px 1fr">
         <div class="white-card" style="margin-bottom:0">
-            <h2>🪪 ทำเนียบพนักงาน AI (11 ตัว)</h2>
+            <h2>🪪 ทำเนียบชาวเมือง AI (11 ตัว)</h2>
             <div id="profileRosterList" style="display:flex;flex-direction:column;gap:8px;max-height:600px;overflow-y:auto"></div>
         </div>
 
@@ -661,12 +863,12 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                     <div id="profAvatar" style="width:72px;height:72px;border-radius:18px;background:#fef3c7;border:3px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:2.4rem">👑</div>
                     <div>
                         <span class="pill" id="profDept">ห้องตัดสินใจ CIO</span>
-                        <h1 id="profName" style="font-size:1.5rem;margin-top:4px">Arthur Pendelton</h1>
-                        <div id="profRole" style="color:var(--text-sub);font-size:0.92rem">Chief Investment Officer (CIO)</div>
+                        <h1 id="profName" style="font-size:1.45rem;margin-top:4px;line-height:1.25">Arthur Pendelton</h1>
+                        <div id="profRole" style="color:var(--text-sub);font-size:0.9rem">Chief Investment Officer (CIO)</div>
                     </div>
                 </div>
 
-                <div style="background:var(--bg-sub);border:1px solid var(--border-col);padding:12px 16px;border-radius:12px;min-width:330px">
+                <div style="background:var(--bg-sub);border:1px solid var(--border-col);padding:12px 16px;border-radius:12px;min-width:290px;flex:1;max-width:420px">
                     <div style="font-size:0.78rem;font-weight:800;margin-bottom:6px">🧠 เลือกสมองกล AI (12+ โมเดลตัวท็อปสายกินโทเคน):</div>
                     <select id="profModelSelect" class="input-clean" style="width:100%" onchange="changeAgentModelBrain()"></select>
                     <div id="profModelMeta" style="font-size:0.75rem;color:#10b981;margin-top:6px;font-weight:700">✓ พร้อมใช้งาน</div>
@@ -743,18 +945,18 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 <!-- ====================================================================== -->
 <div class="page-view" id="page-mt5">
     <div class="white-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+        <div class="section-head">
             <div>
-                <h2 style="border:none;margin:0">🤖 ทดสอบยิงออเดอร์ MetaTrader 5 (MT5 Demo) สดๆ 8 ขั้นตอน (Tick-by-Tick Visualizer)</h2>
-                <p style="font-size:0.84rem;color:var(--text-sub)">ดูวิธีการทำงานของ AutoBot X-1 ตั้งแต่เช็ก Spread ➔ ยิง <code>mt5.order_send()</code> ➔ ขยับ SL บังหน้าทุนเมื่อแตะ TP1 ➔ ปิดกำไร TP2</p>
+                <h2>🤖 จำลองยิงออเดอร์ MT5 Demo สด (8 ขั้นตอน Tick-by-Tick)</h2>
+                <p style="font-size:0.84rem;color:var(--text-sub);margin-top:3px">ดูวิธีการทำงานของ AutoBot X-1 ตั้งแต่เช็ก Spread ➔ ยิง <code>mt5.order_send()</code> ➔ ขยับ SL บังหน้าทุนเมื่อแตะ TP1 ➔ ปิดกำไร TP2</p>
             </div>
-            <button class="cozy-btn amber" onclick="startLiveMT5Simulation()">▶️ เริ่มรันการจำลองยิงออเดอร์ MT5 Demo สดๆ</button>
+            <button class="cozy-btn amber" onclick="startLiveMT5Simulation()">▶️ เริ่มจำลองยิงออเดอร์ MT5 Demo สด</button>
         </div>
 
         <div class="grid-2">
             <div>
                 <canvas id="mt5DemoChartCanvas" width="700" height="340" style="width:100%;background:#0f172a;border-radius:12px"></canvas>
-                <div style="margin-top:10px;display:flex;justify-content:space-between;background:var(--bg-sub);padding:12px;border-radius:10px;border:1px solid var(--border-col);font-size:0.88rem">
+                <div style="margin-top:10px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;background:var(--bg-sub);padding:12px;border-radius:10px;border:1px solid var(--border-col);font-size:0.86rem">
                     <span>📍 Entry: <strong>${float(mt5_demo.get('entry_price', 3900)):,.2f}</strong></span>
                     <span>🛑 Live SL: <strong id="mt5LiveSL" style="color:#ef4444">${float(mt5_demo.get('sl_price', 3930)):,.2f}</strong></span>
                     <span>🎯 TP1/TP2: <strong style="color:#10b981">${float(mt5_demo.get('tp1_price', 3850)):,.2f} / ${float(mt5_demo.get('tp2_price', 3818)):,.2f}</strong></span>
@@ -768,7 +970,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     <div class="grid-2">
         <div class="white-card">
             <h2>🔬 ผลทดสอบ 4 กลยุทธ์วิจัยระดับโลกเทียบตลาดจริง</h2>
-            <div style="overflow-x:auto">
+            <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
@@ -787,8 +989,8 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         </div>
 
         <div class="white-card">
-            <h2>💎 คลังสมองที่สอง Obsidian Second-Brain & ระบบประหยัดโทเคน Graph-RAG</h2>
-            <p style="font-size:0.86rem;color:var(--text-sub);margin-bottom:10px">
+            <h2>💎 คลังสมอง Obsidian & ระบบประหยัดโทเคน Graph-RAG</h2>
+            <p style="font-size:0.85rem;color:var(--text-sub);margin-bottom:10px">
                 ซิงค์ไฟล์ Markdown + กระดาน <code>AI_Company_Knowledge_Map.canvas</code> + ผัง <code>00_Knowledge_Graph_Topology.md</code> ({obs_info.get('files_synced_count', 18)} ไฟล์) เพื่อดึงเฉพาะโหนดที่เกี่ยวข้อง (1-Hop Subgraph) ช่วยประหยัดโทเคน AI สูงสุด <strong>83.5%</strong>:
             </p>
             <div class="grid-4" style="margin-bottom:12px">
@@ -823,8 +1025,8 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     </div>
 
     <div class="white-card">
-        <h2>🕸️ ตารางผังความเชื่อมโยงข้อมูลใน Obsidian (1-Hop Subgraph Routing Matrix — ข้อมูลส่วนไหนเชื่อมกับส่วนไหน)</h2>
-        <div style="overflow-x:auto">
+        <h2>🕸️ ตารางผังเชื่อมโยงข้อมูล Obsidian (1-Hop Subgraph Routing Matrix)</h2>
+        <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
@@ -1311,13 +1513,131 @@ function drawPalmTree(ctx, px, py, scale) {{
     ctx.restore();
 }}
 
+// Compute each AI Agent's live Energy / Battery % (derived from token quota & compute mode)
+function computeAgentEnergyPct(ag) {{
+    if (!ag) return 98;
+    if (ag.compute_mode === "OVERCLOCK") return 100;
+    const quota = Math.max(ag.token_quota || 80000, 10000);
+    const used = Math.max(0, ag.tokens_used_today || 16000);
+    const ratio = Math.min(1, used / quota);
+    return Math.max(68, Math.min(100, Math.round(100 - ratio * 22)));
+}}
+
+// Draw Aurum Isle AI Agent Town House Roof Gable + 3D Glowing Green Battery Cylinder & % Badge
+function drawAgentTownHouseAndBattery(ctx, rm, p, energyPct, codeLabel) {{
+    const wallH = 38;
+    // 1. Cozy Pitched Town-House Roof Gable on Back Apex (preserves cutaway interior view)
+    const rx = p.x;
+    const ry = p.y - wallH;
+    ctx.fillStyle = rm.wallCol;
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(rx - 36, ry + 16);
+    ctx.lineTo(rx, ry - 14);
+    ctx.lineTo(rx + 36, ry + 16);
+    ctx.lineTo(rx, ry + 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Roof ridge highlight
+    ctx.fillStyle = rm.wallTop;
+    ctx.beginPath();
+    ctx.arc(rx, ry - 5, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. 3D Glowing Cylindrical Green Energy Battery Pillar (inspired by @not_nang AI Town Reel)
+    const bx = p.x + 54;
+    const by = p.y + 46;
+    const radX = 9.5;
+    const radY = 4.5;
+    const cylH = 26;
+    const fillH = Math.max(6, Math.round((Math.min(100, Math.max(10, energyPct)) / 100) * cylH));
+
+    // Outer neon green aura
+    const glow = ctx.createRadialGradient(bx, by - cylH / 2, 2, bx, by - cylH / 2, 22);
+    glow.addColorStop(0, "rgba(34, 197, 94, 0.42)");
+    glow.addColorStop(1, "rgba(34, 197, 94, 0.0)");
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(bx, by - cylH / 2, 22, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Dark metallic base platform
+    ctx.fillStyle = "#1e293b";
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.ellipse(bx, by + 2, radX + 3, radY + 1.8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Cylinder glass shell background
+    ctx.fillStyle = "rgba(15, 23, 42, 0.55)";
+    ctx.fillRect(bx - radX, by - cylH, radX * 2, cylH);
+
+    // Glowing green energy cylinder body
+    const bodyGrad = ctx.createLinearGradient(bx - radX, by - fillH, bx + radX, by);
+    bodyGrad.addColorStop(0, "#4ade80");
+    bodyGrad.addColorStop(0.5, "#22c55e");
+    bodyGrad.addColorStop(1, "#15803d");
+    ctx.fillStyle = bodyGrad;
+    ctx.beginPath();
+    ctx.moveTo(bx - radX, by);
+    ctx.lineTo(bx - radX, by - fillH);
+    ctx.ellipse(bx, by - fillH, radX, radY, 0, Math.PI, 0, true);
+    ctx.lineTo(bx + radX, by);
+    ctx.ellipse(bx, by, radX, radY, 0, 0, Math.PI, false);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cylinder top glowing ellipse
+    ctx.fillStyle = "#86efac";
+    ctx.strokeStyle = "#16a34a";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(bx, by - cylH, radX, radY, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Dark battery terminal cap on top
+    ctx.fillStyle = "#1e293b";
+    ctx.beginPath();
+    ctx.ellipse(bx, by - cylH - 2, 4.5, 2.2, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Floating white % badge above the battery pillar (e.g. "98%" / "100%")
+    const pctTxt = `${{energyPct}}%`;
+    ctx.font = "bold 9.5px 'Segoe UI', sans-serif";
+    const tw = Math.max(ctx.measureText(pctTxt).width, ctx.measureText(codeLabel).width) + 10;
+    const tagX = bx - tw / 2;
+    const tagY = by - cylH - 25;
+    ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.roundRect(tagX, tagY, tw, 19, 5);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#64748b";
+    ctx.font = "700 7.5px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(codeLabel, bx, tagY + 7.5);
+
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "900 9px 'Segoe UI', sans-serif";
+    ctx.fillText(pctTxt, bx, tagY + 16);
+}}
+
 function renderIsometricCompany() {{
     if (!isoCtx || !isoCanvas) return;
     const W = isoCanvas.width, H = isoCanvas.height;
     wavePhase += 0.04;
     isoCtx.clearRect(0, 0, W, H);
 
-    // 1. Sky & Ocean Background (Matching @ong_stw's Beachside Isometric Video)
+    // 1. Sky & Ocean Background (Aurum Isle — Beachside AI Agent Town)
     const skyGrad = isoCtx.createLinearGradient(0, 0, 0, H);
     if (skyTheme === "SUNSET") {{
         skyGrad.addColorStop(0, "#f472b6");
@@ -1367,7 +1687,7 @@ function renderIsometricCompany() {{
         isoCtx.fill();
     }});
 
-    // 2. Sandy Beach Island Base & 3D Building Foundation Platform
+    // 2. Sandy Beach Island Base & Golden Town Plaza Ring
     isoCtx.fillStyle = skyTheme === "NIGHT" ? "#1e293b" : "#fde68a";
     isoCtx.strokeStyle = skyTheme === "NIGHT" ? "#38bdf8" : "#f59e0b";
     isoCtx.lineWidth = 3;
@@ -1386,8 +1706,8 @@ function renderIsometricCompany() {{
     drawPalmTree(isoCtx, 285, 455, 0.9);
     drawPalmTree(isoCtx, 865, 465, 0.95);
 
-    // 3. Draw Connected Isometric Cutaway Rooms (Floors + 3D Extruded Walls with Doorways + Furniture)
-    ISO_ROOMS.forEach(rm => {{
+    // 3. Draw Connected Isometric AI Town Houses (Floors + 3D Cutaway Walls + Roof Gable + Furniture + Energy Battery Pillar)
+    ISO_ROOMS.forEach((rm, idx) => {{
         const p = isoProject(rm.gx, rm.gy);
         const hw = p.w / 2;
         const hh = p.h / 2;
@@ -1425,6 +1745,12 @@ function renderIsometricCompany() {{
 
         // Detailed 3D Room Furniture & Monitors
         drawRoomFurniture3D(isoCtx, p.x, p.y + hh, rm.propType, rm.wallCol);
+
+        // AI Town House Roof Gable + Glowing Green Energy Battery Cylinder
+        const linkedAg = APP.office.agents_roster[idx % APP.office.agents_roster.length];
+        const energyPct = computeAgentEnergyPct(linkedAg);
+        const shortCode = rm.id.split('_')[0];
+        drawAgentTownHouseAndBattery(isoCtx, rm, p, energyPct, shortCode);
     }});
 
     // 4. Sort & Draw Full-Body Chibi AI Characters by Y-depth
@@ -1449,10 +1775,10 @@ function renderIsometricCompany() {{
         drawChibiAgent(isoCtx, sp);
     }});
 
-    // 5. Floating White Rounded Room Status Badges on Top (Exact @ong_stw Style)
+    // 5. Floating White Rounded Room Status Badges on Top
     ISO_ROOMS.forEach(rm => {{
         const p = isoProject(rm.gx, rm.gy);
-        drawRoundedBadge(isoCtx, p.x, p.y - 24, rm.name, rm.sub, rm.badgeDot);
+        drawRoundedBadge(isoCtx, p.x, p.y - 26, rm.name, rm.sub, rm.badgeDot);
     }});
 
     requestAnimationFrame(renderIsometricCompany);
@@ -1482,8 +1808,9 @@ function selectVisualizerAgent(agentId) {{
     const ag = APP.office.agents_roster.find(a => a.agent_id === agentId);
     if (!ag) return;
     selectedAgent = ag;
+    const energyPct = computeAgentEnergyPct(ag);
     document.getElementById('bannerAvatar').textContent = ag.avatar;
-    document.getElementById('bannerSpeaker').textContent = `${{ag.name}} (${{ag.role}}) — สมองกล: ${{ag.llm_model}} [${{ag.compute_mode || 'BALANCED'}}]`;
+    document.getElementById('bannerSpeaker').textContent = `${{ag.name}} (${{ag.role}}) — สมองกล: ${{ag.llm_model}} [${{ag.compute_mode || 'BALANCED'}} • 🔋 ${{energyPct}}%]`;
     document.getElementById('bannerMessage').innerHTML = `ภารกิจล่าสุด: <strong>${{ag.current_task}}</strong> • โทเคนวันนี้: <strong>${{(ag.tokens_used_today || 18500).toLocaleString()}} / ${{(ag.token_quota || 80000).toLocaleString()}} Tokens</strong>`;
     renderMiniAgentsStrip();
 }}
@@ -1491,16 +1818,22 @@ function selectVisualizerAgent(agentId) {{
 function renderMiniAgentsStrip() {{
     const strip = document.getElementById('miniAgentsStrip');
     if (!strip) return;
-    strip.innerHTML = APP.office.agents_roster.map(ag => `
+    strip.innerHTML = APP.office.agents_roster.map(ag => {{
+        const energyPct = computeAgentEnergyPct(ag);
+        return `
         <div class="mini-agent-card ${{ag.agent_id === selectedAgent.agent_id ? 'active' : ''}}" onclick="selectVisualizerAgent('${{ag.agent_id}}')">
             <div style="font-size:1.5rem">${{ag.avatar}}</div>
-            <div style="overflow:hidden">
-                <div style="font-weight:800;font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${{ag.name}}</div>
+            <div style="overflow:hidden;flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:4px">
+                    <div style="font-weight:800;font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${{ag.name}}</div>
+                    <span style="font-size:0.68rem;background:#dcfce7;color:#15803d;padding:1px 6px;border-radius:99px;font-weight:800">🔋 ${{energyPct}}%</span>
+                </div>
                 <div style="font-size:0.72rem;color:#10b981;font-weight:700">● ${{ag.status || 'เสร็จแล้ว'}}</div>
                 <div style="font-size:0.68rem;color:var(--text-sub)">🧠 ${{(ag.llm_model || '').split(' ')[0]}} • ${{Math.round((ag.tokens_used_today || 18000)/1000)}}K</div>
             </div>
         </div>
-    `).join('');
+        `;
+    }}).join('');
 }}
 
 function renderRightSidebarMission(activeStep = 8) {{
@@ -1776,8 +2109,9 @@ async function saveAgentTokenAllocation(agentId) {{
 
 function quickOverclockAllAgents() {{
     APP.office.agents_roster.forEach(ag => {{ ag.compute_mode = "OVERCLOCK"; }});
-    document.getElementById('bannerMessage').innerHTML = `🔥 <strong>เปิดโหมด OVERCLOCK ทั้งบริษัท!</strong> พนักงาน AI ทุกตัวกำลังเผา Reasoning Tokens คิดวิเคราะห์เชิงลึกสูงสุด!`;
+    document.getElementById('bannerMessage').innerHTML = `🔥 <strong>เปิดโหมด OVERCLOCK ทั้งเมือง AI (Aurum Isle)!</strong> แบตเตอรี่ทุกบ้านชาร์จเต็ม 100% เผา Reasoning Tokens คิดวิเคราะห์เชิงลึกสูงสุด!`;
     renderTokenAllocationTable();
+    renderMiniAgentsStrip();
 }}
 
 
@@ -1840,7 +2174,7 @@ async function generateCuteSummary(styleOverride) {{
         verdict_action: act, tokens_burned: tokBurn
     }};
     updateReplayMetricCards(mockSnap);
-    outBox.textContent = `🏝️ สรุปบันทึกย้อนหลังบริษัท AI — วันที่ ${{dt}} (กะ ${{currentShiftSlot}})\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n• ราคาเปิดกะ: $${{openP}} ➔ ปิดกะ: $${{closeP}} (${{chg >= 0 ? '+' : ''}}${{chg}}$)\n• กรอบ High/Low ประจำกะ: สูงสุด $${{highP}} / ต่ำสุด $${{lowP}}\n• อินดิเคเตอร์ประจำกะ: RSI = ${{rsi}} | H1 ATR = $${{atr}}\n• มติ CIO ประจำกะ: ${{act}} (Bull ${{bullP}}% vs Bear ${{100-bullP}}%)\n• โทเคนที่เผาในกะนี้: ${{tokBurn.toLocaleString()}} Tokens`;
+    outBox.textContent = `🏝️ สรุปบันทึกย้อนหลัง {BRAND_NAME} ({BRAND_TAGLINE}) — วันที่ ${{dt}} (กะ ${{currentShiftSlot}})\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n• ราคาเปิดกะ: $${{openP}} ➔ ปิดกะ: $${{closeP}} (${{chg >= 0 ? '+' : ''}}${{chg}}$)\n• กรอบ High/Low ประจำกะ: สูงสุด $${{highP}} / ต่ำสุด $${{lowP}}\n• อินดิเคเตอร์ประจำกะ: RSI = ${{rsi}} | H1 ATR = $${{atr}}\n• มติ CIO ประจำกะ: ${{act}} (Bull ${{bullP}}% vs Bear ${{100-bullP}}%)\n• โทเคนที่เผาในกะนี้: ${{tokBurn.toLocaleString()}} Tokens`;
 }}
 
 function updateReplayMetricCards(d) {{
@@ -2023,7 +2357,7 @@ function initChatRoom() {{
     const box = document.getElementById('chatMessagesBox');
     box.innerHTML = `
         <div style="align-self:flex-start;background:var(--bg-card);border:1px solid var(--border-col);padding:12px 16px;border-radius:14px;max-width:82%;font-size:0.9rem;line-height:1.55">
-            👋 สวัสดีครับ! ผม <strong>🤖 Antigravity Copilot</strong> ยินดีต้อนรับสู่ <strong>AI Holding Company V7</strong>!<br>
+            👋 สวัสดีครับ! ผม <strong>🤖 Antigravity Copilot</strong> ยินดีต้อนรับสู่ <strong>{BRAND_NAME} — {BRAND_TAGLINE}</strong> (ภารกิจเมือง AI ปั้นกำไร $1,000 ใน 30 วัน)!<br>
             • ตอนนี้ราคาทองคำอยู่ที่ <strong>$${{APP.market.current_price}}</strong> และมติ CIO คือ <strong>${{APP.cio.action}}</strong> (Entry $${{APP.cio.final_entry}} | SL $${{APP.cio.final_sl}} | TP1 $${{APP.cio.final_tp1}})<br>
             • คุณสามารถปิดคอมนอนได้สบายใจ เพราะมีระบบ <strong>Offline Shift Auto-Catchup</strong> คอยดึงกราฟย้อนหลังมาสรุปให้ครบทุกกะเมื่อเปิดเครื่องครับ!
         </div>
@@ -2166,13 +2500,13 @@ function drawObsidianGraph() {{
     if (tbody && kg && kg.token_savings_report && kg.token_savings_report.agent_routing_matrix) {{
         tbody.innerHTML = kg.token_savings_report.agent_routing_matrix.map(r => `
             <tr>
-                <td><strong>${{r.agent_name}}</strong></td>
-                <td><span class="pill">${{r.llm_model}}</span></td>
-                <td>${{r.connected_nodes.map(n => `<code style="background:var(--bg-sub);padding:2px 6px;border-radius:5px;margin-right:4px">${{n}}</code>`).join('↔ ')}}</td>
+                <td class="num"><strong>${{r.agent_name}}</strong></td>
+                <td class="num"><span class="pill">${{r.llm_model}}</span></td>
+                <td>${{r.connected_nodes.map(n => `<code style="background:var(--bg-sub);padding:2px 6px;border-radius:5px;margin-right:4px;display:inline-block;margin-bottom:2px">${{n}}</code>`).join('↔ ')}}</td>
                 <td style="font-size:0.81rem">${{r.data_flow_summary}}</td>
-                <td style="color:#ef4444">${{r.full_vault_tokens.toLocaleString()}}</td>
-                <td style="color:#10b981;font-weight:800">${{r.graph_pruned_tokens.toLocaleString()}}</td>
-                <td style="color:#0ea5e9;font-weight:900">-${{r.savings_pct}}% (-${{r.tokens_saved_per_call.toLocaleString()}} Tok)</td>
+                <td class="num" style="color:#ef4444">${{r.full_vault_tokens.toLocaleString()}}</td>
+                <td class="num" style="color:#10b981;font-weight:800">${{r.graph_pruned_tokens.toLocaleString()}}</td>
+                <td class="num" style="color:#0ea5e9;font-weight:900">-${{r.savings_pct}}% (-${{r.tokens_saved_per_call.toLocaleString()}} Tok)</td>
             </tr>
         `).join('');
     }}
