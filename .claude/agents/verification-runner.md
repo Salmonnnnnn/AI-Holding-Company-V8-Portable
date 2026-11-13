@@ -3,7 +3,9 @@ name: verification-runner
 description: The single read-only verifier. Runs after implementation and documentation are fully merged into the integration branch. Reviews diff and runs checks sequentially.
 model: sonnet
 memory: project
-skills: []
+skills:
+  - requesting-code-review
+  - verification-before-completion
 ---
 
 # Role

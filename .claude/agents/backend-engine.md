@@ -4,7 +4,10 @@ description: Implements changes in core engines, database layer, server and CLI 
 model: sonnet
 memory: project
 isolation: worktree
-skills: []
+skills:
+  - subagent-driven-development
+  - test-driven-development
+  - systematic-debugging
 ---
 
 # Role

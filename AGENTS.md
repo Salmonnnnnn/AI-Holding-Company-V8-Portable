@@ -14,8 +14,11 @@ AI-Holding-Company-V8-Portable/
 │   └── qa-tester/MEMORY.md        # Pytest suite & quality assurance
 ├── .claude/agent-memory -> ../.agent-memory (Symlink for Claude Code compatibility)
 ├── .gemini/agent-memory -> ../.agent-memory (Symlink for Antigravity compatibility)
+├── .agents/skills/                # Installed agent skills (find-skills + obra/superpowers)
 ├── .claude/agents/                # Reusable subagent definitions (role, model, owned paths)
 ├── docs/ORCHESTRATION_PROTOCOL.md # Full orchestration rules (Orchestrator ↔ subagents)
+├── bin/
+│   └── ask-codex                  # Read-only Codex CLI advisor wrapper
 ├── .worktrees/                    # Isolated git worktrees for parallel agent development
 ├── scripts/
 │   └── worktree_manager.sh        # Worktree creation, sync check, and cleanup
@@ -70,7 +73,7 @@ When agents work on tasks, follow this protocol:
 | `conflict-resolver` | `.claude/agents/conflict-resolver.md` | `.agent-memory/conflict-resolver/` | merge conflicts เท่านั้น |
 | `verification-runner` | `.claude/agents/verification-runner.md` | `.agent-memory/qa-tester/` | read-only review + `./run_tests.sh` |
 
-> หมายเหตุ: `codex` CLI และ `npx` ยังไม่ได้ติดตั้งบนเครื่องนี้ จึงยังไม่มี `bin/ask-codex` และยังไม่ได้ติดตั้ง skills `find-skills` / `obra/superpowers` (ต้องขออนุญาตผู้ใช้ก่อนติดตั้ง).
+> หมายเหตุ: ติดตั้ง `node` (`v26.13.1`), `npx`, `codex` CLI (`codex-cli 0.169.0`), สคริปต์ `bin/ask-codex` (read-only sandbox), และชุด skills `find-skills` + `obra/superpowers` (16 skills ใน `.agents/skills/`) เรียบร้อยแล้ว.
 
 ## ⚡ Quick Start Commands (macOS)
 - **Run full setup and launch**: `./setup_and_start.sh`

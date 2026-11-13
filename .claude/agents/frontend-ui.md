@@ -4,7 +4,9 @@ description: Implements UI/UX changes in the single-file dashboard renderer (eng
 model: opus
 memory: project
 isolation: worktree
-skills: []
+skills:
+  - subagent-driven-development
+  - test-driven-development
 ---
 
 # Role

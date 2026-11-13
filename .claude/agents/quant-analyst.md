@@ -4,7 +4,10 @@ description: Implements trading logic — XAUUSD technical/macro agents, risk & 
 model: opus
 memory: project
 isolation: worktree
-skills: []
+skills:
+  - subagent-driven-development
+  - test-driven-development
+  - systematic-debugging
 ---
 
 # Role

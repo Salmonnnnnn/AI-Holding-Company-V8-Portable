@@ -4,7 +4,9 @@ description: Resolves git merge conflicts that require editing code, preserving 
 model: opus
 memory: project
 isolation: worktree
-skills: []
+skills:
+  - systematic-debugging
+  - finishing-a-development-branch
 ---
 
 # Role
