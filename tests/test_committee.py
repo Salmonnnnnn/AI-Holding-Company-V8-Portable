@@ -156,6 +156,70 @@ def test_aurum_isle_challenge_state_calculation():
     assert s_neg["profit"] == -54.5
     assert s_neg["pct"] == 0.0
     assert s_neg["is_negative"] is True
+    assert "ventures" in s_neg
+    assert s_neg["ventures"]["total"] == -54.5
+
+    # ยืนยันการแจกแจงรายได้หลายช่องทาง (Multi-Stream Breakdown)
+    assert "ventures" in s0
+    assert s0["ventures"]["total"] == 0.0
+    assert "ventures" in s1
+    assert s1["ventures"]["trading"] == round(250.0 * 0.45, 2)
+    assert s1["ventures"]["total"] == 250.0
+
+    # กรณีส่ง ventures กำหนดเองมาใน port
+    custom_ventures = {"trading": 120.0, "store": 60.0, "tech": 40.0, "media": 30.0}
+    s_custom = compute_challenge_state({
+        "initial_capital": 1000.0,
+        "equity": 1250.0,
+        "first_trade_at": "2026-11-09 09:30:00",
+        "ventures": custom_ventures
+    }, now)
+    assert s_custom["ventures"]["trading"] == 120.0
+    assert s_custom["ventures"]["store"] == 60.0
+    assert s_custom["ventures"]["tech"] == 40.0
+    assert s_custom["ventures"]["media"] == 30.0
+    assert s_custom["ventures"]["total"] == 250.0
+
+
+def test_multi_venture_ai_town_studios_and_deliverables_modal(tmp_path):
+    """ทดสอบการสร้างผัง 8 สตูดิโอเฉพาะทางของเมือง AI Multi-Venture Town และหน้าต่างผลงานจริง (Deliverables Viewer Modal)"""
+    db_file = os.path.join(str(tmp_path), "test_town.db")
+    vault_dir = os.path.join(str(tmp_path), "test_vault")
+    room = TradingCommitteeRoom(db_path=db_file, vault_dir=vault_dir)
+    report = room.run_session(capital=1000.0, risk_pct=1.5)
+
+    dash_path = os.path.join(str(tmp_path), "town_dashboard.html")
+    generate_html_dashboard(report, dash_path)
+    assert os.path.exists(dash_path)
+
+    with open(dash_path, "r", encoding="utf-8") as f:
+        html_text = f.read()
+
+    # 1. ยืนยันการมีอยู่ของ Deliverables Modal และฟังก์ชันเปิด/ปิด
+    assert "studioDeliverablesModal" in html_text
+    assert "openStudioDeliverablesModal" in html_text
+    assert "closeStudioDeliverablesModal" in html_text
+    assert "switchDeliverableStudio" in html_text
+
+    # 2. ยืนยัน 8 สตูดิโอเฉพาะทางในเมือง AI Town
+    for studio_id in [
+        "TOWN_HALL", "TECH_STUDIO", "MEME_STUDIO", "ONLINE_STORE",
+        "TRADING_LAB", "CRITIC_STUDIO", "GROWTH_STUDIO", "COURIER_DISPATCH"
+    ]:
+        assert studio_id in html_text
+
+    # 3. ยืนยันแถบแยกรายได้หลายช่องทาง (Multi-Venture Breakdown) ใน Challenge Banner
+    assert "challengeVenturesStrip" in html_text
+    assert "vTradingVal" in html_text
+    assert "vStoreVal" in html_text
+    assert "vTechVal" in html_text
+    assert "vMediaVal" in html_text
+
+    # 4. ยืนยันเนื้อหาผลงานจริงของสตูดิโอ (Deliverables)
+    assert "#aurumisle" in html_text
+    assert "liquidity_sweep_bot.py" in html_text
+    assert "VIP Gold Signal Bot" in html_text
+    assert "STUDIO_COLLAB_PIPELINES" in html_text
 
 
 

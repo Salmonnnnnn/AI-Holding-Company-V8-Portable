@@ -7,15 +7,25 @@
 - **Style**: Cozy Isometric Cutaway AI Agent Town on a Beach Island (combining `@ong_stw` cutaway rooms with `@not_nang` AI Agent Town houses, glowing 3D green cylindrical energy batteries, and a 30-Day $1,000 Challenge banner).
 - **Theme Support**: Dual mode toggle (☀️ Light Mode / 🌙 Dark Mode).
 
-## 🏆 30-Day $1,000 AI Agent Town Challenge (`compute_challenge_state`)
+## 🏆 30-Day $1,000 AI Agent Town Challenge & Multi-Stream Breakdown (`compute_challenge_state`)
 - **Goal**: `$1,000.00` cumulative profit (`CHALLENGE_GOAL_USD = 1000.0`) within `30` days (`CHALLENGE_DAYS = 30`).
 - **Profit Formula**: `round(equity - initial_capital, 2)` from `portfolio_state` (fallback `0.0`).
 - **Day Formula**: `(now.date() - started.date()).days + 1` derived from `portfolio_state["first_trade_at"]` (`MIN(opened_at)` in `portfolio_trades`), clamped to `1..30` (defaults to `Day 1` when no trades exist).
 - **Progress Bar**: `pct = clamp((profit / 1000.0) * 100, 0.0, 100.0)`; displays negative profit cleanly with a coral status pill while keeping bar width at `0%`.
+- **Multi-Stream Revenue Breakdown (`#challengeVenturesStrip`)**: Breaks down the revenue across the 4 specialized venture streams (Trading War Room, Online Store, Tech Studio Micro-SaaS/Bots, and Meme Studio Viral Content). Returns `"ventures"` dict in `compute_challenge_state`.
 
-## 🏝️ Isometric AI Agent Town & Battery Visuals
-- **Town Houses & Cutaway Rooms**: 8 connected isometric zones (`ISO_ROOMS`) rendered via `drawIsoWallWithDoor`, `drawRoomFurniture3D`, `drawChibiAgent`, `drawRoundedBadge`, `drawPalmTree`, and `drawAgentTownHouseAndBattery`.
-- **Agent Energy / Battery Pillar (`computeAgentEnergyPct`)**: Each plot renders a pitched roof gable on its back apex plus a 3D glowing green cylindrical battery pillar with a floating `%` badge (`68%–100%` derived from `tokens_used_today / token_quota`, or `100%` in `OVERCLOCK` mode).
+## 🏝️ Multi-Venture AI Agent Town Architecture (`Exmple.mp4`)
+- **8 Specialized Studios (`ISO_ROOMS`)**:
+  1. `TOWN_HALL`: 🏛️ ทำเนียบผู้บริหาร ("The Boss" Arthur & Sophia) — classical columns, podium, and daily executive directive memo.
+  2. `TECH_STUDIO`: 💻 สตูดิโอโค้ดดิ้ง (Dr. Kenji Sato & AutoBot X-1) — cyber server rack, blinking LEDs, and glowing neon `</>` emblem.
+  3. `MEME_STUDIO`: 🎬 มีมสตูดิโอ (Maya Lin & Sarah Jenkins) — colorful striped tent roof, camera on tripod with `● REC` light, and floating party balloons.
+  4. `ONLINE_STORE`: 🏪 ร้านค้าดิจิทัล (Nova Vance) — cozy striped shop awning, storefront counter, POS cash register, and digital product cards.
+  5. `TRADING_LAB`: 📈 วอร์รูมเทรดดิ้ง (Alex Vance & Dr. Marcus Sterling) — multi-monitor candlestick charts & 3D holographic gold trendline.
+  6. `CRITIC_STUDIO`: 🛡️ สตูดิโอตรวจงาน (Viktor Kane & Elena Rostova) — security checkpoint desk, metallic shield emblem, and `96/100 PASSED` rubber stamp seal.
+  7. `GROWTH_STUDIO`: ⚡ สตูดิโอยิงการตลาด (Sarah Jenkins) — megaphone emblem, broadcast antenna, and viral growth analytics chart.
+  8. `COURIER_DISPATCH`: 📦 ศูนย์กระจายงาน (AutoBot X-1) — conveyor belt, delivery crates with labels, and automated drone landing pad.
+- **Collaborating Pipelines & Animated Task Envelopes (`STUDIO_COLLAB_PIPELINES`)**: Renders animated glowing curved task light rays and floating white/gold task envelopes (✉️) with red wax seals traveling between collaborating studios.
+- **Interactive Deliverables Viewer Modal (`#studioDeliverablesModal`)**: Triggered by clicking any studio building on `#isometricOfficeCanvas` or clicking `📦 ดูผลงานจริงของแต่ละสตูดิโอ (View AI Deliverables)`. Features a smartphone mockup card with viral Reel preview/script, syntax-styled Python micro-tool code with copy button, digital store catalog, live XAUUSD signal card, and QA audit scorecard.
 
 ## 🗂️ 6 Concise Navigation Pages & Layout Rules
 1. `🏝️ 1. เมือง AI (Aurum Isle)` — Challenge banner, offline auto-catchup bar, isometric AI town canvas, live 8-step workflow & log.
