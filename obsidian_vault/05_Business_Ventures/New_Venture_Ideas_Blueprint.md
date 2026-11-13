@@ -3,7 +3,7 @@ tags:
   - business-ideas
   - ai-holding-company
   - venture-incubator
-updated: "2026-11-13 00:54:43"
+updated: "2026-11-13 21:33:24"
 ---
 # 🚀 แผนกปั้นธุรกิจใหม่ในเครือ AI Holding (ดูแลโดย [[Agent_Nova_Vance|Nova Vance]])
 เชื่อมโยงกับ: [[00_AI_Holding_Company_MOC]] | [[00_Knowledge_Graph_Topology]] | [[Central_Nexus_Insights]]

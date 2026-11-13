@@ -13,6 +13,7 @@
     "python.defaultInterpreterPath": "${workspaceFolder:AI Holding Company V8 (Main)}/venv/bin/python",
     "terminal.integrated.env.osx": {
       "PYTHONPATH": "${workspaceFolder:AI Holding Company V8 (Main)}"
-    }
+    },
+    "liveServer.settings.multiRootWorkspaceName": "AI Holding Company V8 (Main)"
   }
 }
