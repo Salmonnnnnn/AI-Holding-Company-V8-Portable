@@ -1,7 +1,7 @@
-# 🏝️ AI Holding Company V8 (Portable Edition)
-### บริษัทโฮลดิ้ง AI อัตโนมัติ 24 ชม. • ตึก Isometric Cutaway 3D • 12+ Frontier LLMs • Obsidian Knowledge Graph (ประหยัดโทเคน 83%+) • บอทเทรดทองคำ MT5
+# 🏝️ Aurum Isle — เกาะ AI ล่าทองคำ (AI Holding Company V8 Portable)
+### เมือง AI อัตโนมัติ 24 ชม. • ชาเลนจ์ 30 วัน ปั้นกำไร $1,000 • เกาะ Isometric 3D • 12+ Frontier LLMs • Obsidian Knowledge Graph (ประหยัดโทเคน 83%+) • บอทเทรดทองคำ MT5
 
-โปรเจกต์นี้คือระบบจำลองและปฏิบัติการจริงของ **บริษัทโฮลดิ้ง AI อัตโนมัติ (Autonomous AI Holding Company & Quantitative Gold Trading Firm)** ที่รวมพนักงาน AI เฉพาะทาง 11 ตัว ทำงานร่วมกันในอาคารสำนักงานใหญ่สไตล์ **Cozy Isometric Cutaway Office (แรงบันดาลใจจาก `@ong_stw`)** พร้อมระบบเชื่อมต่อ **MetaTrader 5 (MT5)**, **คลังสมองที่สอง Obsidian Knowledge Graph ที่ช่วยประหยัดโทเคน AI สูงสุด 83%+**, และ **ระบบกู้คืนกะอัตโนมัติแม้ปิดคอม (Offline Shift Auto-Catchup & 24/7 GitHub Cloud Runner)**
+โปรเจกต์นี้คือระบบจำลองและปฏิบัติการจริงของ **Aurum Isle — เกาะ AI ล่าทองคำ (Autonomous AI Holding Company & Quantitative Gold Trading Town)** ที่รวมพนักงาน AI เฉพาะทาง 11 ตัว ทำงานร่วมกันบนเกาะเมือง AI สไตล์ **Cozy Isometric Island Town** (พร้อมบ้านประจำแผนก หลอดพลังงานแบตเตอรี่เรืองแสง `%` และแบนเนอร์ภารกิจ **Day X of 30 — ปั้นกำไร $1,000**) เชื่อมต่อ **MetaTrader 5 (MT5)**, **คลังสมองที่สอง Obsidian Knowledge Graph ที่ช่วยประหยัดโทเคน AI สูงสุด 83%+**, และ **ระบบกู้คืนกะอัตโนมัติแม้ปิดคอม (Offline Shift Auto-Catchup & 24/7 GitHub Cloud Runner)**
 
 ---
 
@@ -35,6 +35,7 @@ python server.py --port 8080 --capital 1000 --risk 1.5 --interval 45
 | **V6** | **Cozy Isometric Cutaway Office, Historical Replay, Token Treasury & Skill Harvester** | หน้าจอตึกบริษัท Isometric 6 ห้องสไตล์คลิป TikTok `@ong_stw`, ระบบดูสรุปย้อนหลังตามแท่งเทียนจริง (`engine/historical_replay.py`), ระบบจัดสรรงบโทเคน (`engine/token_economy.py`), และระบบสั่ง AI ออกไปวิจัยสกิลใหม่สดๆ (`engine/skill_harvester.py`) |
 | **V7** | **Light/Dark Theme, 12+ Frontier Models + Custom Model Adder & Offline Auto-Catchup** | ปุ่มสลับโหมดสว่าง/มืด (`☀️/🌙`), โมเดลระดับท็อป 12 รุ่น (`Claude 3.7 Sonnet`, `OpenAI o1-Pro`, `GPT-4.5`, `DeepSeek-R1 671B`, `Grok-3` ฯลฯ) + ปุ่มเพิ่มโมเดลใหม่เองได้ และระบบกู้คืนกะตอนปิดคอม (`engine/offline_catchup.py`) + GitHub Actions 24/7 (`.github/workflows/ai_company_24_7.yml`) |
 | **V8** | **Obsidian Knowledge Graph Token-Saver (Graph-RAG) & Portable GitHub Release** | สร้างกระดานกราฟ `AI_Company_Knowledge_Map.canvas` + `00_Knowledge_Graph_Topology.md` + Interactive Graph บนเว็บ เพื่อดึงเฉพาะโหนดที่เชื่อมกัน 1 ขั้น (1-Hop Subgraph) **ช่วยประหยัดโทเคน AI เฉลี่ย 83.5%+ ต่อรอบ** |
+| **Aurum Isle** | **30-Day $1,000 AI Agent Town Challenge & Orchestration Protocol** | รีแบรนด์เป็น **Aurum Isle — เกาะ AI ล่าทองคำ**, เพิ่มแบนเนอร์ภารกิจ 30 วัน ปั้นกำไร $1,000 (`compute_challenge_state`), อัปเกรดเกาะ Isometric เป็นเมือง AI พร้อมหลังคาบ้านและหลอดแบตเตอรี่พลังงานเรืองแสงรายตัว (`drawAgentTownHouseAndBattery`), จัดระเบียบหัวข้อและตารางทั้ง 6 หน้า และใช้ระเบียบ Multi-Agent Orchestration (`docs/ORCHESTRATION_PROTOCOL.md`) |
 
 ---
 
@@ -42,11 +43,12 @@ python server.py --port 8080 --capital 1000 --risk 1.5 --interval 45
 
 แทนที่จะส่งข้อมูลทั้งบริษัท (`~18,650 Tokens`) เข้าไปใน Prompt ทุกครั้งที่ AI คุยกัน ระบบใน `engine/obsidian_sync.py` ได้สร้าง **Knowledge Graph Topology** เพื่อระบุว่าข้อมูลส่วนไหนเชื่อมกับส่วนไหน:
 - **เปิดดูในแอป Obsidian:** เปิดโฟลเดอร์ `obsidian_vault/` เป็น Vault ในโปรแกรม Obsidian แล้วคลิกไฟล์ **`AI_Company_Knowledge_Map.canvas`** หรือ **`00_Knowledge_Graph_Topology.md`** (หรือกด `Ctrl+G` เพื่อดู Graph View)
-- **เปิดดูบนหน้าเว็บ:** ไปที่แท็บ **`🤖 MT5 Demo & Obsidian Graph`** ด้านล่างจะมีกราฟ Interactive ที่คลิกดูแต่ละโหนดได้ทันทีว่าเชื่อมกับใครและประหยัดโทเคนไปกี่ Tokens
+- **เปิดดูบนหน้าเว็บ:** ไปที่แท็บ **`🤖 6. MT5 Demo & Obsidian`** ด้านล่างจะมีกราฟ Interactive ที่คลิกดูแต่ละโหนดได้ทันทีว่าเชื่อมกับใครและประหยัดโทเคนไปกี่ Tokens
 
 ---
 
-## 🧪 การรันทดสอบระบบอัตโนมัติ (7/7 Automated Pytest Suite)
-```powershell
-python -m pytest tests\test_committee.py -v
+## 🧪 การรันทดสอบระบบอัตโนมัติ (8/8 Automated Pytest Suite)
+```bash
+./run_tests.sh
+# หรือบน Windows: python -m pytest tests\test_committee.py -v
 ```

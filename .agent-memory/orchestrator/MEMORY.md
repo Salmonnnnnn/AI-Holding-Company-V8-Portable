@@ -25,7 +25,7 @@
 - [x] macOS / POSIX native execution environment (`setup_and_start.sh`, `venv`).
 - [x] Multi-Agent Memory & Git Worktree workspace integration.
 - [x] Adopted `docs/ORCHESTRATION_PROTOCOL.md` (2026-11-13) — agent defs in `.claude/agents/`.
-- [ ] Aurum Isle rebrand + 30-day $1,000 Agent Town challenge (branch `orchestrator/aurum-isle-town`).
+- [x] Aurum Isle rebrand + 30-day $1,000 Agent Town challenge (`orchestrator/aurum-isle-town`, commit `02200a6`).
 
 ## ⚠️ Known Pitfalls
 - Sandbox blocks writes to `.git/` → git branch/worktree/commit need sandbox bypass.
