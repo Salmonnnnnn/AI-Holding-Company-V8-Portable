@@ -17,18 +17,17 @@
 ## 🏝️ Multi-Venture AI Agent Town Architecture (`Exmple.mp4`)
 - **Single-Page Fullscreen AI Town View (`#townFullscreenCard`)**:
   - Interactive canvas `#isometricOfficeCanvas` (`width="1440" height="820"`) filling a full-bleed viewport card (`height: calc(100vh - 100px); min-height: 720px; border-radius: 16px; position: relative; overflow: hidden;`).
-  - **Floating Top-Left Bar (Comic Pop-Art Style)**:
-    * Title: `🏰 AI Office • Aurum Isle`
-    * Status pill: `▶ 11 working` (`btnTownStatus`, triggers `runLiveCompanyWorkflowAnimation()`)
-    * Pause pill: `⏸ Pause` / `▶ Resume` (`btnTownPause`, triggers `toggleTownPause()`)
-    * White comic pill buttons: `👥 View all` (opens directory drawer of 11 agents & 5 studios), `📊 Stats` (toggles 30-day $1,000 challenge banner), `📬 Inbox` with red badge `8` (triggers `openStudioDeliverablesModal()`), `🗂️ 6 แท็บระบบ (Menu)` (toggles lower enterprise tabs and panels).
-  - **Floating Top-Right Bar & Atmosphere Switcher (`#atmosphereSegmentBar`)**:
-    * Sleek 3-button segmented pill bar replacing clumsy select:
-      - `☀️ กลางวัน (Day)` — **Default starting atmosphere!** Deep vibrant cartoon sky/ocean blue (`#22a6f2`).
-      - `🌅 ยามเย็น (Sunset)` — Warm golden-pink sky and peach ocean.
-      - `🌙 กลางคืน (Night)` — Starry cyber night sky with glowing yellow windows.
-    * Synchronized with hidden `<select id="skyTimeSelect">` for backward compatibility.
-    * Real-time Revenue & Challenge HUD: `🪙 $0 / $1,000` • `DAY 1 OF 30` • `Lv 8 • ⚡ 5-HR 99% | 7-DAY 100%`.
+  - **Floating Top Bar (`.town-top-nav-bar`)**:
+    * Unified flex container (`position: absolute; top: 12px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: center; z-index: 25; pointer-events: none; gap: 8px; flex-wrap: nowrap;`).
+    * **Left Pill Group (`.town-top-left-bar`)** (`gap: 6px; font-size: 0.78rem; flex-shrink: 0; pointer-events: auto;`):
+      - Title: `🏰 AI Office • Aurum Isle`
+      - Status pill: `▶ 11 working` (`btnTownStatus`, triggers `runLiveCompanyWorkflowAnimation()`)
+      - Pause pill: `⏸ Pause` / `▶ Resume` (`btnTownPause`, triggers `toggleTownPause()`)
+      - Action pills: `👥 View all` (directory drawer), `📊 Stats` (HUD toggle), `📬 Inbox` with red badge `8` (`openStudioDeliverablesModal()`), `🗂️ 6 แท็บระบบ (Menu)` (toggles lower enterprise tabs).
+    * **Right Pill Group & Atmosphere Switcher (`.town-top-right-bar`)** (`pointer-events: auto; flex-shrink: 0; gap: 8px;`):
+      - Compact Real-time Revenue & Challenge HUD: `🪙 {chal_profit_disp} / $1,000` • `DAY {chal_day} OF 30` (redundant battery status removed as batteries are already 3D structures on the island).
+      - Sleek 3-button segmented atmosphere pill bar (`#atmosphereSegmentBar`): `☀️ กลางวัน (Day)` (default), `🌅 ยามเย็น (Sunset)`, `🌙 กลางคืน (Night)`.
+    * Zero horizontal overlap or pill collision on standard 1280px–1440px viewports with seamless click-through via `pointer-events: auto` on buttons.
   - **Floating Bottom-Left `💬 Messages` Box (`#townMessagesBox`)**:
     * White translucent card (`320px x 230px`, `backdrop-filter: blur(8px)`), header with minimize `[ − ]` button (`toggleTownMessagesBox()`).
     * Live task handoff feed (`Forge ➔ Hype`, `Critic ➔ Iso`, `Atlas ➔ Vector`, `Jester ➔ Mittens`). Clicking opens that studio's Deliverables Modal.
@@ -52,13 +51,14 @@
   - Collaborating pipelines with animated parabolic curved light rays and flying task envelopes (✉️).
   - Full-body chibi AI agents walking paths between zones.
 - **Interactive Deliverables Viewer Modal (`#studioDeliverablesModal`)**:
+  - Modal card style: `.deliverables-modal-card` with `opacity: 1; animation: modalFadeIn 0.2s ease-out forwards;` ensuring instant visibility and proper animation completion across all renderers.
   - Clicking any building or character opens the modal with real specialized deliverables:
-    * Meme Studio: Smartphone mockup with viral Instagram Reel / TikTok preview, script, and engagement stats.
-    * Tech Studio: Syntax-styled Python code (`liquidity_sweep_bot.py`) with copy button.
+    * Meme Studio: Smartphone mockup with viral Instagram Reel / TikTok preview, multiline script, and engagement stats.
+    * Tech Studio: Clean multiline Python code (`liquidity_sweep_bot.py`) with copy button.
     * Online Store: Digital products (VIP Signal, Graph-RAG Tool, Prompt Pack) with prices & sales revenue.
     * Trading War Room: Live XAUUSD signal card with entry, SL, TP, RR ratio.
     * Critic Studio: QA audit checklist (100% passed).
-    * Town Hall: Executive daily memo.
+    * Town Hall: Executive daily memo with proper line breaks.
 
 ## 🗂️ 6 Concise Navigation Pages & Layout Rules
 1. `🏝️ 1. เมือง AI (Aurum Isle)` — Challenge banner, offline auto-catchup bar, circular island town canvas, live 8-step workflow & log.

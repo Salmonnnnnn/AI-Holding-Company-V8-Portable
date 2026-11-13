@@ -1087,7 +1087,6 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
             overflow: hidden;
             opacity: 1;
-            animation: modalFadeIn 0.2s ease-out forwards;
         }}
         @keyframes modalFadeIn {{
             from {{ opacity: 0; transform: scale(0.96); }}
