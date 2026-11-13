@@ -71,6 +71,7 @@ When agents work on tasks, follow this protocol:
 | `backend-engine` | `.claude/agents/backend-engine.md` | `.agent-memory/backend-engine/` | `engine/` (ยกเว้น dashboard), `data/*.py`, `server.py`, `main.py` |
 | `quant-analyst` | `.claude/agents/quant-analyst.md` | `.agent-memory/quant-analyst/` | `agents/`, `engine/mt5_bridge.py`, `engine/strategy_benchmark.py` |
 | `conflict-resolver` | `.claude/agents/conflict-resolver.md` | `.agent-memory/conflict-resolver/` | merge conflicts เท่านั้น |
+| `ui-inspector` | `.claude/agents/ui-inspector.md` | `.agent-memory/ui-inspector/` | visual UI/UX audit + live snapshot comparison vs reference |
 | `verification-runner` | `.claude/agents/verification-runner.md` | `.agent-memory/qa-tester/` | read-only review + `./run_tests.sh` |
 
 > หมายเหตุ: ติดตั้ง `node` (`v26.13.1`), `npx`, `codex` CLI (`codex-cli 0.169.0`), สคริปต์ `bin/ask-codex` (read-only sandbox), และชุด skills `find-skills` + `obra/superpowers` (16 skills ใน `.agents/skills/`) เรียบร้อยแล้ว.
