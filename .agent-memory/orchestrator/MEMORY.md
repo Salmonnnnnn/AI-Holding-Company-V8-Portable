@@ -28,6 +28,7 @@
 - [x] Aurum Isle rebrand + 30-day $1,000 Agent Town challenge (`orchestrator/aurum-isle-town`, commit `02200a6`).
 - [x] Installed Homebrew `node`/`npx`, `@openai/codex` CLI, `bin/ask-codex` read-only wrapper, and `find-skills` + `obra/superpowers` (`.agents/skills/`).
 - [x] Multi-Venture AI Town Studios & Deliverables Viewer (`Exmple.mp4`) with animated task pipelines & multi-stream revenue breakdown (commit `f5dfe32`).
+- [x] Full circular 3D green island town canvas redesign with 2 giant glowing batteries, 8 specialized outer studios, and central plaza matching Exmple.mp4 (commit `0668363`).
 
 ## ⚠️ Known Pitfalls
 - Sandbox blocks writes to `.git/` → git branch/worktree/commit need sandbox bypass.
