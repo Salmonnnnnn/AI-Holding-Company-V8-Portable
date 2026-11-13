@@ -4999,7 +4999,7 @@ function switchDeliverableStudio(studioId) {{
     }}
 }}
 
-function changeSkyAtmosphere(val) {{ skyTheme = val; }}
+function changeSkyAtmosphere(val) {{ setTownSkyAtmosphere(val); }}
 
 function selectVisualizerAgent(agentId) {{
     const ag = APP.office.agents_roster.find(a => a.agent_id === agentId);
