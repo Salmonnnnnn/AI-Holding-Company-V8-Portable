@@ -3,10 +3,10 @@ tags:
   - knowledge-graph
   - token-saving-rag
   - obsidian-topology
-updated: "2026-11-13 22:02:07"
+updated: "2026-11-13 21:33:24"
 ---
 # 🕸️ 00 — ผังโครงข่ายข้อมูล Obsidian Knowledge Graph & ระบบประหยัดโทเคน (Graph-RAG)
-เชื่อมโยงกับ: [[00_AI_Holding_Company_MOC]] | [[Central_Nexus_Insights]] | [[MT5_Portfolio_and_Benchmarks]] | [[2026-11-13_Daily_Summary]]
+เชื่อมโยงกับ: [[00_AI_Holding_Company_MOC]] | [[Central_Nexus_Insights]] | [[MT5_Portfolio_and_Benchmarks]] | [[2026-11-15_Daily_Summary]]
 
 > [!tip] ประหยัดโทเคน AI เฉลี่ย **86.1%** (`-16,060 Tokens / รอบ` หรือ `-706,640 Tokens / วัน`)
 > แทนที่จะส่งข้อมูลทั้งบริษัท (`18,650 Tokens`) เข้า Prompt ทุกครั้ง ระบบใช้ผัง **Knowledge Graph** นี้ดึงเฉพาะ **โหนดที่เชื่อมต่อกันโดยตรง 1 ขั้น (1-Hop Connected Subgraph)** เหลือเพียงเฉลี่ย **`2,590 Tokens / รอบ`**!

@@ -119,6 +119,13 @@ class TradingCommitteeRoom:
             best_strategy_name=best_strat_name,
             capital=capital
         )
+        venture_ledger = self.db.get_venture_ledger_summary(portfolio_state)
+        portfolio_state["ventures"] = {
+            "trading": venture_ledger["trading"],
+            "store": venture_ledger["store"],
+            "tech": venture_ledger["tech"],
+            "media": venture_ledger["media"],
+        }
 
         # 11. จำลองและบันทึกขั้นตอนการยิงออเดอร์ MT5 Demo สดๆ 8 ขั้นตอน
         mt5_demo_telemetry = self.mt5_bridge.simulate_live_mt5_demo_execution(
@@ -159,6 +166,8 @@ class TradingCommitteeRoom:
             "risk_assessment": risk_result,
             "cio_verdict": verdict,
             "portfolio_state": portfolio_state,
+            "venture_ledger": venture_ledger,
+            "integration_status": self.db.get_integration_status(),
             "mt5_demo_telemetry": mt5_demo_telemetry,
             "office_digest": office_digest,
             "available_models": self.llm_router.get_available_models(),

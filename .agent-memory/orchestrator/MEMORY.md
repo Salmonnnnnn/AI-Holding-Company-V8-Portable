@@ -30,6 +30,7 @@
 - [x] Multi-Venture AI Town Studios & Deliverables Viewer (`Exmple.mp4`) with animated task pipelines & multi-stream revenue breakdown (commit `f5dfe32`).
 - [x] Full circular 3D green island town canvas redesign with 2 giant glowing batteries, 8 specialized outer studios, and central plaza matching Exmple.mp4 (commit `0668363`).
 - [x] Single-Page Fullscreen AI Town Model with 4 Fenced Outer Zones, 3-Button Segmented Atmosphere Bar, and elite `ui-inspector` subagent (commit `029e468`).
+- [x] Enterprise AI Holding Company OS Upgrade: Multi-source live market data (`Yahoo Finance` + `Binance PAXG 24/7 Spot Gold`), SQLite `venture_revenue_ledger`, live portfolio execution commands (`OPEN_CIO_TRADE`, `BREAK_EVEN_ALL`, `CLOSE_TRADE`, `RESET_PORTFOLIO`), `.env` API Integration & Data Provenance Hub (`#liveIntegrationsModal`), and 6-page enterprise features (11/11 pytest PASSED).
 
 ## ⚠️ Known Pitfalls
 - Sandbox blocks writes to `.git/` → git branch/worktree/commit need sandbox bypass.

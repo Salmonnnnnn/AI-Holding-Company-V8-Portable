@@ -2,10 +2,12 @@
 Multi-Timeframe Market Data Engine for Gold (XAUUSD / GC=F) and Macro Indicators (DXY, 10Y Yield)
 Supports Daily (D1) Major Structure and Hourly (H1) Intraday Execution + Quantitative Indicators.
 """
+import json
+import urllib.request
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -78,9 +80,35 @@ class MarketDataEngine:
         self.last_h1_df = None
         self.last_d1_df = None
 
+    def _fetch_binance_paxg_klines(self, interval: str = "1d", limit: int = 90) -> pd.DataFrame:
+        """Secondary live 24/7 Spot Gold feed via Binance PAXGUSDT (1 PAXG = 1 oz physical London Good Delivery gold)."""
+        try:
+            url = f"https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval={interval}&limit={limit}"
+            req = urllib.request.Request(url, headers={"User-Agent": "AurumIsle-QuantEngine/8.0"})
+            with urllib.request.urlopen(req, timeout=4) as resp:
+                raw = json.loads(resp.read().decode("utf-8"))
+            if not raw or not isinstance(raw, list):
+                return pd.DataFrame()
+            rows = []
+            for k in raw:
+                rows.append({
+                    "Date": pd.to_datetime(int(k[0]), unit="ms"),
+                    "Open": float(k[1]),
+                    "High": float(k[2]),
+                    "Low": float(k[3]),
+                    "Close": float(k[4]),
+                    "Volume": float(k[5]),
+                })
+            df = pd.DataFrame(rows).set_index("Date")
+            return df
+        except Exception as e:
+            logger.debug(f"Binance PAXG fallback feed skipped ({interval}): {e}")
+            return pd.DataFrame()
+
     def get_market_snapshot(self) -> dict:
         """ดึงข้อมูลราคาและตัวชี้วัดทางเทคนิคแบบ Multi-Timeframe (D1 + H1) และข้อมูลเศรษฐกิจมหภาค"""
         try:
+            live_source_label = "Yahoo Finance Multi-Timeframe (Live D1 + H1)"
             gold_ticker = yf.Ticker(self.gold_symbol)
             d1_hist = gold_ticker.history(period="3mo", interval="1d")
             h1_hist = gold_ticker.history(period="1mo", interval="1h")
@@ -89,6 +117,12 @@ class MarketDataEngine:
                 gold_ticker = yf.Ticker("XAUUSD=X")
                 d1_hist = gold_ticker.history(period="3mo", interval="1d")
                 h1_hist = gold_ticker.history(period="1mo", interval="1h")
+
+            if d1_hist.empty or len(d1_hist) < 20:
+                d1_hist = self._fetch_binance_paxg_klines(interval="1d", limit=90)
+                h1_hist = self._fetch_binance_paxg_klines(interval="1h", limit=120)
+                if not d1_hist.empty:
+                    live_source_label = "Binance Spot Gold PAXG/USD (Live Real-Time D1 + H1)"
 
             if d1_hist.empty:
                 logger.warning("Live data unavailable, using simulated real-market snapshot.")
@@ -144,6 +178,33 @@ class MarketDataEngine:
             # ข้อมูล Macro: DXY และ Bond Yield
             macro_info = self._get_macro_snapshot()
 
+            daily_candles = []
+            d1_tail = d1_hist.tail(60)
+            prev_c = None
+            for idx, row in d1_tail.iterrows():
+                try:
+                    d_str = idx.strftime("%Y-%m-%d")
+                except Exception:
+                    d_str = str(idx)[:10]
+                o_val = round(float(row['Open']), 2)
+                h_val = round(float(row['High']), 2)
+                l_val = round(float(row['Low']), 2)
+                c_val = round(float(row['Close']), 2)
+                base_c = prev_c if prev_c is not None else o_val
+                chg_usd = round(c_val - base_c, 2)
+                chg_pct = round(((c_val - base_c) / max(1.0, base_c)) * 100.0, 2)
+                daily_candles.append({
+                    "date_str": d_str,
+                    "open": o_val,
+                    "high": h_val,
+                    "low": l_val,
+                    "close": c_val,
+                    "prev_close": round(base_c, 2),
+                    "change_usd": chg_usd,
+                    "change_pct": chg_pct
+                })
+                prev_c = c_val
+
             return {
                 "symbol": "XAUUSD / Gold",
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -176,7 +237,10 @@ class MarketDataEngine:
                 "dxy_change_pct": macro_info["dxy_change_pct"],
                 "us10y_yield": macro_info["us10y"],
                 "us10y_change_pct": macro_info["us10y_change_pct"],
-                "source": "Yahoo Finance Multi-Timeframe (Live D1 + H1)"
+                "daily_candles": daily_candles,
+                "is_live": True,
+                "feed_status": "LIVE_REALTIME",
+                "source": live_source_label
             }
         except Exception as e:
             logger.error(f"Error fetching live data: {e}. Falling back to default data.")
@@ -220,6 +284,36 @@ class MarketDataEngine:
         }
 
     def _get_fallback_data(self) -> dict:
+        today_dt = datetime.now().date()
+        daily_candles = []
+        base_price = 2625.0
+        prev_c = 2622.0
+        for i in range(59, -1, -1):
+            d_dt = today_dt - timedelta(days=i)
+            d_str = d_dt.strftime("%Y-%m-%d")
+            idx_num = 60 - i
+            wave = float(np.sin(idx_num * 0.42) * 14.5 + np.cos(idx_num * 0.27) * 9.2)
+            drift = idx_num * 0.95
+            o_val = round(prev_c, 2)
+            c_val = round(base_price + drift + wave, 2)
+            if i == 0:
+                c_val = 2685.50
+            h_val = round(max(o_val, c_val) + 6.40 + (idx_num % 5) * 1.85, 2)
+            l_val = round(min(o_val, c_val) - 5.80 - (idx_num % 4) * 1.65, 2)
+            chg_usd = round(c_val - prev_c, 2)
+            chg_pct = round(((c_val - prev_c) / max(1.0, prev_c)) * 100.0, 2)
+            daily_candles.append({
+                "date_str": d_str,
+                "open": o_val,
+                "high": h_val,
+                "low": l_val,
+                "close": c_val,
+                "prev_close": round(prev_c, 2),
+                "change_usd": chg_usd,
+                "change_pct": chg_pct
+            })
+            prev_c = c_val
+
         return {
             "symbol": "XAUUSD / Gold",
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -261,6 +355,9 @@ class MarketDataEngine:
             "dxy_change_pct": -0.18,
             "us10y_yield": 4.32,
             "us10y_change_pct": -0.25,
+            "daily_candles": daily_candles,
+            "is_live": False,
+            "feed_status": "OFFLINE_FALLBACK",
             "source": "Snapshot Data (Resilient Multi-TF Fallback)"
         }
 

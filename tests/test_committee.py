@@ -26,6 +26,7 @@ def test_market_data_engine_multi_tf():
     assert "current_price" in data and data["current_price"] > 0
     assert "d1_trend" in data
     assert 0.0 < data["us10y_yield"] < 15.0
+    assert "daily_candles" in data and len(data["daily_candles"]) >= 20
 
 
 def test_historical_replay_distinct_dates_and_shifts(tmp_path):
@@ -242,6 +243,18 @@ def test_multi_venture_ai_town_studios_and_deliverables_modal(tmp_path):
     assert "townMessagesBox" in html_text
     assert "townZoneSwitcherBar" in html_text
 
+    # 6. ยืนยันการแก้บั๊กป้าย Canvas บน macOS (fillCenteredText), ปฏิทิน P&L รายเดือน และ 3 สตูดิโอธุรกิจเต็มรูปแบบ
+    assert "fillCenteredText" in html_text
+    assert "monthlyPnlCalendarCard" in html_text
+    assert "monthlyCalendarGrid" in html_text
+    assert "changeCalendarMonth" in html_text
+    assert "page-meme-studio" in html_text
+    assert "page-store-studio" in html_text
+    assert "page-tech-studio" in html_text
+    assert "calculateStoreUnitEconomics" in html_text
+    assert "generateEnterpriseViralScript" in html_text
+    assert "selectTechStudioModule" in html_text
+
 
 
 def test_obsidian_knowledge_graph_and_token_saving_router(tmp_path):
@@ -288,5 +301,86 @@ def test_ask_codex_advisor_script_contract():
     assert proc.returncode != 0
     combined_out = (proc.stdout or "") + (proc.stderr or "")
     assert "usage:" in combined_out.lower()
+
+
+def test_real_venture_ledger_portfolio_commands_and_integrations(tmp_path):
+    """ยืนยันการทำงานของสมุดบัญชีรายได้จริง (venture_revenue_ledger), คำสั่งควบคุมพอร์ตจริง และสถานะ API Integration"""
+    db_file = os.path.join(str(tmp_path), "test_real_ledger.db")
+    db = CompanyDatabase(db_file)
+
+    # 1. ตรวจสอบยอดเริ่มต้นจาก SQLite venture_revenue_ledger
+    ledger0 = db.get_venture_ledger_summary()
+    assert ledger0["store"] == 145.0
+    assert ledger0["tech"] == 98.0
+    assert ledger0["media"] == 64.5
+    assert ledger0["trading"] == 0.0
+    assert ledger0["total"] == 307.5
+    assert "live_account" in ledger0 and "test_account" in ledger0
+    assert ledger0["live_account"]["total_profit"] == 0.0
+    assert ledger0["test_account"]["total_profit"] == 307.5
+    assert 5.0 <= ledger0["battery_5h_pct"] <= 100.0
+    assert 10.0 <= ledger0["battery_7d_pct"] <= 100.0
+    assert len(ledger0["entries"]) >= 4
+
+    # 2. บันทึกรายได้ใหม่เข้าสตูดิโอจริง
+    ledger1 = db.add_venture_transaction(
+        studio_key="ONLINE_STORE",
+        venture_name="Gold Sniper Indicator Pack",
+        description="ลูกค้าสั่งซื้อแพ็กเกจอินดิเคเตอร์",
+        amount_usd=55.0
+    )
+    assert ledger1["store"] == 200.0
+    assert ledger1["total"] == 362.5
+
+    # 3. ทดสอบคำสั่งควบคุมพอร์ตจริง (OPEN_CIO_TRADE -> BREAK_EVEN_ALL -> CLOSE_TRADE)
+    p_open = db.execute_portfolio_command(
+        command="OPEN_CIO_TRADE",
+        market_price=2680.0,
+        cio_verdict={"action": "BUY", "final_entry": 2680.0, "final_sl": 2665.0, "final_tp1": 2705.0, "final_tp2": 2720.0},
+        lot_size=0.05
+    )
+    assert len(p_open["open_positions"]) == 1
+    tid = p_open["open_positions"][0]["id"]
+
+    p_be = db.execute_portfolio_command(command="BREAK_EVEN_ALL", market_price=2690.0)
+    assert p_be["open_positions"][0]["status"] == "TP1_PARTIAL"
+    assert p_be["open_positions"][0]["sl_price"] == 2680.0
+
+    p_close = db.execute_portfolio_command(command="CLOSE_TRADE", market_price=2700.0, trade_id=tid)
+    assert len(p_close["open_positions"]) == 0
+    assert p_close["total_closed_trades"] == 1
+    assert p_close["balance"] == 1100.0
+    assert p_close["equity"] == 1100.0
+
+    # ยืนยันว่ากำไรเทรดจริงไหลเข้าสู่สมุดบัญชีรวมอัตโนมัติ
+    ledger2 = db.get_venture_ledger_summary(p_close)
+    assert ledger2["trading"] == 100.0
+    assert ledger2["total"] == 462.5
+
+    # 4. ตรวจสอบรายงานสถานะการเชื่อมต่อ API & Data Provenance
+    int_status = db.get_integration_status()
+    assert "items" in int_status and len(int_status["items"]) >= 6
+    assert "data_provenance" in int_status and len(int_status["data_provenance"]) >= 6
+    assert all(p["is_real"] is True for p in int_status["data_provenance"])
+
+    # 5. ยืนยันการแสดงผล Enterprise UI ครบทั้ง 6 หน้า และ Modal ตรวจสอบที่มาตัวเลขจริง
+    vault_dir = os.path.join(str(tmp_path), "test_real_ledger_vault")
+    room = TradingCommitteeRoom(db_path=db_file, vault_dir=vault_dir)
+    report = room.run_session(capital=1000.0, risk_pct=1.5)
+    dash_path = os.path.join(str(tmp_path), "test_enterprise_dashboard.html")
+    generate_html_dashboard(report, dash_path)
+    with open(dash_path, "r", encoding="utf-8") as f:
+        html_text = f.read()
+
+    assert "liveIntegrationsModal" in html_text
+    assert "ventureLedgerCard" in html_text
+    assert "liveOrderBookCard" in html_text
+    assert "triggerLiveMarketRefresh" in html_text
+    assert "submitNewVentureTransaction" in html_text
+    assert "executePortfolioAction" in html_text
+    assert "hrScorecardTableBody" in html_text
+    assert "triggerAllHandsBoardMeeting" in html_text
+    assert "downloadReplayMarkdownReport" in html_text
+
 
 

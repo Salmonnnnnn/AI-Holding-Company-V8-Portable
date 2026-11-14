@@ -2,7 +2,7 @@
 
 ## 🎯 Test Suite Status
 - **Test Target**: `tests/test_committee.py`
-- **Current Health**: 10/10 PASSED (100% Green)
+- **Current Health**: 11/11 PASSED (100% Green)
 - **Execution Command**: `PYTHONPATH=. python3 -m pytest tests/test_committee.py -v` (or `./run_tests.sh`)
 
 ## 📋 Test Matrix & Coverage
@@ -16,11 +16,25 @@
 8. `test_multi_venture_ai_town_studios_and_deliverables_modal`: Validates the 8 AI Town specialized studios (`TOWN_HALL`, `TECH_STUDIO`, `MEME_STUDIO`, `ONLINE_STORE`, `TRADING_LAB`, `CRITIC_STUDIO`, `GROWTH_STUDIO`, `COURIER_DISPATCH`), circular 3D island town renderers (`drawLushCircularIsland`, `drawGiantBattery`, `drawCentralSquareBuilding`), deliverables modal (`studioDeliverablesModal`, `openStudioDeliverablesModal`, `closeStudioDeliverablesModal`, `switchDeliverableStudio`), multi-venture banner strip (`challengeVenturesStrip`), and collaboration pipelines (`STUDIO_COLLAB_PIPELINES`).
 9. `test_obsidian_knowledge_graph_and_token_saving_router`: Confirms 1-hop topology generation and >80% token reduction calculation.
 10. `test_ask_codex_advisor_script_contract`: Validates `bin/ask-codex` executable permissions, read-only ephemeral sandbox flags (`--sandbox read-only --ephemeral`), absence of dangerous bypass flags, and non-zero usage exit on empty arguments.
+11. `test_real_venture_ledger_portfolio_commands_and_integrations`: Validates real venture revenue/expense ledger (`add_venture_transaction`, `venture_ledger`, dynamic `challenge_state["ventures"]` aggregation), manual portfolio commands (`close_position`, `close_all_positions`, `set_risk_guardrails`), agent HR scorecard (`agent_hr_scorecard`, `update_agent_hr_status` including `PROMOTED`/`PROBATION`), live market quote fetcher (`fetch_live_xauusd_quote`), and Enterprise Holding Company OS dashboard components (`liveIntegrationsModal`, `ventureLedgerCard`, `liveOrderBookCard`, `hrScorecardTableBody`, `triggerLiveMarketRefresh`, `submitNewVentureTransaction`, `executePortfolioAction`).
 
 ## 🛡️ Pre-Commit Verification Checklist
 - Run `./run_tests.sh` sequentially (only by `verification-runner`) prior to merging/releasing.
 - Smoke-test `generate_html_dashboard(report, "/tmp/...")` using `TradingCommitteeRoom(db_path=..., vault_dir=...).run_session(...)` on temporary paths so uncommitted runtime files (`data/company_hq.db`, `obsidian_vault/`, `reports/latest_dashboard.html`) are never touched.
 - Verify that SQLite database files are not locked after test runs.
+
+## 🔍 Verification Log: Enterprise Holding Company OS (orchestrator/real-venture-os)
+- **Bytecode Compile**: `venv/bin/python -m py_compile engine/committee_room.py engine/dashboard_generator.py engine/mt5_bridge.py server.py data/market_data.py tests/test_committee.py` -> Exit code 0 (Pass)
+- **Pytest Suite**: `./run_tests.sh` -> 11/11 passed in 0.66s (Exit code 0)
+- **Live Dashboard Regeneration**: `venv/bin/python -c "import server; server.ensure_state()"` -> Exit code 0; `reports/latest_dashboard.html` generated (408,729 bytes)
+- **Enterprise Component Verification (`reports/latest_dashboard.html`)**:
+  - `liveIntegrationsModal`: 3 occurrences
+  - `ventureLedgerCard`: 1 occurrence
+  - `liveOrderBookCard`: 1 occurrence
+  - `hrScorecardTableBody`: 2 occurrences
+  - `triggerLiveMarketRefresh`: 4 occurrences
+  - `submitNewVentureTransaction`: 2 occurrences
+  - `executePortfolioAction`: 6 occurrences
 
 ## 🔍 Verification Log: Fullscreen Town & UI Inspector (orchestrator/fullscreen-town-and-ui-inspector)
 - **Branch**: `orchestrator/fullscreen-town-and-ui-inspector` vs base `main` (`9a051a4`)

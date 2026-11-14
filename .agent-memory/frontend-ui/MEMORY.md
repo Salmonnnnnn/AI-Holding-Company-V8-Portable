@@ -60,11 +60,21 @@
     * Critic Studio: QA audit checklist (100% passed).
     * Town Hall: Executive daily memo with proper line breaks.
 
-## 🗂️ 6 Concise Navigation Pages & Layout Rules
-1. `🏝️ 1. เมือง AI (Aurum Isle)` — Challenge banner, offline auto-catchup bar, circular island town canvas, live 8-step workflow & log.
-2. `🪙 2. คลังโทเคน & สกิล` — Token economy metrics, Autonomous Skill Harvester, Custom Frontier Model Adder, per-agent token allocator.
-3. `📅 3. ย้อนหลังตามกราฟจริง` — True Historical Candle & Shift Replay (`FULL_24H`, `MORNING_ASIA`, `AFTERNOON_LONDON`, `EVENING_NY`, `NIGHT_AUDIT`).
-4. `🪪 4. ทำเนียบพนักงาน AI` — 11 AI agent profiles, model switcher, 5D radar chart.
-5. `💬 5. แชทกับทีม AI` — Live Copilot chat with Antigravity & 11 agents.
-6. `🤖 6. MT5 Demo & Obsidian` — Tick-by-tick MT5 simulation, 4-strategy benchmark table, Obsidian 1-Hop Subgraph canvas & routing table.
+## 🗂️ 9 Enterprise Navigation Pages & Key Upgrades
+- **macOS Canvas Emoji+Thai Text Right-Shift Fix (`fillCenteredText`)**:
+  - Replaces `ctx.textAlign = "center"; ctx.fillText(...)` across all Canvas 2D label drawing functions (`drawRoundedBadge`, `drawZonePillBanner`, `drawTownCottage`, `drawTheBossPodium`, `drawGiantBattery`, `drawChibiAgent`, etc.) with `fillCenteredText(ctx, text, cx, y)` using `ctx.textAlign = "left"` and `Math.round(cx - ctx.measureText(s).width / 2)` so CoreText on macOS WebKit/Chrome never shifts Emoji+Thai strings to the right.
+  - Added dedicated `badgeX` and `badgeY` coordinates to every room in `ISO_ROOMS`, removed the duplicate small `"🌉 OpenClaw"` badge in `drawOpenClawPier`, and cleared `idx === 1` initial speech bubble so Town Hall and zone banners have zero overlapping labels.
+- **Live Account vs. Paper/Test Account Separation (`#challengeBanner` & `.comic-hud-pill`)**:
+  - Replaced the `$1,000 Goal` display with side-by-side **🟢 บัญชีจริง (Live Production Account)** (`$0.00` until live broker/API connected) vs. **🧪 บัญชีเทสบนกราฟจริง (Paper & Forward-Test Account)** while preserving all legacy DOM IDs (`#challengeDayBadge`, `#challengeProfitText`, `#challengePctText`, `#challengeProgressBar`, `#challengeVenturesStrip`, `#vTradingVal`, `#vStoreVal`, `#vTechVal`, `#vMediaVal`) and test contracts.
+- **9 Enterprise Tabs in `.nav-tabs`**:
+  1. `🏝️ 1. เมือง AI (Aurum Isle)` (`#page-visualizer`) — Fullscreen circular island town canvas, Live vs. Paper/Test Account P&L banner, Executive KPI Strip, live 8-step workflow & log, and Multi-Venture Financial Ledger Card (`#ventureLedgerCard`).
+  2. `🎬 2. มีม & มีเดียสตูดิโอ` (`#page-meme-studio`) — Full-page Media & Viral Content Studio with 4 KPI cards, Interactive Viral Reel/TikTok Script & Hook Generator (`generateEnterpriseViralScript()`), 9:16 Smartphone Preview, and 6-Channel Content Distribution & Attribution Matrix.
+  3. `🏪 3. ร้านค้าออนไลน์ (Store)` (`#page-store-studio`) — Full-page Digital Store & E-Commerce Studio with 4 E-Commerce KPI cards, 4 Digital Product SKU cards with 1-click Test Order recording (`submitQuickStoreOrder()`), Interactive Unit Economics & Profit Margin Calculator (`calculateStoreUnitEconomics()`), and Customer Order Fulfillment Log.
+  4. `💻 4. เทค & บอทสตูดิโอ` (`#page-tech-studio`) — Full-page Quantitative FinTech & Micro-SaaS Studio with 4 SLA/Latency KPI cards, 4 Micro-SaaS Architecture Cards, Interactive Production Code Explorer (`selectTechStudioModule()`, `copyTechExplorerCode()`, `downloadTechStudioCodeFile()`), and Automated CI/CD & Backtest Verification Matrix.
+  5. `📅 5. ปฏิทิน P&L & ย้อนหลัง` (`#page-replay`) — Interactive Monthly P&L & XAUUSD Daily Change Calendar (`#monthlyPnlCalendarCard`, `#monthlyCalendarGrid`, `changeCalendarMonth()`, `renderMonthlyPnlCalendar()`) + 5-Shift Historical Replay & `.md` exporter.
+  6. `🪙 6. คลังโทเคน & สกิล` (`#page-tokens`) — Enterprise AI FinOps & Cost Governance bar, token economy metrics, Autonomous Skill Harvester, Custom Frontier Model Adder, per-agent token allocator.
+  7. `🪪 7. ทำเนียบพนักงาน AI` (`#page-profiles`) — 11 AI agent profiles, model switcher, 5D radar chart, plus Enterprise HR & SLA Scorecard Matrix (`#hrScorecardTableBody`).
+  8. `💬 8. แชทกับทีม AI` (`#page-chat`) — Live Copilot chat with Antigravity & 11 agents + All-Hands Executive Boardroom Briefing (`triggerAllHandsBoardMeeting()`).
+  9. `🤖 9. MT5 & Obsidian` (`#page-mt5`) — Institutional Live Order Book & Position Manager (`#liveOrderBookCard`), tick-by-tick MT5 simulation, 4-strategy benchmark table, Obsidian 1-Hop Subgraph canvas & routing table.
+- **Live Data Provenance & API Integrations Modal (`#liveIntegrationsModal`)**: Accessible from `.top-header` (`🔌 เชื่อมต่อข้อมูลจริง & API`) and Page 1; displays 100% Data Provenance Audit Table and live `.env` API key configurator (`POST /api/save_integrations`) + live market sync (`POST /api/refresh_live_market`).
 - **Typography & Table Rules**: Use `.section-head` flex wrappers (`flex-wrap: wrap`) so card titles and action buttons never collide on 1280px–1440px screens; wrap wide tables in `.table-wrap` (`overflow-x: auto`) and apply `.num` (`white-space: nowrap`) to numeric/badge cells.

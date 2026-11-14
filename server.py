@@ -19,6 +19,7 @@ if sys.platform.startswith("win"):
 from engine.committee_room import TradingCommitteeRoom
 from engine.dashboard_generator import generate_html_dashboard
 from engine.github_pusher import GitHubAutoPusher
+from engine.llm_router import MultiLLMRouter
 
 GLOBAL_ROOM = None
 LATEST_REPORT = None
@@ -70,9 +71,14 @@ class V7RequestHandler(BaseHTTPRequestHandler):
             return
 
         if self.path.startswith("/api/state"):
+            venture_ledger = room.db.get_venture_ledger_summary(report.get("portfolio_state"))
             self._send_json({
                 "status": "ok",
                 "session_time": report.get("session_time"),
+                "market_snapshot": report.get("market_snapshot", {}),
+                "portfolio_state": report.get("portfolio_state", {}),
+                "venture_ledger": venture_ledger,
+                "integration_status": room.db.get_integration_status(),
                 "agents": room.db.get_all_agents(),
                 "available_models": room.llm_router.get_available_models(),
                 "token_economy": room.token_economy.get_economy_report(),
@@ -201,6 +207,87 @@ class V7RequestHandler(BaseHTTPRequestHandler):
                 interactive_browser_login=True
             )
             self._send_json(res)
+            return
+
+        if self.path == "/api/refresh_live_market":
+            global LATEST_REPORT
+            LATEST_REPORT = room.run_session(capital=1000.0, risk_pct=1.5)
+            os.makedirs("reports", exist_ok=True)
+            generate_html_dashboard(LATEST_REPORT, "reports/latest_dashboard.html")
+            self._send_json({
+                "status": "ok",
+                "market_snapshot": LATEST_REPORT["market_snapshot"],
+                "portfolio_state": LATEST_REPORT["portfolio_state"],
+                "venture_ledger": LATEST_REPORT["venture_ledger"],
+                "cio_verdict": LATEST_REPORT["cio_verdict"],
+                "session_time": LATEST_REPORT["session_time"],
+            })
+            return
+
+        if self.path == "/api/save_integrations":
+            keys = body.get("keys", {})
+            int_status = room.db.save_integration_keys(keys)
+            room.llm_router = MultiLLMRouter(room.db)
+            room.chat_copilot.llm_router = room.llm_router
+            report["integration_status"] = int_status
+            os.makedirs("reports", exist_ok=True)
+            generate_html_dashboard(report, "reports/latest_dashboard.html")
+            self._send_json({"status": "ok", "integration_status": int_status})
+            return
+
+        if self.path == "/api/add_venture_tx":
+            studio_key = body.get("studio_key", "ONLINE_STORE")
+            venture_name = body.get("venture_name", "Studio Product Sale")
+            description = body.get("description", "Verified studio revenue")
+            amount_usd = float(body.get("amount_usd", 25.0))
+            ledger = room.db.add_venture_transaction(
+                studio_key=studio_key,
+                venture_name=venture_name,
+                description=description,
+                amount_usd=amount_usd,
+                source_type="MANUAL_VERIFIED"
+            )
+            report["venture_ledger"] = ledger
+            if "portfolio_state" in report and isinstance(report["portfolio_state"], dict):
+                report["portfolio_state"]["ventures"] = {
+                    "trading": ledger["trading"],
+                    "store": ledger["store"],
+                    "tech": ledger["tech"],
+                    "media": ledger["media"],
+                }
+            os.makedirs("reports", exist_ok=True)
+            generate_html_dashboard(report, "reports/latest_dashboard.html")
+            self._send_json({"status": "ok", "venture_ledger": ledger})
+            return
+
+        if self.path == "/api/portfolio_action":
+            command = body.get("command", "OPEN_CIO_TRADE")
+            cur_price = float(body.get("market_price") or report.get("market_snapshot", {}).get("current_price", 2685.0))
+            trade_id = body.get("trade_id")
+            lot_size = float(body.get("lot_size", 0.02))
+            port_state = room.db.execute_portfolio_command(
+                command=command,
+                market_price=cur_price,
+                cio_verdict=report.get("cio_verdict", {}),
+                trade_id=trade_id,
+                lot_size=lot_size
+            )
+            ledger = room.db.get_venture_ledger_summary(port_state)
+            port_state["ventures"] = {
+                "trading": ledger["trading"],
+                "store": ledger["store"],
+                "tech": ledger["tech"],
+                "media": ledger["media"],
+            }
+            report["portfolio_state"] = port_state
+            report["venture_ledger"] = ledger
+            os.makedirs("reports", exist_ok=True)
+            generate_html_dashboard(report, "reports/latest_dashboard.html")
+            self._send_json({
+                "status": "ok",
+                "portfolio_state": port_state,
+                "venture_ledger": ledger,
+            })
             return
 
         self._send_json({"error": "Unknown endpoint"}, status=404)

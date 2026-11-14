@@ -7,13 +7,13 @@ agent_id: ag_risk
 level: 13
 mastery: 94.0
 llm_brain: "OpenAI o3-mini / o1-Pro (Deep Math Reasoning)"
-updated: "2026-11-13 22:02:07"
+updated: "2026-11-13 21:33:24"
 ---
 # 🛡️ Elena Rostova
 **ตำแหน่ง:** Chief Risk Officer (CRO)  
 **สังกัดแผนก:** Trading Committee  
 **สมองกล AI ที่เชื่อมต่อ (LLM Brain):** `OpenAI o3-mini / o1-Pro (Deep Math Reasoning)`  
-**กลับหน้าหลักบริษัท:** [[00_AI_Holding_Company_MOC]] | [[00_Knowledge_Graph_Topology]] | [[2026-11-13_Daily_Summary]]
+**กลับหน้าหลักบริษัท:** [[00_AI_Holding_Company_MOC]] | [[00_Knowledge_Graph_Topology]] | [[2026-11-15_Daily_Summary]]
 
 > [!info] ประวัติและบทบาทเฉพาะทาง (Agent Bio)
 > ผู้จัดการความเสี่ยงสูงสุด (CRO) คำนวณขนาด Lot Size ตามทุนจริงและล็อกเพดานความเสี่ยงไม่ให้พอร์ตแตก
@@ -33,4 +33,4 @@ updated: "2026-11-13 22:02:07"
 ## ⚡ ภารกิจล่าสุดที่ส่งเข้า [[Central_Nexus_Insights]]
 - สถานะปัจจุบัน: `RISK GUARD`
 - งานที่ทำล่าสุด: ตรวจสอบ R:R (1:1.8) และอนุมัติขนาด 0.01 Lot
-- จำนวนภารกิจสำเร็จวันนี้: `33 งาน`
+- จำนวนภารกิจสำเร็จวันนี้: `32 งาน`

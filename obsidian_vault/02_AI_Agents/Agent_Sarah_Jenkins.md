@@ -7,13 +7,13 @@ agent_id: ag_bull
 level: 9
 mastery: 86.4
 llm_brain: "Llama-3.3-70B (Groq Ultra-Fast)"
-updated: "2026-11-13 22:02:07"
+updated: "2026-11-13 21:33:24"
 ---
 # 🐂 Sarah Jenkins
 **ตำแหน่ง:** Bullish Advocate  
 **สังกัดแผนก:** Trading Committee  
 **สมองกล AI ที่เชื่อมต่อ (LLM Brain):** `Llama-3.3-70B (Groq Ultra-Fast)`  
-**กลับหน้าหลักบริษัท:** [[00_AI_Holding_Company_MOC]] | [[00_Knowledge_Graph_Topology]] | [[2026-11-13_Daily_Summary]]
+**กลับหน้าหลักบริษัท:** [[00_AI_Holding_Company_MOC]] | [[00_Knowledge_Graph_Topology]] | [[2026-11-15_Daily_Summary]]
 
 > [!info] ประวัติและบทบาทเฉพาะทาง (Agent Bio)
 > ตัวแทนฝั่งกระทิง (Bull Advocate) ค้นหาจุดกลับตัวขาขึ้นและปกป้องโอกาสฝั่ง BUY ในห้องดีเบต
@@ -32,5 +32,5 @@ updated: "2026-11-13 22:02:07"
 
 ## ⚡ ภารกิจล่าสุดที่ส่งเข้า [[Central_Nexus_Insights]]
 - สถานะปัจจุบัน: `DEBATING (BULL)`
-- งานที่ทำล่าสุด: ขึ้นดีเบตฝั่งซื้อ (Bull Power 81%) อ้างอิงแนวรับ $2,668.00
-- จำนวนภารกิจสำเร็จวันนี้: `33 งาน`
+- งานที่ทำล่าสุด: ขึ้นดีเบตฝั่งซื้อ (Bull Power 34%) อ้างอิงแนวรับ $3,856.70
+- จำนวนภารกิจสำเร็จวันนี้: `32 งาน`
