@@ -112,6 +112,13 @@
   - Added `GITHUB_TOKEN_CREATION_URL` pre-filled with `scopes=repo,workflow&description=AI-Holding-Company-V8`.
   - Added prominent 1-Click GitHub Token creation button in `githubPushModal` and informative 3-step guide on auth failure.
   - Staged and verified test suite with 32/32 passing tests (100% Green).
+- [x] Zero-Collision 3D Island Paths & Sprites, MT5 KPI Cards Spacing, GitHub Token Sandbox Fix, UI Push Button Removal & Seamless Push to GitHub:
+  - Repaired 3D Island radial walking paths around the 5-HOUR battery and cleanly distributed all 11 Chibi AI sprites across their respective studios.
+  - Expanded MT5 KPI grid to `minmax(340px, 1fr)` with `gap: 16px` so Balance and Equity never collide and account titles do not break into ugly multiple lines.
+  - Removed GitHub push buttons from navbar and catchup banner per user request ('เอาปุ่มดึงขึ้น git ออกต่อไปจะพิมบอกเอง').
+  - Verified 32/32 tests PASSED by `verification-runner`.
+  - Pushed all updates directly to GitHub `https://github.com/Salmonnnnnn/AI-Holding-Company-V8-Portable.git` via native macOS Keychain.
+
 
 
 ## ⚠️ Known Pitfalls
