@@ -1,47 +1,99 @@
 # 🧪 QA & Test Engineer Memory
 
 ## 🎯 Test Suite Status
-- **Test Target**: `tests/test_committee.py`
-- **Current Health**: 11/11 PASSED (100% Green)
-- **Execution Command**: `PYTHONPATH=. python3 -m pytest tests/test_committee.py -v` (or `./run_tests.sh`)
+- **Last Verified**: 2026-11-16 03:22 UTC+7 (Automated Suite Run by Verification Runner)
+- **Test Targets**: `tests/test_committee.py` & `tests/test_mt5_bridge.py`
+- **Execution Commands**:
+  - `./run_tests.sh`: 11/11 PASSED (0.53s, Exit Code: 0) — *Target: `tests/test_committee.py`*
+  - `venv/bin/python3 -m pytest tests/`: 32/32 PASSED (2.65s, Exit Code: 0) — *Target: all test files*
+- **Current Health**: 
+  - `tests/test_committee.py`: 11/11 PASSED (100% Green, 0.53s)
+  - `tests/test_mt5_bridge.py`: 21/21 PASSED (100% Green, 2.65s)
+  - **Combined Suite**: 32/32 PASSED (100% Green, Exit Code: 0)
+  - Fresh Dashboard Generation: PASSED (Exit Code: 0)
+  - `python -m py_compile engine/dashboard_generator.py`: PASSED (Exit Code: 0)
+  - `python -m py_compile engine/github_pusher.py server.py`: PASSED (Exit Code: 0)
 
-## 📋 Test Matrix & Coverage
-1. `test_market_data_engine_multi_tf`: Validates D1/H4/H1 data generation, ATR and EMA indicators.
-2. `test_historical_replay_distinct_dates_and_shifts`: Confirms shift replay integrity across trading sessions.
-3. `test_frontier_models_and_custom_model_adder`: Verifies 12+ Frontier LLM configurations & dynamic model additions.
-4. `test_offline_shift_auto_catchup_when_pc_off`: Checks accurate backfilling of missed shifts without duplicating records.
-5. `test_autonomous_skill_harvester_and_token_economy`: Validates token debit/credit calculations and skill unlocks.
-6. `test_v7_isometric_visualizer_dark_light_theme_and_obsidian`: Verifies HTML/CSS rendering of both color themes, Aurum Isle branding (`Aurum Isle`, `เกาะ AI ล่าทองคำ`), 30-day $1,000 challenge banner (`CAN A TOWN OF AI AGENTS MAKE US $1,000?`, `OF 30`), AI Town house & battery pillar renderer (`drawAgentTownHouseAndBattery`), and `first_trade_at` in `portfolio_state`.
-7. `test_aurum_isle_challenge_state_calculation`: Validates `compute_challenge_state` for Day 1 initial state, positive profit progression, negative profit clamping (`pct == 0.0`, `is_negative is True`), and multi-venture revenue breakdown (`ventures`).
-8. `test_multi_venture_ai_town_studios_and_deliverables_modal`: Validates the 8 AI Town specialized studios (`TOWN_HALL`, `TECH_STUDIO`, `MEME_STUDIO`, `ONLINE_STORE`, `TRADING_LAB`, `CRITIC_STUDIO`, `GROWTH_STUDIO`, `COURIER_DISPATCH`), circular 3D island town renderers (`drawLushCircularIsland`, `drawGiantBattery`, `drawCentralSquareBuilding`), deliverables modal (`studioDeliverablesModal`, `openStudioDeliverablesModal`, `closeStudioDeliverablesModal`, `switchDeliverableStudio`), multi-venture banner strip (`challengeVenturesStrip`), and collaboration pipelines (`STUDIO_COLLAB_PIPELINES`).
-9. `test_obsidian_knowledge_graph_and_token_saving_router`: Confirms 1-hop topology generation and >80% token reduction calculation.
-10. `test_ask_codex_advisor_script_contract`: Validates `bin/ask-codex` executable permissions, read-only ephemeral sandbox flags (`--sandbox read-only --ephemeral`), absence of dangerous bypass flags, and non-zero usage exit on empty arguments.
-11. `test_real_venture_ledger_portfolio_commands_and_integrations`: Validates real venture revenue/expense ledger (`add_venture_transaction`, `venture_ledger`, dynamic `challenge_state["ventures"]` aggregation), manual portfolio commands (`close_position`, `close_all_positions`, `set_risk_guardrails`), agent HR scorecard (`agent_hr_scorecard`, `update_agent_hr_status` including `PROMOTED`/`PROBATION`), live market quote fetcher (`fetch_live_xauusd_quote`), and Enterprise Holding Company OS dashboard components (`liveIntegrationsModal`, `ventureLedgerCard`, `liveOrderBookCard`, `hrScorecardTableBody`, `triggerLiveMarketRefresh`, `submitNewVentureTransaction`, `executePortfolioAction`).
+---
 
-## 🛡️ Pre-Commit Verification Checklist
-- Run `./run_tests.sh` sequentially (only by `verification-runner`) prior to merging/releasing.
-- Smoke-test `generate_html_dashboard(report, "/tmp/...")` using `TradingCommitteeRoom(db_path=..., vault_dir=...).run_session(...)` on temporary paths so uncommitted runtime files (`data/company_hq.db`, `obsidian_vault/`, `reports/latest_dashboard.html`) are never touched.
-- Verify that SQLite database files are not locked after test runs.
+## 📋 Detailed Verification Results
 
-## 🔍 Verification Log: Enterprise Holding Company OS (orchestrator/real-venture-os)
-- **Bytecode Compile**: `venv/bin/python -m py_compile engine/committee_room.py engine/dashboard_generator.py engine/mt5_bridge.py server.py data/market_data.py tests/test_committee.py` -> Exit code 0 (Pass)
-- **Pytest Suite**: `./run_tests.sh` -> 11/11 passed in 0.66s (Exit code 0)
-- **Live Dashboard Regeneration**: `venv/bin/python -c "import server; server.ensure_state()"` -> Exit code 0; `reports/latest_dashboard.html` generated (408,729 bytes)
-- **Enterprise Component Verification (`reports/latest_dashboard.html`)**:
-  - `liveIntegrationsModal`: 3 occurrences
-  - `ventureLedgerCard`: 1 occurrence
-  - `liveOrderBookCard`: 1 occurrence
-  - `hrScorecardTableBody`: 2 occurrences
-  - `triggerLiveMarketRefresh`: 4 occurrences
-  - `submitNewVentureTransaction`: 2 occurrences
-  - `executePortfolioAction`: 6 occurrences
+### 1. Committee & Core Suite (`tests/test_committee.py`) - 11/11 PASSED
+1. `test_market_data_engine_multi_tf`: PASSED
+2. `test_historical_replay_distinct_dates_and_shifts`: PASSED
+3. `test_frontier_models_and_custom_model_adder`: PASSED
+4. `test_offline_shift_auto_catchup_when_pc_off`: PASSED
+5. `test_autonomous_skill_harvester_and_token_economy`: PASSED
+6. `test_v7_isometric_visualizer_dark_light_theme_and_obsidian`: PASSED
+7. `test_aurum_isle_challenge_state_calculation`: PASSED
+8. `test_multi_venture_ai_town_studios_and_deliverables_modal`: PASSED
+9. `test_obsidian_knowledge_graph_and_token_saving_router`: PASSED
+10. `test_ask_codex_advisor_script_contract`: PASSED
+11. `test_real_venture_ledger_portfolio_commands_and_integrations`: PASSED
 
-## 🔍 Verification Log: Fullscreen Town & UI Inspector (orchestrator/fullscreen-town-and-ui-inspector)
-- **Branch**: `orchestrator/fullscreen-town-and-ui-inspector` vs base `main` (`9a051a4`)
-- **Bytecode Compile**: `venv/bin/python3 -m py_compile engine/dashboard_generator.py tests/test_committee.py` -> Exit code 0 (Pass)
-- **Pytest Suite**: `./run_tests.sh` -> 10/10 passed in 0.45s (Exit code 0)
-- **Smoke Test**: Rendered temporary dashboard to `/tmp/verify_fullscreen_town.html` (339,095 bytes)
-  - Fullscreen card & HUD elements present: `townFullscreenCard`, `btnTownStatus`, `btnTownPause`, `btnTownViewAll`, `atmosphereSegmentBar`, `townMessagesBox`
-  - Battery indicators present: `5-HOUR`, `7-DAY`
-  - Specialized 4 fenced zones present in visualizer canvas: `TECH STUDIO` (`drawTechStudioZone`), `ONLINE SHIRTS` (`drawOnlineShirtsZone`), `MEME STUDIO` (`drawMemeStudioZone`), `WHAT IF STUDIO` (`drawWhatIfQuantZone`), along with `drawCircularPicketFence` and `drawWoodenArchGate`. Note: Generic token `drawFencedWorkZone` was not used in implementation; specialized per-zone functions are used instead.
-- **Safety**: Uncommitted runtime user files untouched (`data/company_hq.db`, `obsidian_vault/`, `reports/`).
+---
+
+### 2. MT5 Bridge Suite (`tests/test_mt5_bridge.py`) - 21/21 PASSED
+1. `test_mt5_execution_bridge_backward_compatibility`: PASSED
+2. `test_xm_bridge_token_generation_and_verification`: PASSED
+3. `test_xm_bridge_heartbeat_and_status_summary`: PASSED
+4. `test_xm_bridge_strict_demo_guardrail`: PASSED
+5. `test_xm_bridge_hard_lot_cap_0_05`: PASSED
+6. `test_xm_bridge_max_daily_loss_3_pct_guardrail`: PASSED
+7. `test_xm_bridge_kill_switch_and_resume_lifecycle`: PASSED
+8. `test_xm_bridge_command_queue_and_ack_lifecycle`: PASSED
+9. `test_xm_bridge_auto_trade_and_manual_controls`: PASSED
+10. `test_server_mt5_api_endpoints`: PASSED
+11. `test_train_on_historical_big_data_5_patterns`: PASSED
+12. `test_xm_bridge_performance_comparison_and_auto_trade`: PASSED
+13. `test_xm_bridge_trade_chart_data_and_bot_entries`: PASSED
+14. `test_xauusd_market_schedule_and_weekend_detection`: PASSED
+15. `test_xm_bridge_live_account_deposit_and_unbacked_defaults`: PASSED
+16. `test_github_pusher_exclude_workflows_contract`: PASSED
+17. `test_github_pusher_mac_native_and_env_persistence`: PASSED
+18. `test_open_source_curriculum_and_full_daily_token_burn`: PASSED
+19. `test_autonomous_learning_daemon_lifecycle_and_execution`: PASSED
+20. `test_server_endpoints_autonomous_learning_telemetry`: PASSED
+21. `test_skill_harvester_concurrency_and_repeated_calls_thread_safe`: PASSED
+
+---
+
+### 3. Verification of GitHubAutoPusher Native Push & UI Contracts
+- **macOS Native Push & Credential Persistence (`test_github_pusher_mac_native_and_env_persistence`)**:
+  - `_git_env()` sets `GIT_TERMINAL_PROMPT="0"` to prevent interactive terminal hangs.
+  - Safe `.env` token persistence verified via `_save_token_to_env_file()` and `_read_token_from_env_file()`.
+  - Staged commit helper `_ensure_git_committed()` ensures automatic commit of dirty working directory changes before push.
+  - Invalid PAT token handling verifies clean `AUTH_ERROR` status response without crashing or leaking sensitive info.
+  - REST API endpoint `POST /api/github_push` verified via `MockServerHandler` responding with status `AUTH_ERROR` on invalid token.
+- **UI Integration Contracts (`engine/dashboard_generator.py`)**:
+  - `openGitHubPushModal()` and `closeGitHubPushModal()` properly declared and wired.
+  - Top action bar buttons and quick action bar both feature `🚀 อัปโหลด GitHub` button triggering modal.
+  - `submitGitHubPush()` handles custom PAT, token saving, and real-time execution feedback via `/api/github_push`.
+
+---
+
+### 4. Deep Verification of Autonomous Learning Daemon & Concurrency
+- **Daemon Lifecycle (`test_autonomous_learning_daemon_lifecycle_and_execution`)**:
+  - `start_autonomous_learning_daemon(interval_seconds=1)` runs in a dedicated background daemon thread.
+  - Periodic execution runs `train_all_agents_open_source_max_tokens` with dynamic simulated/live market snapshots.
+  - Safe stop/teardown via `stop_autonomous_learning_daemon()` terminates daemon cleanly.
+- **REST Endpoints (`test_server_endpoints_autonomous_learning_telemetry`)**:
+  - `GET /api/autonomous_learning/status`: returns `status: "OK"`, daemon `is_running`, `interval_seconds`, `last_run`, and `cycle_count`.
+  - `POST /api/autonomous_learning/toggle`: allows dynamic starting/stopping of the learning daemon via API.
+- **Thread Safety & Deduplication (`test_skill_harvester_concurrency_and_repeated_calls_thread_safe`)**:
+  - Re-entrant `RLock` on `SkillHarvesterEngine` prevents race conditions.
+  - Repeated cycles enforce caps: `mastery_pct <= 100.0`, `accuracy_boost <= 25.0`, individual stats `<= 99`.
+  - `discovered_skills` correctly updates existing entries without runaway duplicates: 4 seed skills + 11 open-source skills = 15 total skills verified.
+
+---
+
+### 5. Syntax & Compilation Check (`py_compile`)
+- **Command**: `venv/bin/python3 -m py_compile engine/github_pusher.py engine/dashboard_generator.py server.py tests/test_mt5_bridge.py`
+- **Exit Code**: 0 (PASSED - No syntax errors)
+
+---
+
+### 6. Fresh Dashboard Generation (`server.ensure_state()`)
+- **Command**: `venv/bin/python3 -c "import server; server.ensure_state(); print('Regenerated dashboard successfully')"`
+- **Exit Code**: 0 (PASSED)
+- **Log**: Successfully regenerated and wrote `reports/latest_dashboard.html`.

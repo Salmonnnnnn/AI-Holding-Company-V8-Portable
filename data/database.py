@@ -19,12 +19,14 @@ class CompanyDatabase:
         self._seed_defaults()
 
     def _get_conn(self):
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3.connect(self.db_path, timeout=30.0)
         conn.row_factory = sqlite3.Row
         return conn
 
     def _init_schema(self):
         with self._get_conn() as conn:
+            conn.execute("PRAGMA journal_mode=WAL;")
+            conn.execute("PRAGMA busy_timeout=30000;")
             cur = conn.cursor()
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS agents_status (
@@ -259,6 +261,23 @@ class CompanyDatabase:
                     reference_id TEXT
                 )
             """)
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS ai_skill_ledger (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp TEXT,
+                    pattern_id TEXT,
+                    pattern_name TEXT,
+                    win_rate REAL,
+                    profit_factor REAL,
+                    avg_rr REAL,
+                    max_drawdown REAL,
+                    sample_trades INTEGER,
+                    optimal_sl_pips REAL,
+                    optimal_tp_pips REAL,
+                    confidence_rating REAL,
+                    parameters TEXT
+                )
+            """)
             conn.commit()
 
     def _seed_defaults(self):
@@ -467,10 +486,24 @@ class CompanyDatabase:
         with self._get_conn() as conn:
             cur = conn.cursor()
             cur.execute("""
-                INSERT INTO discovered_skills
-                (timestamp, agent_id, agent_name, skill_name, category, formula_logic, backtest_win_rate, accuracy_boost, tokens_spent, source_type)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (now, agent_id, agent_name, skill_name, category, formula_logic, round(backtest_win_rate, 2), round(accuracy_boost, 2), int(tokens_spent), source_type))
+                SELECT id FROM discovered_skills
+                WHERE agent_id = ? AND skill_name = ?
+                ORDER BY id DESC LIMIT 1
+            """, (agent_id, skill_name))
+            existing = cur.fetchone()
+            if existing:
+                cur.execute("""
+                    UPDATE discovered_skills
+                    SET timestamp = ?, category = ?, formula_logic = ?,
+                        backtest_win_rate = ?, accuracy_boost = ?, tokens_spent = tokens_spent + ?, source_type = ?
+                    WHERE id = ?
+                """, (now, category, formula_logic, round(backtest_win_rate, 2), round(accuracy_boost, 2), int(tokens_spent), source_type, existing["id"]))
+            else:
+                cur.execute("""
+                    INSERT INTO discovered_skills
+                    (timestamp, agent_id, agent_name, skill_name, category, formula_logic, backtest_win_rate, accuracy_boost, tokens_spent, source_type)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (now, agent_id, agent_name, skill_name, category, formula_logic, round(backtest_win_rate, 2), round(accuracy_boost, 2), int(tokens_spent), source_type))
             conn.commit()
         return {
             "timestamp": now,
@@ -485,10 +518,52 @@ class CompanyDatabase:
             "source_type": source_type
         }
 
+    def add_office_activity_log(self, agent_name: str, department: str, action_type: str, summary: str):
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with self._get_conn() as conn:
+            cur = conn.cursor()
+            cur.execute("""
+                INSERT INTO office_activity_log (timestamp, agent_name, department, action_type, summary)
+                VALUES (?, ?, ?, ?, ?)
+            """, (now, agent_name, department, action_type, summary))
+            conn.commit()
+
     def get_discovered_skills(self, limit: int = 20) -> list[dict]:
         with self._get_conn() as conn:
             cur = conn.cursor()
             cur.execute("SELECT * FROM discovered_skills ORDER BY id DESC LIMIT ?", (limit,))
+            return [dict(r) for r in cur.fetchall()]
+
+    def save_learned_pattern(self, pattern: dict) -> dict:
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with self._get_conn() as conn:
+            cur = conn.cursor()
+            cur.execute("""
+                INSERT INTO ai_skill_ledger
+                (timestamp, pattern_id, pattern_name, win_rate, profit_factor, avg_rr,
+                 max_drawdown, sample_trades, optimal_sl_pips, optimal_tp_pips, confidence_rating, parameters)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                now,
+                pattern.get("pattern_id", "pattern_unknown"),
+                pattern.get("pattern_name", ""),
+                float(pattern.get("win_rate", 0.0)),
+                float(pattern.get("profit_factor", 0.0)),
+                float(pattern.get("avg_rr", 0.0) if isinstance(pattern.get("avg_rr"), (int, float)) else float(str(pattern.get("avg_rr", "1:2.0")).split(":")[-1])),
+                float(pattern.get("max_drawdown", 0.0)),
+                int(pattern.get("sample_trades", 0)),
+                float(pattern.get("optimal_sl_pips", 18.0)),
+                float(pattern.get("optimal_tp_pips", 36.0)),
+                float(pattern.get("confidence_rating", 85.0)),
+                json.dumps(pattern.get("parameters", {}), ensure_ascii=False) if isinstance(pattern.get("parameters"), dict) else str(pattern.get("parameters", ""))
+            ))
+            conn.commit()
+        return {"timestamp": now, **pattern}
+
+    def get_learned_patterns(self, limit: int = 20) -> list[dict]:
+        with self._get_conn() as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM ai_skill_ledger ORDER BY id DESC LIMIT ?", (limit,))
             return [dict(r) for r in cur.fetchall()]
 
     def save_shift_snapshot(self, snap: dict):

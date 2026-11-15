@@ -19,3 +19,8 @@ env/
 .DS_Store
 Thumbs.db
 
+# SQLite temporary lock and journal files
+*.db-shm
+*.db-wal
+*.db-journal
+

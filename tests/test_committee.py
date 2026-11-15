@@ -381,6 +381,8 @@ def test_real_venture_ledger_portfolio_commands_and_integrations(tmp_path):
     assert "hrScorecardTableBody" in html_text
     assert "triggerAllHandsBoardMeeting" in html_text
     assert "downloadReplayMarkdownReport" in html_text
+    assert "githubPushModal" in html_text
+    assert "scopes=repo,workflow&description=AI-Holding-Company-V8" in html_text
 
 
 
