@@ -37,14 +37,18 @@ if [ -n "$GITHUB_TOKEN" ]; then
     }
     trap cleanup EXIT
 
-    git push -u origin HEAD || git push origin main --force || echo "Push failed or already up-to-date."
+    if ! git push -u origin HEAD; then
+        echo "⚠️ Authenticated push failed. Falling back to native git credentials (osxkeychain / ssh)..."
+        cleanup
+        git push origin HEAD || git push origin main || echo "Push failed."
+    fi
 
     cleanup
     trap - EXIT
     echo "🔒 Git remote restored to clean URL."
 else
     echo "ℹ️ No GITHUB_TOKEN found; pushing via default git credentials..."
-    git push origin HEAD || echo "Push failed or already up-to-date."
+    git push origin HEAD || git push origin main || echo "Push failed."
 fi
 
 echo "✅ Done!"
