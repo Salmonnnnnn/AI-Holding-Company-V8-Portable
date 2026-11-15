@@ -4,10 +4,10 @@ tags:
   - gold-trading-firm
   - trading-committee
 agent_id: ag_macro
-level: 128
+level: 160
 mastery: 99.9
 llm_brain: "Gemini 2.5 Pro Exp (2M Context Deep Research)"
-updated: "2026-11-16 02:56:41"
+updated: "2026-11-16 03:51:51"
 ---
 # 🌐 Dr. Marcus Sterling
 **ตำแหน่ง:** Chief Global Macroeconomist  
@@ -25,7 +25,7 @@ updated: "2026-11-16 02:56:41"
 - **ความเข้าใจตลาดมหภาค (Macro Insight):** `99/100`
 - **ความคิดสร้างสรรค์/กลยุทธ์ (Creativity):** `94/100`
 
-## 🎓 สกิลที่ติดตั้ง (Equipped Skill Tree — Lv.128)
+## 🎓 สกิลที่ติดตั้ง (Equipped Skill Tree — Lv.160)
 1. **Primary Skill:** `DXY & Real-Yield Correlation`
 2. **Secondary Skill:** `ProsusAI/FinBERT + OpenBB Macro SDK`
 3. **Ultimate Skill:** `FinBERT FOMC/CPI NLP & US10Y-DXY Kalman Filter`
@@ -33,4 +33,4 @@ updated: "2026-11-16 02:56:41"
 ## ⚡ ภารกิจล่าสุดที่ส่งเข้า [[Central_Nexus_Insights]]
 - สถานะปัจจุบัน: `MACRO WATCH`
 - งานที่ทำล่าสุด: ติดตาม DXY (104.15) & US10Y (4.32%) -> BULLISH TAILWIND (Macro Supports Gold)
-- จำนวนภารกิจสำเร็จวันนี้: `166 งาน`
+- จำนวนภารกิจสำเร็จวันนี้: `189 งาน`

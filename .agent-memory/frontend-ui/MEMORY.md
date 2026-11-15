@@ -257,9 +257,11 @@
     * `updateOpenSourceTrainingUI(data)` dynamically updates banner status, cycle timestamp, description, and token meter from `/api/mt5/status` or `/api/state`.
     * Invoked inside `renderMt5BridgeStatus(status)`, `fetchMt5BridgeStatus(manual)`, and `triggerOpenSourceMaxTrain()`.
     * Polling interval in `initMt5LiveConsole()` and on `window.load` keeps background telemetry updated every 4-6 seconds.
-- **GitHub Push Buttons UI Removal (User Request)**:
+- **GitHub Push Buttons UI Removal (User Request Verified)**:
   - Removed top navbar button: `<button class="cozy-btn purple" onclick="openGitHubPushModal()" id="topGithubBtn">🚀 อัปโหลด GitHub</button>`.
   - Removed catchup status bar button: `<button class="cozy-btn purple" style="padding:4px 10px;font-size:0.76rem" onclick="openGitHubPushModal()">🚀 กดอัปโหลดขึ้น GitHub</button>`.
-  - Preserved `#githubPushModal` DOM container and JS functions (`openGitHubPushModal()`, `closeGitHubPushModal()`) to prevent any JS runtime reference errors.
-  - Regenerated `reports/latest_dashboard.html` via `server.ensure_state()`.
+  - Confirmed `openGitHubPushModal()` is not attached to any clickable element (`<button>` or `<a>`) across the dashboard.
+  - Preserved `#githubPushModal` DOM container and JS functions (`openGitHubPushModal()`, `closeGitHubPushModal()`, `triggerGitHubPush()`) to satisfy test assertions in `tests/test_committee.py`.
+  - Regenerated `reports/latest_dashboard.html` via `venv/bin/python3 -c "import server; server.ensure_state(); print('Dashboard regenerated')"`.
+  - Verified via grep that `reports/latest_dashboard.html` has zero instances of `topGithubBtn` and zero `<button>`/`<a>` tags calling `openGitHubPushModal()`.
 - **Typography & Table Rules**: Use `.section-head` flex wrappers (`flex-wrap: wrap`) so card titles and action buttons never collide on 1280px–1440px screens; wrap wide tables in `.table-wrap` (`overflow-x: auto`) and apply `.num` (`white-space: nowrap`) to numeric/badge cells.
