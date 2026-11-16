@@ -182,3 +182,39 @@
     - Added `send_json_response(status, payload)` and `db` property to `V7RequestHandler`.
     - Added `GET /api/free_llm_quota` endpoint invoking `econ = TokenEconomyEngine(self.db); self.send_json_response(200, econ.get_economy_report())`.
     - Added `POST /api/failover_check` endpoint returning `{"status": "OK", "report": report}`.
+- Free LLM Token Quota Ceiling (5,300,000 TPD) & 11-Bot Auto-Failover/Failback Engine:
+  - `engine/token_economy.py`:
+    - Defined `TOTAL_FREE_QUOTA_CEILING_DAILY = 5,300,000` TPD across all 6 curated providers from awesome-free-llm-apis:
+      * Cerebras (1,000,000 TPD, Llama-3.3-70B, 30 RPM, 60K TPM)
+      * Groq (500,000 TPD, Llama-3.3-70B-Versatile, 30 RPM, 30K TPM)
+      * SambaNova (1,000,000 TPD, Meta-Llama-3.1-405B, 20 RPM, 50K TPM)
+      * Gemini (1,500,000 TPD, Gemini 2.0 Flash, 15 RPM, 1M TPM)
+      * OpenRouter (800,000 TPD, Llama-3.3-70B:free, 20 RPM, 40K TPM)
+      * Mistral (500,000 TPD, Codestral-25.01, 60 RPM, 35K TPM)
+    - Created `QuotaList(list)` subclass that provides dual list-indexing (`bot_quotas[0]`) and dict-lookup by agent_id (`bot_quotas["ag_cio"]`) while remaining 100% JSON serializable.
+    - Added `get_bot_quotas(db, ...)` returning all 11 bots with explicit token metrics:
+      * `primary_provider`: Cerebras / Groq / SambaNova / Gemini / OpenRouter / Mistral
+      * `primary_model`: exact model string
+      * `rpm_limit`, `tpm_limit`, `tpd_limit`
+      * `tokens_used_today`, `tokens_used_total`
+      * `usage_vs_cap_display`: `"{used:,} / {limit:,} TPD"` (e.g. `28,400 / 1,000,000 TPD`)
+      * `usage_vs_tpm_display`: `"{used:,} / {limit:,} TPM"`
+      * `fallback_provider`, `fallback_model`
+      * `is_failover_active`: bool
+      * `failback_eligible`: bool
+      * `status`: `"PRIMARY_ACTIVE"` | `"FAILOVER_ACTIVE"` | `"RELOADED_PRIMARY"`
+    - Added `TokenEconomyEngine.check_failover_status(payload)` handling simulation triggers (`action='failover'|'trip'` and `action='failback'|'reset'`), switching to fallback when quota exceeded and restoring primary upon quota reset.
+    - Updated `get_economy_report()` to return:
+      * `total_company_used_today`: int
+      * `total_company_ceiling_daily`: 5,300,000
+      * `total_company_display`: `"{total_used:,} / 5,300,000 Tokens/วัน"`
+      * `total_lifetime_tokens`: int
+      * `total_usd_saved`: float
+      * `bot_quotas`: QuotaList
+      * `bot_quotas_dict`: dict keyed by agent_id
+      * Full backward compatibility with legacy fields (`remaining_tokens`, `utilization_pct`, `bot_historical_token_table`, etc.)
+  - `server.py`:
+    - Updated `GET /api/free_llm_quota` (and alias `/api/token_economy`) to serve the expanded quota report including company-wide ceiling and 11-bot quota list.
+    - Updated `POST /api/failover_check` (and alias `/api/free_llm_quota`) to invoke `check_failover_status(body)` and return failover/failback simulation results.
+  - `tests/test_free_llm_quota.py`:
+    - Created comprehensive unit and integration test suite covering providers, 5.3M ceiling, all 11 bot metrics, dual QuotaList indexing, auto-failover/failback simulation, REST endpoints, and backward compatibility.

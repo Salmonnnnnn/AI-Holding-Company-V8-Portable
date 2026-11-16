@@ -285,15 +285,23 @@ class V7RequestHandler(BaseHTTPRequestHandler):
             return
 
         path = self.path.split("?")[0]
-        if path == "/api/free_llm_quota":
-            econ = TokenEconomyEngine(self.db)
-            self.send_json_response(200, econ.get_economy_report())
+        if path in ("/api/free_llm_quota", "/api/free_llm_quota/"):
+            econ = getattr(room, "token_economy", None) or TokenEconomyEngine(self.db)
+            rep = econ.get_economy_report()
+            self.send_json_response(200, rep)
             return
 
         if self.path.startswith("/api/free_llm_quota") or self.path.startswith("/api/token_economy"):
-            econ_rep = room.token_economy.get_economy_report()
+            econ_rep = (getattr(room, "token_economy", None) or TokenEconomyEngine(self.db)).get_economy_report()
             self._send_json({
                 "status": "ok",
+                "total_company_used_today": econ_rep.get("total_company_used_today", 0),
+                "total_company_ceiling_daily": econ_rep.get("total_company_ceiling_daily", 5300000),
+                "total_company_display": econ_rep.get("total_company_display", ""),
+                "total_lifetime_tokens": econ_rep.get("total_lifetime_tokens", 0),
+                "total_usd_saved": econ_rep.get("total_usd_saved", 0.0),
+                "bot_quotas": econ_rep.get("bot_quotas", []),
+                "bot_quotas_dict": econ_rep.get("bot_quotas_dict", {}),
                 "free_llm_providers": econ_rep.get("free_llm_providers", {}),
                 "active_provider": econ_rep.get("active_provider", {}),
                 "fallback_chain": econ_rep.get("fallback_chain", []),
@@ -315,10 +323,11 @@ class V7RequestHandler(BaseHTTPRequestHandler):
         except Exception:
             body = {}
 
-        if self.path == "/api/failover_check":
-            econ = TokenEconomyEngine(self.db)
-            rep = econ.get_economy_report()
-            self._send_json({"status": "OK", "report": rep})
+        path = self.path.split("?")[0]
+        if path in ("/api/failover_check", "/api/failover_check/", "/api/free_llm_quota", "/api/free_llm_quota/"):
+            econ = getattr(room, "token_economy", None) or TokenEconomyEngine(self.db)
+            res = econ.check_failover_status(body)
+            self._send_json(res)
             return
 
         if self.path in ("/api/autonomous_learning_cycle", "/api/mt5/autonomous_learning_cycle"):

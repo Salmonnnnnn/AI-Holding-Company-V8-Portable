@@ -16,6 +16,7 @@ FREE_LLM_PROVIDERS = {
     "cerebras": {
         "key": "cerebras",
         "name": "Cerebras Inference",
+        "display_name": "Cerebras",
         "model": "Llama-3.3-70B",
         "primary_model": "Llama-3.3-70B",
         "models": ["Llama-3.3-70B"],
@@ -25,6 +26,7 @@ FREE_LLM_PROVIDERS = {
         "tpm": 60000,
         "rpd": 14400,
         "daily_token_limit": 1000000,
+        "tpd_limit": 1000000,
         "latency": "Ultra-Fast (2,600+ tok/s)",
         "speed_benchmark": "~2,600+ tok/s (Wafer-Scale Engine)",
         "speed_tok_s": 2600,
@@ -39,8 +41,9 @@ FREE_LLM_PROVIDERS = {
     "groq": {
         "key": "groq",
         "name": "Groq LPU",
-        "model": "Llama-3.3-70B-Versatile / DeepSeek-R1-Distill-70B",
-        "primary_model": "Llama-3.3-70B-Versatile / DeepSeek-R1-Distill-70B",
+        "display_name": "Groq",
+        "model": "Llama-3.3-70B-Versatile",
+        "primary_model": "Llama-3.3-70B-Versatile",
         "models": ["Llama-3.3-70B-Versatile", "DeepSeek-R1-Distill-70B"],
         "rpm_limit": 30,
         "rpm": 30,
@@ -48,6 +51,7 @@ FREE_LLM_PROVIDERS = {
         "tpm": 30000,
         "rpd": 14400,
         "daily_token_limit": 500000,
+        "tpd_limit": 500000,
         "latency": "Ultra-Fast (300+ tok/s)",
         "speed_benchmark": "~300+ tok/s (Groq LPU)",
         "speed_tok_s": 300,
@@ -62,8 +66,9 @@ FREE_LLM_PROVIDERS = {
     "sambanova": {
         "key": "sambanova",
         "name": "SambaNova Cloud",
-        "model": "Meta-Llama-3.1-405B / Qwen-2.5-72B",
-        "primary_model": "Meta-Llama-3.1-405B / Qwen-2.5-72B",
+        "display_name": "SambaNova",
+        "model": "Meta-Llama-3.1-405B",
+        "primary_model": "Meta-Llama-3.1-405B",
         "models": ["Meta-Llama-3.1-405B", "Qwen-2.5-72B"],
         "rpm_limit": 20,
         "rpm": 20,
@@ -71,6 +76,7 @@ FREE_LLM_PROVIDERS = {
         "tpm": 50000,
         "rpd": 5000,
         "daily_token_limit": 1000000,
+        "tpd_limit": 1000000,
         "latency": "High Quality (180+ tok/s)",
         "speed_benchmark": "~180+ tok/s (SN40L Reconfigurable Dataflow)",
         "speed_tok_s": 180,
@@ -85,6 +91,7 @@ FREE_LLM_PROVIDERS = {
     "gemini": {
         "key": "gemini",
         "name": "Google Gemini API",
+        "display_name": "Gemini",
         "model": "Gemini 2.0 Flash",
         "primary_model": "Gemini 2.0 Flash",
         "models": ["Gemini 2.0 Flash", "Gemini-1.5-Pro"],
@@ -94,6 +101,7 @@ FREE_LLM_PROVIDERS = {
         "tpm": 1000000,
         "rpd": 1500,
         "daily_token_limit": 1500000,
+        "tpd_limit": 1500000,
         "latency": "High Speed & Multimodal",
         "speed_benchmark": "~150+ tok/s",
         "speed_tok_s": 150,
@@ -108,8 +116,9 @@ FREE_LLM_PROVIDERS = {
     "openrouter": {
         "key": "openrouter",
         "name": "OpenRouter Free Tier",
-        "model": "Llama-3.3-70B:free / DeepSeek-R1:free",
-        "primary_model": "Llama-3.3-70B:free / DeepSeek-R1:free",
+        "display_name": "OpenRouter",
+        "model": "Llama-3.3-70B:free",
+        "primary_model": "Llama-3.3-70B:free",
         "models": ["Llama-3.3-70B:free", "DeepSeek-R1:free"],
         "rpm_limit": 20,
         "rpm": 20,
@@ -117,6 +126,7 @@ FREE_LLM_PROVIDERS = {
         "tpm": 40000,
         "rpd": 1000,
         "daily_token_limit": 800000,
+        "tpd_limit": 800000,
         "latency": "Dynamic Routing",
         "speed_benchmark": "~120+ tok/s",
         "speed_tok_s": 120,
@@ -131,6 +141,7 @@ FREE_LLM_PROVIDERS = {
     "mistral": {
         "key": "mistral",
         "name": "Mistral La Plateforme",
+        "display_name": "Mistral",
         "model": "Codestral-25.01",
         "primary_model": "Codestral-25.01",
         "models": ["Codestral-25.01", "Mistral-Small"],
@@ -140,6 +151,7 @@ FREE_LLM_PROVIDERS = {
         "tpm": 35000,
         "rpd": 2000,
         "daily_token_limit": 500000,
+        "tpd_limit": 500000,
         "latency": "Fast Coding Specialist",
         "speed_benchmark": "~110+ tok/s (1 RPS)",
         "speed_tok_s": 110,
@@ -153,6 +165,9 @@ FREE_LLM_PROVIDERS = {
     }
 }
 
+TOTAL_FREE_QUOTA_CEILING_DAILY = sum(p["daily_token_limit"] for p in FREE_LLM_PROVIDERS.values())  # 5,300,000 TPD
+DEFAULT_COMPANY_CEILING_DAILY = TOTAL_FREE_QUOTA_CEILING_DAILY
+
 FALLBACK_CHAIN = ["cerebras", "groq", "sambanova", "gemini", "openrouter", "mistral"]
 DEFAULT_FAILOVER_CHAIN = FALLBACK_CHAIN
 
@@ -161,6 +176,47 @@ PROVIDER_ALIASES = {
     "google": "gemini",
     "mistral_ai": "mistral"
 }
+
+PROVIDER_DISPLAY_NAMES = {
+    "cerebras": "Cerebras",
+    "groq": "Groq",
+    "sambanova": "SambaNova",
+    "gemini": "Gemini",
+    "openrouter": "OpenRouter",
+    "mistral": "Mistral"
+}
+
+
+class QuotaList(list):
+    """
+    List of bot quota records that also supports dict-like lookups by agent_id.
+    Maintains 100% JSON-serializable list behavior while allowing bot_quotas["ag_cio"] access.
+    """
+    def __init__(self, items=None):
+        super().__init__(items or [])
+        self._by_id = {item.get("agent_id"): item for item in self if isinstance(item, dict) and "agent_id" in item}
+
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            return self._by_id[key]
+        return super().__getitem__(key)
+
+    def __contains__(self, item):
+        if isinstance(item, str):
+            return item in self._by_id
+        return super().__contains__(item)
+
+    def get(self, key, default=None):
+        return self._by_id.get(key, default)
+
+    def items(self):
+        return self._by_id.items()
+
+    def keys(self):
+        return self._by_id.keys()
+
+    def values(self):
+        return self._by_id.values()
 
 # -----------------------------------------------------------------------------
 # Compute Modes: Institutional Tiering & Frontier Reasoning
@@ -193,19 +249,100 @@ MODE_MULTIPLIERS = {
 }
 
 # Default assignment for all 11 bots in the holding company
+# Curated from awesome-free-llm-apis with exact limits and seamless backup failover
 BOT_DEFAULT_CONFIG = {
-    "ag_cio": {"provider": "cerebras", "fallback": "groq", "model": "Llama-3.3-70B (Cerebras 2,600 tok/s)"},
-    "ag_cos": {"provider": "gemini", "fallback": "cerebras", "model": "Gemini 2.0 Flash (Google 2M Context)"},
-    "ag_news": {"provider": "groq", "fallback": "cerebras", "model": "Llama-3.3-70B-Versatile (Groq Fast)"},
-    "ag_quant": {"provider": "cerebras", "fallback": "sambanova", "model": "Llama-3.3-70B (Cerebras 2,600 tok/s)"},
-    "ag_ta": {"provider": "cerebras", "fallback": "groq", "model": "Llama-3.3-70B (Cerebras 2,600 tok/s)"},
-    "ag_macro": {"provider": "gemini", "fallback": "groq", "model": "Gemini 2.0 Flash (Google Multimodal)"},
-    "ag_bull": {"provider": "groq", "fallback": "cerebras", "model": "Llama-3.3-70B-Versatile (Groq LPU)"},
-    "ag_bear": {"provider": "sambanova", "fallback": "cerebras", "model": "Meta-Llama-3.1-405B (SambaNova)"},
-    "ag_risk": {"provider": "cerebras", "fallback": "sambanova", "model": "Llama-3.3-70B (Cerebras)"},
-    "ag_bot": {"provider": "groq", "fallback": "mistral", "model": "Codestral-25.01 (Mistral Code)"},
-    "ag_venture": {"provider": "openrouter", "fallback": "sambanova", "model": "Llama-3.3-70B:free (OpenRouter)"}
+    "ag_cio": {
+        "provider": "cerebras",
+        "fallback": "groq",
+        "primary_model": "Llama-3.3-70B",
+        "fallback_model": "Llama-3.3-70B-Versatile",
+        "model": "Llama-3.3-70B (Cerebras 2,600 tok/s)"
+    },
+    "ag_cos": {
+        "provider": "gemini",
+        "fallback": "cerebras",
+        "primary_model": "Gemini 2.0 Flash",
+        "fallback_model": "Llama-3.3-70B",
+        "model": "Gemini 2.0 Flash (Google 2M Context)"
+    },
+    "ag_news": {
+        "provider": "groq",
+        "fallback": "cerebras",
+        "primary_model": "Llama-3.3-70B-Versatile",
+        "fallback_model": "Llama-3.3-70B",
+        "model": "Llama-3.3-70B-Versatile (Groq Fast)"
+    },
+    "ag_quant": {
+        "provider": "cerebras",
+        "fallback": "sambanova",
+        "primary_model": "Llama-3.3-70B",
+        "fallback_model": "Meta-Llama-3.1-405B",
+        "model": "Llama-3.3-70B (Cerebras 2,600 tok/s)"
+    },
+    "ag_ta": {
+        "provider": "cerebras",
+        "fallback": "groq",
+        "primary_model": "Llama-3.3-70B",
+        "fallback_model": "Llama-3.3-70B-Versatile",
+        "model": "Llama-3.3-70B (Cerebras 2,600 tok/s)"
+    },
+    "ag_macro": {
+        "provider": "gemini",
+        "fallback": "groq",
+        "primary_model": "Gemini 2.0 Flash",
+        "fallback_model": "Llama-3.3-70B-Versatile",
+        "model": "Gemini 2.0 Flash (Google Multimodal)"
+    },
+    "ag_bull": {
+        "provider": "groq",
+        "fallback": "cerebras",
+        "primary_model": "Llama-3.3-70B-Versatile",
+        "fallback_model": "Llama-3.3-70B",
+        "model": "Llama-3.3-70B-Versatile (Groq LPU)"
+    },
+    "ag_bear": {
+        "provider": "sambanova",
+        "fallback": "cerebras",
+        "primary_model": "Meta-Llama-3.1-405B",
+        "fallback_model": "Llama-3.3-70B",
+        "model": "Meta-Llama-3.1-405B (SambaNova)"
+    },
+    "ag_risk": {
+        "provider": "cerebras",
+        "fallback": "sambanova",
+        "primary_model": "Llama-3.3-70B",
+        "fallback_model": "Qwen-2.5-72B",
+        "model": "Llama-3.3-70B (Cerebras)"
+    },
+    "ag_bot": {
+        "provider": "mistral",
+        "fallback": "groq",
+        "primary_model": "Codestral-25.01",
+        "fallback_model": "Llama-3.3-70B-Versatile",
+        "model": "Codestral-25.01 (Mistral Code)"
+    },
+    "ag_venture": {
+        "provider": "openrouter",
+        "fallback": "sambanova",
+        "primary_model": "Llama-3.3-70B:free",
+        "fallback_model": "Meta-Llama-3.1-405B",
+        "model": "Llama-3.3-70B:free (OpenRouter)"
+    }
 }
+
+DEFAULT_BOT_ROSTER = [
+    {"agent_id": "ag_cio", "name": "Arthur Pendelton", "avatar": "👑", "department": "Executive Board", "role": "Chief Investment Officer (CIO)"},
+    {"agent_id": "ag_cos", "name": "Sophia Chen", "avatar": "👩‍💼", "department": "Operations & Knowledge", "role": "Chief of Staff & Reception"},
+    {"agent_id": "ag_news", "name": "Maya Lin", "avatar": "🕵️‍♀️", "department": "Market Intelligence", "role": "Real-Time News Sentinel"},
+    {"agent_id": "ag_quant", "name": "Dr. Kenji Sato", "avatar": "👨‍🔬", "department": "Quant R&D Lab", "role": "Head of Quant & Skill Lab"},
+    {"agent_id": "ag_ta", "name": "Alex 'ChartMaster' Vance", "avatar": "📊", "department": "Technical Analysis", "role": "Senior Multi-TF Technical Analyst"},
+    {"agent_id": "ag_macro", "name": "Dr. Marcus Sterling", "avatar": "🌐", "department": "Macro Economics", "role": "Chief Global Macroeconomist"},
+    {"agent_id": "ag_bull", "name": "Sarah Jenkins", "avatar": "🐂", "department": "Strategy Debate", "role": "Bullish Advocate"},
+    {"agent_id": "ag_bear", "name": "Viktor 'The Skeptic' Kane", "avatar": "🐻", "department": "Red Team & Hedging", "role": "Bearish & Red-Team Advocate"},
+    {"agent_id": "ag_risk", "name": "Elena Rostova", "avatar": "🛡️", "department": "Risk Management", "role": "Chief Risk Officer (CRO)"},
+    {"agent_id": "ag_bot", "name": "AutoBot X-1", "avatar": "🤖", "department": "Algorithmic Execution", "role": "Automated MT5 Execution Bot"},
+    {"agent_id": "ag_venture", "name": "Nova Vance", "avatar": "🚀", "department": "Venture Architecture", "role": "New Venture Architect"}
+]
 
 BOT_BASELINE_LIFETIME_TOKENS = {
     "ag_cio": 384000,
@@ -282,103 +419,211 @@ def check_and_failover_provider(total_used_today: int = 0) -> dict:
     }
 
 
-def get_bot_historical_token_table(db: CompanyDatabase | None = None) -> list[dict]:
+def get_bot_quotas(
+    db: CompanyDatabase | None = None,
+    bot_failover_active: dict | None = None,
+    bot_reloaded_primary: dict | None = None,
+    simulated_bot_tokens: dict | None = None,
+    rate_limited_flags: dict | None = None
+) -> QuotaList:
     """
-    Returns a list of records for all 11 bots with:
-    - agent_id, name, avatar, department, role
-    - primary_provider: key and details (name, model, rpm_limit, tpm_limit)
-    - fallback_provider: key and name
-    - tokens_used_today: int
-    - tokens_remaining_today: int (based on provider quota)
-    - tokens_used_total: int (from db or realistic baseline 148,000 - 450,000 tokens)
-    - usd_saved: float (tokens_used_total / 1000 * 0.015 approx savings)
-    - status: 'ACTIVE_OPTIMAL' or 'FAILOVER_STANDBY'
+    Track and return explicit token usage formatted as 'used / limit' for all 11 bots:
+    - primary_provider: Cerebras / Groq / SambaNova / Gemini / OpenRouter / Mistral
+    - primary_model: exact model name (Llama-3.3-70B, Gemini 2.0 Flash, Qwen 2.5 72B, etc.)
+    - rpm_limit, tpm_limit, tpd_limit
+    - tokens_used_today
+    - tokens_used_total (Cumulative Lifetime)
+    - usage_vs_cap_display: string (e.g. '{used:,} / {limit:,} TPD')
+    - fallback_provider: backup provider
+    - fallback_model: backup model
+    - is_failover_active: boolean (True if limit hit and switched to fallback)
+    - failback_eligible: boolean (True if quota resets, ready to return to primary)
+    - status: 'PRIMARY_ACTIVE' or 'FAILOVER_ACTIVE' or 'RELOADED_PRIMARY'
     """
     if db is None:
         db = CompanyDatabase()
 
+    if bot_failover_active is None:
+        bot_failover_active = TokenEconomyEngine._shared_bot_failover_active
+    if bot_reloaded_primary is None:
+        bot_reloaded_primary = TokenEconomyEngine._shared_bot_reloaded_primary
+    if simulated_bot_tokens is None:
+        simulated_bot_tokens = TokenEconomyEngine._shared_simulated_bot_tokens
+    if rate_limited_flags is None:
+        rate_limited_flags = TokenEconomyEngine._shared_rate_limited_flags
+
     try:
-        agents = db.get_all_agents()
+        db_agents = db.get_all_agents()
     except Exception:
-        agents = []
+        db_agents = []
 
-    if not agents:
-        return []
+    db_map = {ag.get("agent_id"): ag for ag in db_agents if ag.get("agent_id")}
 
-    table = []
-    for ag in agents:
-        ag_id = ag.get("agent_id", "")
-        def_cfg = BOT_DEFAULT_CONFIG.get(ag_id, {"provider": "cerebras", "fallback": "groq", "model": "Llama-3.3-70B"})
+    bot_records = []
+    for default_roster_item in DEFAULT_BOT_ROSTER:
+        ag_id = default_roster_item["agent_id"]
+        ag = db_map.get(ag_id, default_roster_item)
+        def_cfg = BOT_DEFAULT_CONFIG.get(ag_id, {
+            "provider": "cerebras",
+            "fallback": "groq",
+            "primary_model": "Llama-3.3-70B",
+            "fallback_model": "Llama-3.3-70B-Versatile",
+            "model": "Llama-3.3-70B"
+        })
+
         p_key = (ag.get("free_provider_key") or def_cfg["provider"]).strip().lower()
         if p_key not in FREE_LLM_PROVIDERS:
             p_key = PROVIDER_ALIASES.get(p_key, "cerebras")
         prov = FREE_LLM_PROVIDERS.get(p_key, FREE_LLM_PROVIDERS["cerebras"])
+        primary_provider_display = prov.get("display_name") or PROVIDER_DISPLAY_NAMES.get(p_key, prov["name"])
+        primary_model = def_cfg.get("primary_model") or prov["model"]
 
-        fb_key = def_cfg.get("fallback") or prov.get("fallback_target", "groq")
+        fb_key = (def_cfg.get("fallback") or prov.get("fallback_target", "groq")).strip().lower()
         if fb_key not in FREE_LLM_PROVIDERS:
             fb_key = PROVIDER_ALIASES.get(fb_key, "groq")
         fallback_prov = FREE_LLM_PROVIDERS.get(fb_key, FREE_LLM_PROVIDERS["groq"])
+        fallback_provider_display = fallback_prov.get("display_name") or PROVIDER_DISPLAY_NAMES.get(fb_key, fallback_prov["name"])
+        fallback_model = def_cfg.get("fallback_model") or fallback_prov["model"]
 
-        tokens_today = int(ag.get("tokens_used_today") or 18500)
+        base_tokens_today = int(ag.get("tokens_used_today") or 18500)
+        simulated_extra = int(simulated_bot_tokens.get(ag_id, 0))
+        effective_tokens_today = base_tokens_today + simulated_extra
+
         baseline = BOT_BASELINE_LIFETIME_TOKENS.get(ag_id, 148000)
         db_total = int(ag.get("tokens_used_total") or 0)
-        tokens_total = max(baseline, db_total) if db_total > 0 else (baseline + tokens_today)
+        tokens_total = max(baseline, db_total) if db_total > 0 else (baseline + effective_tokens_today)
 
-        limit = prov.get("daily_token_limit", 1000000)
-        tokens_remaining = max(0, limit - tokens_today)
+        rpm_limit = int(prov.get("rpm_limit", 30))
+        tpm_limit = int(prov.get("tpm_limit", 60000))
+        tpd_limit = int(prov.get("daily_token_limit", 1000000))
+        tokens_remaining_today = max(0, tpd_limit - effective_tokens_today)
 
-        is_exhausted = tokens_today >= limit
-        status = "FAILOVER_STANDBY" if is_exhausted else "ACTIVE_OPTIMAL"
+        # Failover trigger logic: quota exceeded, manually tripped, or provider 429
+        is_tripped_by_tokens = effective_tokens_today >= tpd_limit
+        is_tripped_manually = bool(bot_failover_active.get(ag_id, False))
+        is_provider_tripped = bool(rate_limited_flags.get(p_key, False))
+        is_failover_active = is_tripped_by_tokens or is_tripped_manually or is_provider_tripped
+        was_reloaded = bool(bot_reloaded_primary.get(ag_id, False))
+
+        if is_failover_active:
+            status = "FAILOVER_ACTIVE"
+            current_provider = fallback_provider_display
+            current_model = fallback_model
+            # Eligible to fail back once quota resets (tokens below limit and provider unblocked)
+            failback_eligible = not is_tripped_by_tokens and not is_provider_tripped
+        else:
+            if was_reloaded:
+                status = "RELOADED_PRIMARY"
+            else:
+                status = "PRIMARY_ACTIVE"
+            current_provider = primary_provider_display
+            current_model = primary_model
+            failback_eligible = True
+
         usd_saved = round((tokens_total / 1000.0) * 0.015, 2)
+        usage_vs_cap_display = f"{effective_tokens_today:,} / {tpd_limit:,} TPD"
+        usage_vs_tpm_display = f"{min(effective_tokens_today, tpm_limit):,} / {tpm_limit:,} TPM"
 
-        table.append({
+        bot_records.append({
             "agent_id": ag_id,
-            "name": ag.get("name", ag_id),
-            "avatar": ag.get("avatar", "🤖"),
-            "department": ag.get("department", "Headquarters"),
-            "role": ag.get("role", "AI Agent"),
-            "assigned_model": ag.get("llm_model") or def_cfg["model"],
-            "primary_provider": {
-                "key": prov["key"],
-                "name": prov["name"],
-                "model": prov["model"],
-                "rpm_limit": prov["rpm_limit"],
-                "tpm_limit": prov["tpm_limit"],
-                "daily_limit": prov["daily_token_limit"],
-                "primary_model": prov["model"],
-                "badge": prov.get("provider_badge", ""),
-                "rpm": prov["rpm_limit"],
-                "tpm": prov["tpm_limit"]
-            },
-            "fallback_provider": {
-                "key": fallback_prov["key"],
-                "name": fallback_prov["name"],
-                "model": fallback_prov["model"],
-                "rpm_limit": fallback_prov["rpm_limit"],
-                "tpm_limit": fallback_prov["tpm_limit"],
-                "primary_model": fallback_prov["model"],
-                "badge": fallback_prov.get("provider_badge", "")
-            },
-            "tokens_used_today": tokens_today,
-            "tokens_remaining_today": tokens_remaining,
-            "tokens_remaining_quota": tokens_remaining,
+            "name": ag.get("name") or default_roster_item["name"],
+            "avatar": ag.get("avatar") or default_roster_item["avatar"],
+            "department": ag.get("department") or default_roster_item["department"],
+            "role": ag.get("role") or default_roster_item["role"],
+            # Free LLM exact metrics
+            "primary_provider": primary_provider_display,
+            "primary_provider_key": p_key,
+            "primary_model": primary_model,
+            "rpm_limit": rpm_limit,
+            "tpm_limit": tpm_limit,
+            "tpd_limit": tpd_limit,
+            "daily_token_limit": tpd_limit,
+            "tokens_used_today": effective_tokens_today,
+            "tokens_remaining_today": tokens_remaining_today,
             "tokens_used_total": tokens_total,
-            "usd_saved": usd_saved,
-            "free_tier_saved_usd": usd_saved,
+            "usage_vs_cap_display": usage_vs_cap_display,
+            "usage_vs_tpm_display": usage_vs_tpm_display,
+            # Fallback & Failover Status
+            "fallback_provider": fallback_provider_display,
+            "fallback_provider_key": fb_key,
+            "fallback_model": fallback_model,
+            "fallback_rpm_limit": int(fallback_prov.get("rpm_limit", 30)),
+            "fallback_tpm_limit": int(fallback_prov.get("tpm_limit", 30000)),
+            "fallback_tpd_limit": int(fallback_prov.get("daily_token_limit", 500000)),
+            "current_provider": current_provider,
+            "current_model": current_model,
+            "is_failover_active": is_failover_active,
+            "failback_eligible": failback_eligible,
             "status": status,
-            "status_code": "AUTO_SWITCHED_FAILOVER" if is_exhausted else "ONLINE_WITHIN_LIMIT",
-            "provider_status": "🔄 สลับไปตัวสำรองแล้ว (Failover Active)" if is_exhausted else "🟢 ปกติ (Within Limit)"
+            "usd_saved": usd_saved,
+            # Backward-compatibility helpers
+            "provider": primary_provider_display,
+            "assigned_model": current_model,
+            "primary_provider_info": prov,
+            "fallback_provider_info": fallback_prov
         })
+
+    return QuotaList(bot_records)
+
+
+def get_bot_historical_token_table(db: CompanyDatabase | None = None) -> list[dict]:
+    """
+    Backward-compatible historical cumulative token tracking table per bot.
+    Includes both nested provider dicts (for existing dashboard consumers) and flat quota metrics.
+    """
+    quotas = get_bot_quotas(db)
+    table = []
+    for q in quotas:
+        rec = dict(q)
+        prov = q.get("primary_provider_info") or FREE_LLM_PROVIDERS.get(q["primary_provider_key"], FREE_LLM_PROVIDERS["cerebras"])
+        fb_prov = q.get("fallback_provider_info") or FREE_LLM_PROVIDERS.get(q["fallback_provider_key"], FREE_LLM_PROVIDERS["groq"])
+
+        rec["primary_provider"] = {
+            "key": prov["key"],
+            "name": prov["name"],
+            "model": prov["model"],
+            "rpm_limit": prov["rpm_limit"],
+            "tpm_limit": prov["tpm_limit"],
+            "daily_limit": prov["daily_token_limit"],
+            "primary_model": prov["model"],
+            "badge": prov.get("provider_badge", ""),
+            "rpm": prov["rpm_limit"],
+            "tpm": prov["tpm_limit"]
+        }
+        rec["fallback_provider"] = {
+            "key": fb_prov["key"],
+            "name": fb_prov["name"],
+            "model": fb_prov["model"],
+            "rpm_limit": fb_prov["rpm_limit"],
+            "tpm_limit": fb_prov["tpm_limit"],
+            "primary_model": fb_prov["model"],
+            "badge": fb_prov.get("provider_badge", "")
+        }
+        rec["tokens_remaining_quota"] = q["tokens_remaining_today"]
+        rec["free_tier_saved_usd"] = q["usd_saved"]
+        rec["status_code"] = "AUTO_SWITCHED_FAILOVER" if q["is_failover_active"] else "ONLINE_WITHIN_LIMIT"
+        rec["provider_status"] = "🔄 สลับไปตัวสำรองแล้ว (Failover Active)" if q["is_failover_active"] else "🟢 ปกติ (Within Limit)"
+        table.append(rec)
 
     return table
 
 
 class TokenEconomyEngine:
+    _shared_rate_limited_flags: dict[str, bool] = {}
+    _shared_bot_failover_active: dict[str, bool] = {}
+    _shared_bot_reloaded_primary: dict[str, bool] = {}
+    _shared_simulated_bot_tokens: dict[str, int] = {}
+    _shared_failover_history: list[dict] = []
+    _shared_extra_provider_tokens: dict[str, int] = {}
+
     def __init__(self, db: CompanyDatabase | None = None):
         self.db = db or CompanyDatabase()
-        self._rate_limited_flags: dict[str, bool] = {}
-        self._failover_history: list[dict] = []
-        self._extra_provider_tokens: dict[str, int] = {}
+        self._rate_limited_flags = TokenEconomyEngine._shared_rate_limited_flags
+        self._bot_failover_active = TokenEconomyEngine._shared_bot_failover_active
+        self._bot_reloaded_primary = TokenEconomyEngine._shared_bot_reloaded_primary
+        self._simulated_bot_tokens = TokenEconomyEngine._shared_simulated_bot_tokens
+        self._failover_history = TokenEconomyEngine._shared_failover_history
+        self._extra_provider_tokens = TokenEconomyEngine._shared_extra_provider_tokens
 
     def _normalize_provider_key(self, key: str) -> str:
         clean = (key or "").strip().lower()
@@ -410,9 +655,110 @@ class TokenEconomyEngine:
             "reason": reason
         })
 
+    def trip_bot_failover(self, agent_id: str, reason: str = "Quota limit exceeded"):
+        """Simulate or trigger failover for a specific bot."""
+        self._bot_failover_active[agent_id] = True
+        self._bot_reloaded_primary[agent_id] = False
+        self._failover_history.append({
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "agent_id": agent_id,
+            "event": "BOT_FAILOVER_TRIPPED",
+            "reason": reason
+        })
+
+    def reset_bot_failover(self, agent_id: str):
+        """Reset failover for a bot, marking it reloaded to its primary provider."""
+        self._bot_failover_active[agent_id] = False
+        self._bot_reloaded_primary[agent_id] = True
+        self._simulated_bot_tokens.pop(agent_id, None)
+        self._failover_history.append({
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "agent_id": agent_id,
+            "event": "BOT_FAILBACK_RELOADED_PRIMARY",
+            "reason": "Quota reset, switched back to primary"
+        })
+
     def reset_provider_limits(self):
-        """Reset simulated rate-limit trips."""
+        """Reset simulated rate-limit trips and bot failovers, reloading primary providers."""
+        for ag_id in list(self._bot_failover_active.keys()):
+            if self._bot_failover_active[ag_id]:
+                self._bot_reloaded_primary[ag_id] = True
         self._rate_limited_flags.clear()
+        self._bot_failover_active.clear()
+        self._simulated_bot_tokens.clear()
+        self._failover_history.append({
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "event": "PROVIDER_LIMITS_RESET",
+            "reason": "Rate-limit trips reset, reloaded primary providers"
+        })
+
+    def check_failover_status(self, payload: dict | None = None) -> dict:
+        """
+        API Trigger / Simulation Engine for Quota Failover and Failback:
+        - action: 'failover' | 'trip' -> trigger failover on bot or provider
+        - action: 'failback' | 'reset' -> return to primary provider when quota resets
+        - agent_id: target bot (e.g. 'ag_cio')
+        - provider: target provider (e.g. 'cerebras')
+        - tokens / simulate_tokens: simulate token usage above limits
+        """
+        if payload is None:
+            payload = {}
+
+        action = str(payload.get("action", "")).strip().lower()
+        target_agent = str(payload.get("agent_id", "")).strip()
+        target_provider = str(payload.get("provider", "")).strip().lower()
+        tokens = payload.get("tokens") or payload.get("tokens_used") or payload.get("simulate_tokens")
+
+        if action in ("failover", "trip", "trigger_failover"):
+            if target_agent:
+                self.trip_bot_failover(target_agent, payload.get("reason", "Simulated quota limit hit"))
+            elif target_provider:
+                norm_p = self._normalize_provider_key(target_provider)
+                self.trip_provider_failover(norm_p, payload.get("reason", "429 Rate Limit Encountered"))
+            else:
+                self.trip_provider_failover("cerebras", payload.get("reason", "Default primary quota exceeded"))
+
+        elif action in ("failback", "reset", "reset_all", "recover"):
+            if target_agent:
+                self.reset_bot_failover(target_agent)
+            elif target_provider:
+                norm_p = self._normalize_provider_key(target_provider)
+                self._rate_limited_flags.pop(norm_p, None)
+                self._failover_history.append({
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "provider": norm_p,
+                    "event": "PROVIDER_LIMIT_RESET",
+                    "reason": "Provider quota reset"
+                })
+            else:
+                self.reset_provider_limits()
+
+        if tokens is not None and target_agent:
+            self._simulated_bot_tokens[target_agent] = int(tokens)
+            self._failover_history.append({
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "agent_id": target_agent,
+                "event": "SIMULATED_TOKEN_USAGE_SET",
+                "tokens": int(tokens)
+            })
+
+        rep = self.get_economy_report()
+        active_failovers_count = sum(1 for b in rep["bot_quotas"] if b["is_failover_active"])
+
+        return {
+            "status": "OK",
+            "action_taken": action or "CHECK_ONLY",
+            "active_failovers_count": active_failovers_count,
+            "total_company_used_today": rep["total_company_used_today"],
+            "total_company_ceiling_daily": rep["total_company_ceiling_daily"],
+            "total_company_display": rep["total_company_display"],
+            "total_lifetime_tokens": rep["total_lifetime_tokens"],
+            "total_usd_saved": rep["total_usd_saved"],
+            "bot_quotas": rep["bot_quotas"],
+            "bot_quotas_dict": rep["bot_quotas_dict"],
+            "failover_events": self._failover_history[-15:],
+            "report": rep
+        }
 
     def check_and_failover(self, provider_key: str, tokens_to_consume: int = 0) -> dict:
         """
@@ -524,6 +870,16 @@ class TokenEconomyEngine:
             })
         return telemetry
 
+    def get_bot_quotas(self) -> QuotaList:
+        """Returns QuotaList tracking individual bot limits, usage, failover and failback."""
+        return get_bot_quotas(
+            self.db,
+            self._bot_failover_active,
+            self._bot_reloaded_primary,
+            self._simulated_bot_tokens,
+            self._rate_limited_flags
+        )
+
     def get_bot_historical_token_table(self) -> list[dict]:
         """Historical Cumulative Token Tracking per Bot."""
         return get_bot_historical_token_table(self.db)
@@ -571,11 +927,16 @@ class TokenEconomyEngine:
             reverse=True
         )
 
+        bot_quotas = self.get_bot_quotas()
         bot_historical_table = self.get_bot_historical_token_table()
         provider_telemetry = self.get_provider_telemetry()
         active_provider_info = check_and_failover_provider(used)
-        total_lifetime_tokens = sum(int(b.get("tokens_used_total") or 0) for b in bot_historical_table)
-        total_usd_saved = round(sum(float(b.get("usd_saved") or 0.0) for b in bot_historical_table), 2)
+
+        total_company_used_today = sum(int(b.get("tokens_used_today") or 0) for b in bot_quotas)
+        total_company_ceiling_daily = TOTAL_FREE_QUOTA_CEILING_DAILY  # 5,300,000 TPD
+        total_company_display = f"{total_company_used_today:,} / {total_company_ceiling_daily:,} Tokens/วัน"
+        total_lifetime_tokens = sum(int(b.get("tokens_used_total") or 0) for b in bot_quotas)
+        total_usd_saved = round(sum(float(b.get("usd_saved") or 0.0) for b in bot_quotas), 2)
 
         return {
             "status": "ok",
@@ -592,13 +953,19 @@ class TokenEconomyEngine:
             "agent_allocations": agent_allocations,
             "leaderboard_by_usage": leaderboard_by_usage,
             "available_models": AVAILABLE_MODELS,
+            # Free LLM Company-Wide Quota Ceiling & Telemetry
+            "total_company_used_today": total_company_used_today,
+            "total_company_ceiling_daily": total_company_ceiling_daily,
+            "total_company_display": total_company_display,
+            "total_lifetime_tokens": total_lifetime_tokens,
+            "total_usd_saved": total_usd_saved,
+            "bot_quotas": bot_quotas,
+            "bot_quotas_dict": {b["agent_id"]: b for b in bot_quotas},
             # Curated Free LLM Engine & Routing
             "free_llm_providers": FREE_LLM_PROVIDERS,
             "active_provider": active_provider_info,
             "fallback_chain": list(FALLBACK_CHAIN),
             "bot_historical_token_table": bot_historical_table,
-            "total_lifetime_tokens": total_lifetime_tokens,
-            "total_usd_saved": total_usd_saved,
             "provider_telemetry": provider_telemetry,
             "failover_history": self._failover_history[-15:]
         }
