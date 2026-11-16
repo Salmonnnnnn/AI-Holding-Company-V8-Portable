@@ -82,3 +82,40 @@
       * `#isometricOfficeCanvas`: `engine/dashboard_generator.py` L687–693; `reports/latest_dashboard.html` L318–324. Changed from `object-fit: contain;` to `object-fit: cover; width: 100%; height: 100%; display: block; cursor: pointer;`. Eliminates cyan/blue letterboxing borders around the 3D animated canvas.
     - **Dynamic Atmosphere Sync on Container**:
       * `setTownSkyAtmosphere(mode)`: `engine/dashboard_generator.py` L4440–4455; `reports/latest_dashboard.html` L4111–4126. When switching between `NIGHT`, `SUNSET`, and `DAY`, the function dynamically queries `document.getElementById('townFullscreenCard')` and updates `card.style.background` (`#050811` for NIGHT, `#f472b6` for SUNSET, `#22a6f2` for DAY), maintaining atmospheric coherence.
+
+- **Audit 2026-11-16 (Pre-Fix Layout & UI/UX Inspection: Ledger Removal, Controls Collision & Background Continuity)**:
+  - **Verdict**: `REJECTED (Fixes Required on 3 Issues)` | **Score**: **45 / 100**
+  - **1. Raw Ledger Removal & Legacy Store Isolation (`#page-island`)**:
+    - **Status**: `FAIL (Violations Found)`
+    - **Findings**:
+      * `btnToggleLegacyUnderIsland` (`<button class="cozy-btn" onclick="toggleLegacyUnderIslandStore()" id="btnToggleLegacyUnderIsland">📂 ดูตารางบัญชีดิบ</button>`) is actively rendered in the UI at `engine/dashboard_generator.py` line 2059 and `reports/latest_dashboard.html` line 1690.
+      * `#legacyUnderIslandHiddenStore` is declared with `style="display:none"` (missing `!important`) at `engine/dashboard_generator.py` line 2099 and `reports/latest_dashboard.html` line 1730.
+      * `toggleLegacyUnderIslandStore()` (lines 7610–7618 in generator, 7273–7281 in html) toggles `box.style.display` to `block`, causing the legacy venture ledger table and challenge banner to open directly under the 3D island when clicked.
+    - **Required Fix**:
+      * Completely remove `btnToggleLegacyUnderIsland` from the DOM in `engine/dashboard_generator.py` so no button or trigger exists in the UI.
+      * Set `#legacyUnderIslandHiddenStore` to `style="display:none !important;"` to permanently prevent inadvertent expansion while preserving child DOM IDs for test suite assertions.
+  - **2. 3D Island Controls Positioning & Wrap Prevention**:
+    - **Status**: `FAIL (Violations Found)`
+    - **Findings**:
+      * `.town-top-nav-bar` (`engine/dashboard_generator.py` L694–707 / `reports/latest_dashboard.html` L325–338) is configured with `flex-wrap: wrap;` instead of `flex-wrap: nowrap !important;`.
+      * `.town-top-right-bar` (`engine/dashboard_generator.py` L780–789 / `reports/latest_dashboard.html` L412–420) is configured with `flex-wrap: wrap;`. When screen width shrinks or text runs long, `.atmosphere-segmented-bar` is pushed down into a second row, directly over the center of the canvas where Arthur, Dr. Kenji, and town cottages sit.
+      * Atmosphere Switcher buttons (`engine/dashboard_generator.py` L1968–1970 / `reports/latest_dashboard.html` L1599–1601) use lengthy labels (`☀️ กลางวัน (Day)`, `🌅 ยามเย็น (Sunset)`, `🌙 กลางคืน (Night)`), consuming excessive width (~240px).
+      * `.comic-hud-pill` has tight `padding: 4px 10px;` and can experience top clipping on certain renderers.
+    - **Required Fix**:
+      * Change `.town-top-nav-bar` to `flex-wrap: nowrap !important;` and `.town-top-right-bar` to `flex-wrap: nowrap; flex-shrink: 0;`.
+      * Shorten atmosphere buttons to `☀️ วัน`, `🌅 เย็น`, `🌙 คืน`.
+      * Adjust `.comic-hud-pill` padding and alignment (e.g. `padding: 5px 12px;`) to ensure comfortable padding and prevent top clipping.
+  - **3. Background Continuity & Scrolling Across All Pages**:
+    - **Status**: `FAIL (Violations Found)`
+    - **Findings**:
+      * Root selectors: Missing `html, body { background: var(--bg-body); min-height: 100%; overflow-x: hidden; }` (`engine/dashboard_generator.py` L405 / `reports/latest_dashboard.html` L36). Only `body` with `min-height: 100vh;` is defined, risking background flashes on bounce scroll.
+      * Navigation bar stickiness: `.top-header` has `position: sticky; top: 0; z-index: 100;`, but `.nav-tabs` (`engine/dashboard_generator.py` L441 / `reports/latest_dashboard.html` L72) lacks sticky properties. When scrolling, `.nav-tabs` scrolls out of view, stranding `.top-header` and breaking page switching without scrolling back to top.
+      * Page view padding: `.page-view` (`engine/dashboard_generator.py` L485 / `reports/latest_dashboard.html` L116) has `padding: 14px 20px;` and lacks `background: var(--bg-body);` and bottom clearance (`padding: 16px 20px 48px 20px;`), clipping bottom cards on scroll.
+      * Layout alignment: `.visualizer-layout` (`engine/dashboard_generator.py` L580 / `reports/latest_dashboard.html` L211) uses `align-items: start;` instead of `align-items: stretch;`, causing unequal column heights and background gaps in `#page-profiles` and `#page-chat`.
+      * 9-Page Audit (`#page-island`, `#page-mt5`, `#page-replay`, `#page-store-studio`, `#page-meme-studio`, `#page-tech-studio`, `#page-tokens`, `#page-profiles`, `#page-chat`): All 9 pages exist, but all suffer from the lack of sticky `.nav-tabs` and insufficient bottom padding in `.page-view`.
+    - **Required Fix**:
+      * Define `html, body { background: var(--bg-body); min-height: 100%; overflow-x: hidden; }`.
+      * Add `position: sticky; top: 58px; z-index: 99; box-shadow: 0 2px 8px rgba(0,0,0,0.06);` to `.nav-tabs`.
+      * Update `.page-view` to `padding: 16px 20px 48px 20px; background: var(--bg-body);`.
+      * Change `.visualizer-layout` to `align-items: stretch;`.
+

@@ -402,9 +402,16 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             --shadow-card: 0 6px 24px rgba(0, 0, 0, 0.45);
         }}
         * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        html, body {{
+            background: var(--bg-body);
+            min-height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }}
         body {{
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -441,6 +448,8 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             display: flex; gap: 8px; padding: 8px 20px;
             background: var(--bg-card); border-bottom: 1px solid var(--border-soft);
             overflow-x: auto; flex-wrap: wrap; align-items: center; justify-content: space-between;
+            position: sticky; top: 58px; z-index: 99;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }}
         .nav-segmented-primary {{
             display: flex; align-items: center; gap: 6px; flex-shrink: 0; flex-wrap: wrap;
@@ -483,7 +492,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         .war-card-drawer summary::-webkit-details-marker {{ display: none; }}
         .curriculum-accordion-drawer summary::-webkit-details-marker {{ display: none; }}
 
-        .page-view {{ display: none; padding: 14px 20px; max-width: 1680px; width: 100%; margin: 0 auto; flex: 1; }}
+        .page-view {{ display: none; padding: 16px 20px 48px 20px; max-width: 1680px; width: 100%; margin: 0 auto; flex: 1; background: var(--bg-body); }}
         .page-view.active {{ display: block; }}
 
         /* 30-Day $1,000 AI Agent Town Challenge Banner (Reel-inspired) */
@@ -581,7 +590,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             display: grid;
             grid-template-columns: 1fr 365px;
             gap: 16px;
-            align-items: start;
+            align-items: stretch;
         }}
         .town-fullscreen-card {{
             background: #050811;
@@ -693,24 +702,26 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         }}
         .town-top-nav-bar {{
             position: absolute;
-            top: 10px;
-            left: 12px;
-            right: 12px;
-            max-width: calc(100% - 24px);
+            top: 14px;
+            left: 16px;
+            right: 16px;
+            max-width: calc(100% - 32px);
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 25;
             pointer-events: none;
             gap: 8px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap !important;
         }}
         .town-top-left-bar {{
             display: flex;
             align-items: center;
-            gap: 4px;
-            flex-wrap: wrap;
-            max-width: 62%;
+            gap: 5px;
+            flex-wrap: nowrap;
+            flex-shrink: 1;
+            min-width: 0;
+            overflow: hidden;
             pointer-events: auto;
         }}
         .comic-pill-title {{
@@ -780,11 +791,11 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         .town-top-right-bar {{
             display: flex;
             align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
+            gap: 8px;
+            flex-wrap: nowrap !important;
             pointer-events: auto;
             margin-left: auto;
-            max-width: 48%;
+            flex-shrink: 0;
             justify-content: flex-end;
         }}
         .comic-hud-pill {{
@@ -792,8 +803,9 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             border: 2px solid #1e293b;
             border-radius: 999px;
             box-shadow: 0 3px 0 #1e293b;
-            padding: 4px 10px;
-            font-size: 0.72rem;
+            padding: 5px 12px;
+            font-size: 0.73rem;
+            line-height: 1.3;
             font-weight: 800;
             color: #1e293b;
             display: flex;
@@ -1951,7 +1963,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                 <button class="comic-pill-btn" id="btnTownViewAll" onclick="toggleAgentsDirectoryDrawer()">👥 View all</button>
                 <button class="comic-pill-btn" id="btnTownStats" onclick="toggleChallengeStatsHUD()">📊 Stats</button>
                 <button class="comic-pill-btn" id="btnTownInbox" onclick="openStudioDeliverablesModal()">📬 Inbox <span class="comic-badge-red">8</span></button>
-                <button class="comic-pill-btn" id="btnTownEnterpriseMenu" onclick="openTokenLeaderboardModal()">🪙 โทเคน 11 บอท</button>
+                <button class="comic-pill-btn" id="btnTownEnterpriseMenu" onclick="openTokenLeaderboardModal()" style="display:none">🪙 โทเคน 11 บอท</button>
             </div>
 
             <!-- Right pill & Atmosphere Switcher -->
@@ -1965,9 +1977,9 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                 </div>
                 <!-- 3-Button Segmented Atmosphere Bar -->
                 <div class="atmosphere-segmented-bar" id="atmosphereSegmentBar">
-                    <button type="button" class="segment-btn active" data-sky="DAY" onclick="setTownSkyAtmosphere('DAY')">☀️ กลางวัน (Day)</button>
-                    <button type="button" class="segment-btn" data-sky="SUNSET" onclick="setTownSkyAtmosphere('SUNSET')">🌅 ยามเย็น (Sunset)</button>
-                    <button type="button" class="segment-btn" data-sky="NIGHT" onclick="setTownSkyAtmosphere('NIGHT')">🌙 กลางคืน (Night)</button>
+                    <button type="button" class="segment-btn active" data-sky="DAY" onclick="setTownSkyAtmosphere('DAY')" title="☀️ กลางวัน (Day)">☀️ วัน</button>
+                    <button type="button" class="segment-btn" data-sky="SUNSET" onclick="setTownSkyAtmosphere('SUNSET')" title="🌅 ยามเย็น (Sunset)">🌅 เย็น</button>
+                    <button type="button" class="segment-btn" data-sky="NIGHT" onclick="setTownSkyAtmosphere('NIGHT')" title="🌙 กลางคืน (Night)">🌙 คืน</button>
                 </div>
                 <select id="skyTimeSelect" style="display:none;" onchange="setTownSkyAtmosphere(this.value)">
                     <option value="DAY" selected>☀️ กลางวัน (Day)</option>
@@ -2056,7 +2068,6 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex-shrink:0">
                 <button class="cozy-btn primary" onclick="switchPage('page-chat');selectChatTarget('ag_cio', '👑 Arthur Pendelton (CIO)', 'Claude 3.7 Extended Thinking')">💬 สั่งงานผ่าน Arthur CIO / LINE</button>
                 <button class="cozy-btn gold" onclick="openTokenLeaderboardModal()">🪙 ตารางโทเคน 11 บอท</button>
-                <button class="cozy-btn" onclick="toggleLegacyUnderIslandStore()" id="btnToggleLegacyUnderIsland">📂 ดูตารางบัญชีดิบ</button>
             </div>
         </div>
 
@@ -2096,7 +2107,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     </div>
 
     <!-- HIDDEN LEGACY STORE (Preserves all DOM IDs for unit tests while keeping #page-island 100% decluttered) -->
-    <div id="legacyUnderIslandHiddenStore" style="display:none">
+    <div id="legacyUnderIslandHiddenStore" style="display:none !important">
     <div id="enterpriseDetailsWrap">
         <!-- Live Real Account vs. Paper/Test Account P&L Banner (Legacy ref: CAN A TOWN OF AI AGENTS MAKE US $1,000?) -->
         <div class="challenge-banner" id="challengeBanner">

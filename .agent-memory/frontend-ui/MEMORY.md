@@ -300,3 +300,18 @@
     * `.town-fullscreen-card`: `background: #050811; border: 1.5px solid rgba(255, 255, 255, 0.12); height: 80vh; min-height: 620px; max-height: 860px;`.
     * `#isometricOfficeCanvas`: Changed from `object-fit: contain;` to `object-fit: cover;` so the 3D animated island fills the entire viewport without cyan letterbox borders.
     * `setTownSkyAtmosphere(mode)`: Added dynamic background color sync for `#townFullscreenCard` (`#050811` for NIGHT, `#f472b6` for SUNSET, `#22a6f2` for DAY).
+- **Raw Ledger Removal, Canvas Controls Floating Fix & Scroll Background Continuity Fix (November 2026)**:
+  - **Raw Ledger Button Removal ("เอาตารางบัชชีดิบออกให้หน่อย")**:
+    * Removed `<button class="cozy-btn" onclick="toggleLegacyUnderIslandStore()" id="btnToggleLegacyUnderIsland">📂 ดูตารางบัญชีดิบ</button>` from under-island workflow strip.
+    * Set `<div id="legacyUnderIslandHiddenStore" style="display:none !important">` to guarantee complete invisibility and inaccessibility while preserving child DOM IDs for test stability.
+  - **Canvas Controls Single-Line Pinning ("ไอที่ไปให้เเก้ตรวจดีๆยังมันวางไม่ดีมันผิดที่")**:
+    * Sized `.town-top-nav-bar` with `top: 14px; left: 16px; right: 16px; max-width: calc(100% - 32px); flex-wrap: nowrap !important; z-index: 25; pointer-events: none;`.
+    * Sized `.town-top-left-bar` with `gap: 5px; flex-wrap: nowrap; flex-shrink: 1; min-width: 0; overflow: hidden; pointer-events: auto;`. Redundant `#btnTownEnterpriseMenu` button hidden (`style="display:none"`).
+    * Sized `.town-top-right-bar` with `gap: 8px; flex-wrap: nowrap !important; flex-shrink: 0; margin-left: auto; justify-content: flex-end;`.
+    * Upgraded `.comic-hud-pill` with `padding: 5px 12px; font-size: 0.73rem; line-height: 1.3; font-weight: 800;` to prevent top-edge clipping.
+    * Sized `.atmosphere-segmented-bar` (`#atmosphereSegmentBar`) with compact buttons (`☀️ วัน`, `🌅 เย็น`, `🌙 คืน`) with descriptive titles, keeping the top navigation strictly pinned on a single horizontal plane without wrapping or floating into the 3D sky.
+  - **Scroll Background & Sticky Header Continuity ("เเละบางหน้ามันเลื่อนไป ui ไม่ดีมันเหมือนมีพื้นหลังขาดตรวจดีๆก่อนส่งงานหน่อย")**:
+    * Added `html, body { background: var(--bg-body); min-height: 100%; width: 100%; margin: 0; padding: 0; overflow-x: hidden; }` preventing page background gaps or cut-offs during scrolling.
+    * Set `.nav-tabs` to `position: sticky; top: 58px; z-index: 99; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);` docked smoothly below sticky `.top-header` (`top: 0; z-index: 100;`).
+    * Updated `.page-view` with `padding: 16px 20px 48px 20px; max-width: 1680px; width: 100%; margin: 0 auto; flex: 1; background: var(--bg-body);`.
+    * Updated `.visualizer-layout` to `align-items: stretch;` eliminating background gaps between uneven two-column layouts.
