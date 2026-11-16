@@ -110,6 +110,14 @@ def test_all_11_bots_quotas_and_metrics():
             assert "is_failover_active" in b and isinstance(b["is_failover_active"], bool)
             assert "failback_eligible" in b and isinstance(b["failback_eligible"], bool)
             assert b["status"] in ("PRIMARY_ACTIVE", "FAILOVER_ACTIVE", "RELOADED_PRIMARY")
+            # Realistic organic daily load (10% - 65% green load, no premature 100% caps)
+            assert 10.0 <= b["cap_pct"] <= 65.0
+            assert b["is_failover_active"] is False
+            assert b["status"] == "PRIMARY_ACTIVE"
+
+        assert quotas["ag_cio"]["tokens_used_today"] == 360000
+        assert quotas["ag_quant"]["tokens_used_today"] == 520000
+        assert quotas["ag_macro"]["tokens_used_today"] == 290000
 
 
 def test_auto_failover_and_failback_simulation():

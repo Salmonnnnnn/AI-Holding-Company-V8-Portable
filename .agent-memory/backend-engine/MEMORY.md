@@ -218,3 +218,21 @@
     - Updated `POST /api/failover_check` (and alias `/api/free_llm_quota`) to invoke `check_failover_status(body)` and return failover/failback simulation results.
   - `tests/test_free_llm_quota.py`:
     - Created comprehensive unit and integration test suite covering providers, 5.3M ceiling, all 11 bot metrics, dual QuotaList indexing, auto-failover/failback simulation, REST endpoints, and backward compatibility.
+- Organic Realism Token Quota Baseline (Option A1 - 10% to 65% green load):
+  - `engine/token_economy.py`:
+    - Configured realistic, organic daily baseline token usages per bot (`BOT_ORGANIC_BASELINE_DAILY_TOKENS`) totaling ~3,015,000 / 5,300,000 TPD:
+      * `ag_cio`: 360,000 / 1,000,000 TPD (36.0%)
+      * `ag_quant`: 520,000 / 1,000,000 TPD (52.0%)
+      * `ag_macro`: 290,000 / 1,500,000 TPD (19.3%)
+      * `ag_ta`: 380,000 / 1,000,000 TPD (38.0%)
+      * `ag_bear`: 340,000 / 1,000,000 TPD (34.0%)
+      * `ag_bull`: 210,000 / 500,000 TPD (42.0%)
+      * `ag_risk`: 260,000 / 1,000,000 TPD (26.0%)
+      * `ag_news`: 135,000 / 500,000 TPD (27.0%)
+      * `ag_cos`: 210,000 / 1,500,000 TPD (14.0%)
+      * `ag_bot`: 165,000 / 500,000 TPD (33.0%)
+      * `ag_venture`: 145,000 / 800,000 TPD (18.1%)
+    - Explicitly added `cap_pct = round((effective_tokens_today / max(tpd_limit, 1)) * 100.0, 1)` to each bot quota record.
+    - All 11 bots stay within 10% - 65% pleasant green load with `status: "PRIMARY_ACTIVE"` and `is_failover_active: False`.
+    - Auto-failover only activates naturally if an individual bot exceeds its TPD limit or is explicitly tripped.
+    - Maintained full backward compatibility for `train_all_agents_open_source_max_tokens` where 100% daily budget burns are tested.

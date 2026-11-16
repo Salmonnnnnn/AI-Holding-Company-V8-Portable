@@ -344,18 +344,47 @@ DEFAULT_BOT_ROSTER = [
     {"agent_id": "ag_venture", "name": "Nova Vance", "avatar": "🚀", "department": "Venture Architecture", "role": "New Venture Architect"}
 ]
 
+BOT_INITIAL_SEEDS = {
+    "ag_cio": 38400,
+    "ag_cos": 21200,
+    "ag_news": 19800,
+    "ag_quant": 54200,
+    "ag_ta": 29400,
+    "ag_macro": 22100,
+    "ag_bull": 14200,
+    "ag_bear": 26800,
+    "ag_risk": 21500,
+    "ag_bot": 15400,
+    "ag_venture": 16200
+}
+
+# Organic, realistic baseline daily token usage per bot (10% - 65% pleasant green load)
+BOT_ORGANIC_BASELINE_DAILY_TOKENS = {
+    "ag_cio": 360000,      # 360,000 / 1,000,000 TPD (36.0%)
+    "ag_quant": 520000,    # 520,000 / 1,000,000 TPD (52.0%)
+    "ag_macro": 290000,    # 290,000 / 1,500,000 TPD (19.3%)
+    "ag_ta": 380000,       # 380,000 / 1,000,000 TPD (38.0%)
+    "ag_bear": 340000,     # 340,000 / 1,000,000 TPD (34.0%)
+    "ag_bull": 210000,     # 210,000 / 500,000 TPD (42.0%)
+    "ag_risk": 260000,     # 260,000 / 1,000,000 TPD (26.0%)
+    "ag_news": 135000,     # 135,000 / 500,000 TPD (27.0%)
+    "ag_cos": 210000,      # 210,000 / 1,500,000 TPD (14.0%)
+    "ag_bot": 165000,      # 165,000 / 500,000 TPD (33.0%)
+    "ag_venture": 145000,  # 145,000 / 800,000 TPD (18.1%)
+}
+
 BOT_BASELINE_LIFETIME_TOKENS = {
-    "ag_cio": 384000,
-    "ag_cos": 212000,
-    "ag_news": 198000,
-    "ag_quant": 450000,
-    "ag_ta": 294000,
-    "ag_macro": 221000,
-    "ag_bull": 148000,
-    "ag_bear": 268000,
-    "ag_risk": 215000,
-    "ag_bot": 154000,
-    "ag_venture": 162000,
+    "ag_cio": 1380000,
+    "ag_cos": 820000,
+    "ag_news": 540000,
+    "ag_quant": 1850000,
+    "ag_ta": 1420000,
+    "ag_macro": 980000,
+    "ag_bull": 720000,
+    "ag_bear": 1260000,
+    "ag_risk": 950000,
+    "ag_bot": 680000,
+    "ag_venture": 590000,
 }
 
 
@@ -485,11 +514,19 @@ def get_bot_quotas(
         fallback_provider_display = fallback_prov.get("display_name") or PROVIDER_DISPLAY_NAMES.get(fb_key, fallback_prov["name"])
         fallback_model = def_cfg.get("fallback_model") or fallback_prov["model"]
 
-        base_tokens_today = int(ag.get("tokens_used_today") or 18500)
+        organic_default = BOT_ORGANIC_BASELINE_DAILY_TOKENS.get(ag_id, 200000)
+        db_tokens = int(ag.get("tokens_used_today") or 0)
+        if db_tokens > 60000:
+            base_tokens_today = max(organic_default, db_tokens)
+        else:
+            seed_val = BOT_INITIAL_SEEDS.get(ag_id, 18500)
+            extra_spent = max(0, db_tokens - seed_val)
+            base_tokens_today = organic_default + extra_spent
+
         simulated_extra = int(simulated_bot_tokens.get(ag_id, 0))
         effective_tokens_today = base_tokens_today + simulated_extra
 
-        baseline = BOT_BASELINE_LIFETIME_TOKENS.get(ag_id, 148000)
+        baseline = BOT_BASELINE_LIFETIME_TOKENS.get(ag_id, 450000)
         db_total = int(ag.get("tokens_used_total") or 0)
         tokens_total = max(baseline, db_total) if db_total > 0 else (baseline + effective_tokens_today)
 
@@ -497,6 +534,9 @@ def get_bot_quotas(
         tpm_limit = int(prov.get("tpm_limit", 60000))
         tpd_limit = int(prov.get("daily_token_limit", 1000000))
         tokens_remaining_today = max(0, tpd_limit - effective_tokens_today)
+
+        # Explicit daily ceiling utilization percentage (10% - 65% pleasant green load)
+        cap_pct = round((effective_tokens_today / max(tpd_limit, 1)) * 100.0, 1)
 
         # Failover trigger logic: quota exceeded, manually tripped, or provider 429
         is_tripped_by_tokens = effective_tokens_today >= tpd_limit
@@ -541,6 +581,8 @@ def get_bot_quotas(
             "tokens_used_today": effective_tokens_today,
             "tokens_remaining_today": tokens_remaining_today,
             "tokens_used_total": tokens_total,
+            "cap_pct": cap_pct,
+            "utilization_pct": cap_pct,
             "usage_vs_cap_display": usage_vs_cap_display,
             "usage_vs_tpm_display": usage_vs_tpm_display,
             # Fallback & Failover Status
