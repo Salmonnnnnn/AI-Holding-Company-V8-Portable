@@ -584,15 +584,15 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             align-items: start;
         }}
         .town-fullscreen-card {{
-            background: #22a6f2;
-            border: 2px solid #1e293b;
+            background: #050811;
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 12px 36px rgba(0,0,0,0.2);
             position: relative;
-            height: 75vh;
-            min-height: 580px;
-            max-height: 780px;
+            height: 80vh;
+            min-height: 620px;
+            max-height: 860px;
             margin-bottom: 12px;
         }}
         .minimal-island-workflow-strip {{
@@ -689,27 +689,28 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             height: 100%;
             display: block;
             cursor: pointer;
-            object-fit: contain;
+            object-fit: cover;
         }}
         .town-top-nav-bar {{
             position: absolute;
-            top: 12px;
-            left: 16px;
-            right: 16px;
+            top: 10px;
+            left: 12px;
+            right: 12px;
+            max-width: calc(100% - 24px);
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 25;
             pointer-events: none;
             gap: 8px;
-            flex-wrap: nowrap;
+            flex-wrap: wrap;
         }}
         .town-top-left-bar {{
             display: flex;
             align-items: center;
-            gap: 6px;
-            flex-wrap: nowrap;
-            flex-shrink: 0;
+            gap: 4px;
+            flex-wrap: wrap;
+            max-width: 62%;
             pointer-events: auto;
         }}
         .comic-pill-title {{
@@ -733,16 +734,16 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             border: 2px solid #1e293b;
             border-radius: 999px;
             box-shadow: 0 3px 0 #1e293b;
-            padding: 5px 12px;
+            padding: 4px 9px;
             font-weight: 800;
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             background: #ffffff;
             color: #1e293b;
             cursor: pointer;
             transition: transform 0.1s, box-shadow 0.1s, background-color 0.15s;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             white-space: nowrap;
             flex-shrink: 0;
             pointer-events: auto;
@@ -779,24 +780,27 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         .town-top-right-bar {{
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: nowrap;
-            flex-shrink: 0;
+            gap: 6px;
+            flex-wrap: wrap;
             pointer-events: auto;
+            margin-left: auto;
+            max-width: 48%;
+            justify-content: flex-end;
         }}
         .comic-hud-pill {{
             background: rgba(255, 255, 255, 0.96);
             border: 2px solid #1e293b;
             border-radius: 999px;
             box-shadow: 0 3px 0 #1e293b;
-            padding: 5px 12px;
-            font-size: 0.78rem;
+            padding: 4px 10px;
+            font-size: 0.72rem;
             font-weight: 800;
             color: #1e293b;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             white-space: nowrap;
+            max-width: 100%;
             flex-shrink: 0;
             pointer-events: auto;
         }}
@@ -817,10 +821,10 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         .atmosphere-segmented-bar .segment-btn {{
             border: none;
             background: transparent;
-            padding: 5px 12px;
+            padding: 4px 8px;
             border-radius: 999px;
             font-weight: 800;
-            font-size: 0.78rem;
+            font-size: 0.72rem;
             color: #475569;
             cursor: pointer;
             transition: all 0.15s;
@@ -1953,11 +1957,11 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <!-- Right pill & Atmosphere Switcher -->
             <div class="town-top-right-bar">
                 <div class="comic-hud-pill">
-                    <span style="color:#16a34a;font-weight:900" id="townHudLiveVal">🟢 พอร์ตจริง: ${live_profit_val:+,.2f}</span>
+                    <span style="color:#16a34a;font-weight:900" id="townHudLiveVal">🟢 จริง: ${live_profit_val:+,.2f}</span>
                     <span class="hud-sep">•</span>
-                    <span class="hud-gold" id="townHudGoldVal">🧪 พอร์ตเทส: ${test_profit_val:+,.2f}</span>
+                    <span class="hud-gold" id="townHudGoldVal">🧪 เทส: ${test_profit_val:+,.2f}</span>
                     <span class="hud-sep">•</span>
-                    <span class="hud-batt">⚡ 5-HR {b5h_pct:.0f}% | 7-DAY {b7d_pct:.0f}%</span>
+                    <span class="hud-batt">⚡ {b5h_pct:.0f}%</span>
                 </div>
                 <!-- 3-Button Segmented Atmosphere Bar -->
                 <div class="atmosphere-segmented-bar" id="atmosphereSegmentBar">
@@ -4442,6 +4446,12 @@ function setTownSkyAtmosphere(mode) {{
         if (b.getAttribute('data-sky') === mode) b.classList.add('active');
         else b.classList.remove('active');
     }});
+    const card = document.getElementById('townFullscreenCard');
+    if (card) {{
+        if (mode === 'NIGHT') card.style.background = '#050811';
+        else if (mode === 'SUNSET') card.style.background = '#f472b6';
+        else card.style.background = '#22a6f2';
+    }}
 }}
 
 function changeSkyAtmosphere(val) {{
@@ -9403,8 +9413,10 @@ function updateChallengeAndVentureUIFromLedger(ledger, portState) {{
     if (pctEl) pctEl.textContent = `+${{pct.toFixed(1)}}%`;
     const barEl = document.getElementById('challengeProgressBar');
     if (barEl) barEl.style.width = `${{pct.toFixed(1)}}%`;
+    const hudLiveEl = document.getElementById('townHudLiveVal');
+    if (hudLiveEl) hudLiveEl.textContent = `🟢 จริง: ${{fmtSigned(liveTotal)}}`;
     const hudEl = document.getElementById('townHudGoldVal');
-    if (hudEl) hudEl.textContent = `🟢 พอร์ตจริง: ${{fmtSigned(liveTotal)}} • 🧪 พอร์ตเทส: ${{fmtSigned(testTotal)}}`;
+    if (hudEl) hudEl.textContent = `🧪 เทส: ${{fmtSigned(testTotal)}}`;
 
     const kpiV = document.getElementById('kpiVentureTotalVal');
     if (kpiV) kpiV.textContent = fmtSigned(testTotal);

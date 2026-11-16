@@ -289,3 +289,14 @@
      - Secondary bar & `.ventures-subnav-bar` provide quick switches between `👗 แปะตะกร้าชุดแฟชั่น (Store)`, `🎬 คลิปไวรัล What-If (Media)`, `💻 บอท & เทค (Tech)`, and `🪙 ตารางโทเคน 11 บอท`.
      - Unified `#page-mt5-live` and `#page-mt5` so `switchPage('page-mt5')` and `switchPage('page-mt5-live')` both open the full XM MT5 Live Bridge Console + Candlestick Chart + Dual Account Real/Demo + Order Book + Obsidian Graph.
 - **Typography & Table Rules**: Use `.section-head` flex wrappers (`flex-wrap: wrap`) so card titles and action buttons never collide on 1280px–1440px screens; wrap wide tables in `.table-wrap` (`overflow-x: auto`) and apply `.num` (`white-space: nowrap`) to numeric/badge cells.
+- **Top Right Header Overflow & Fullscreen AI Canvas Border Elimination Fix (November 2026)**:
+  - **Top Nav Bar Text Overflow Fix**:
+    * Sized `.town-top-left-bar` with `max-width: 62%`, `gap: 4px`, `flex-wrap: wrap;`.
+    * Sized `.town-top-right-bar` with `margin-left: auto; max-width: 48%; justify-content: flex-end; gap: 6px; flex-wrap: wrap;`.
+    * Compacted `.comic-hud-pill` to `padding: 4px 10px; font-size: 0.72rem; gap: 4px; max-width: 100%;`.
+    * HTML and JS labels streamlined: `🟢 จริง: ${live_profit_val:+,.2f}` • `🧪 เทส: ${test_profit_val:+,.2f}` • `⚡ {b5h_pct:.0f}%` (updated both in initial template and in `updateChallengeAndVentureUIFromLedger()`).
+    * Compacted `.comic-pill-btn` (`padding: 4px 9px; font-size: 0.74rem; gap: 4px;`) and `.atmosphere-segmented-bar .segment-btn` (`padding: 4px 8px; font-size: 0.72rem;`).
+  - **Fullscreen AI Island Scene Letterbox Elimination**:
+    * `.town-fullscreen-card`: `background: #050811; border: 1.5px solid rgba(255, 255, 255, 0.12); height: 80vh; min-height: 620px; max-height: 860px;`.
+    * `#isometricOfficeCanvas`: Changed from `object-fit: contain;` to `object-fit: cover;` so the 3D animated island fills the entire viewport without cyan letterbox borders.
+    * `setTownSkyAtmosphere(mode)`: Added dynamic background color sync for `#townFullscreenCard` (`#050811` for NIGHT, `#f472b6` for SUNSET, `#22a6f2` for DAY).

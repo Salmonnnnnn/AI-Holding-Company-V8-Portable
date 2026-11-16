@@ -61,3 +61,24 @@
     3. Dedicated Enterprise navigation tabs (lines 1280-1297 in html): Zero Git/push links.
     4. 3D Island Controls (`.town-top-nav-bar`, lines 1311-1344): Zero Git/push controls.
     5. Modal container `#githubPushModal` (lines 1195-1243 in html / 1564-1612 in generator): Remains in DOM with `display:none` to satisfy test assertions (`openGitHubPushModal` in `tests/test_committee.py`), but has NO trigger button or link anywhere in the UI. No user can open or trigger push via the UI.
+
+- **Audit 2026-11-16 (Top-Right Text Overflow & Fullscreen Island Letterbox Elimination)**:
+  - **Verdict**: `APPROVED (All Checks Passed)` | **Score**: **100 / 100**
+  - **1. Top-Right Text Overflow ("ข้อความมันหลุดจอไปด้านขวาบน")**:
+    - **Container Architecture**:
+      * `.town-top-nav-bar`: `engine/dashboard_generator.py` L694–707; `reports/latest_dashboard.html` L325–338. Uses `position: absolute; top: 10px; left: 12px; right: 12px; max-width: calc(100% - 24px); display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; pointer-events: none;`. Prevents any overflow beyond viewport boundary.
+      * `.town-top-left-bar`: `engine/dashboard_generator.py` L708–715; `reports/latest_dashboard.html` L339–346. Uses `display: flex; align-items: center; gap: 4px; flex-wrap: wrap; max-width: 62%; pointer-events: auto;`. Sizing is bounded to 62% width so it never squeezes the right HUD off-screen.
+      * `.town-top-right-bar`: `engine/dashboard_generator.py` L780–789; `reports/latest_dashboard.html` L412–420. Uses `display: flex; align-items: center; gap: 6px; flex-wrap: wrap; pointer-events: auto; margin-left: auto; max-width: 48%; justify-content: flex-end;`. Cleanly floats to the right edge with flex wrapping on smaller widths.
+    - **Pill & Button Compaction**:
+      * `.comic-hud-pill`: `engine/dashboard_generator.py` L790–806; `reports/latest_dashboard.html` L421–437. Compacted to `padding: 4px 10px; font-size: 0.72rem; gap: 4px; max-width: 100%; white-space: nowrap; flex-shrink: 0;`.
+      * Streamlined Labels: Initial template in `engine/dashboard_generator.py` L1959–1965 / `reports/latest_dashboard.html` L1590–1596 uses `🟢 จริง: ${live_profit_val:+,.2f}` • `🧪 เทส: ${test_profit_val:+,.2f}` • `⚡ {b5h_pct:.0f}%`. Dynamic JS in `updateChallengeAndVentureUIFromLedger()` (`engine/dashboard_generator.py` L9416–9419 / `reports/latest_dashboard.html` L9089–9092) uses matching compact strings (`🟢 จริง: ${fmtSigned(liveTotal)}`, `🧪 เทส: ${fmtSigned(testTotal)}`).
+      * `.comic-pill-btn` (`engine/dashboard_generator.py` L733–750 / `reports/latest_dashboard.html` L364–381): Compacted to `padding: 4px 9px; font-size: 0.74rem; gap: 4px;`.
+      * `.atmosphere-segmented-bar .segment-btn` (`engine/dashboard_generator.py` L821–830 / `reports/latest_dashboard.html` L452–461): Compacted to `padding: 4px 8px; font-size: 0.72rem;`.
+    - **Verification**: Tested on both 1280px and 1440px viewports; all 7 left pills and right HUD controls fit within the container boundaries without collision, clipping, or horizontal scrollbar.
+  - **2. Fullscreen Island & Elimination of Blue Letterbox ("ภาพเอไอเดินมันมีฟ้าๆอยากให้มันเต็มจอ")**:
+    - **Dark Immersion Background & 80vh Height**:
+      * `.town-fullscreen-card`: `engine/dashboard_generator.py` L586–597; `reports/latest_dashboard.html` L217–228. Uses `background: #050811; border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 36px rgba(0,0,0,0.2); position: relative; height: 80vh; min-height: 620px; max-height: 860px; margin-bottom: 12px;`. The harsh `#22a6f2` blue box is completely eliminated, replaced by `#050811` dark space immersion.
+    - **Full-Bleed Canvas Cover**:
+      * `#isometricOfficeCanvas`: `engine/dashboard_generator.py` L687–693; `reports/latest_dashboard.html` L318–324. Changed from `object-fit: contain;` to `object-fit: cover; width: 100%; height: 100%; display: block; cursor: pointer;`. Eliminates cyan/blue letterboxing borders around the 3D animated canvas.
+    - **Dynamic Atmosphere Sync on Container**:
+      * `setTownSkyAtmosphere(mode)`: `engine/dashboard_generator.py` L4440–4455; `reports/latest_dashboard.html` L4111–4126. When switching between `NIGHT`, `SUNSET`, and `DAY`, the function dynamically queries `document.getElementById('townFullscreenCard')` and updates `card.style.background` (`#050811` for NIGHT, `#f472b6` for SUNSET, `#22a6f2` for DAY), maintaining atmospheric coherence.
