@@ -333,3 +333,30 @@
     * Built 8-column table (บอท / แผนก, Provider หลัก & โมเดล, Provider สำรอง, โทเคนวันนี้, โควต้าคงเหลือ, ยอดใช้สะสมรวมทั้งหมด, ประหยัดเงินจาก Free Tier $, สถานะ).
     * Summary Metric Cards at modal top: รวมโทเคนสะสมทั้ง 11 บอท: 2,400,000+ Tokens • โควต้ารวมฟรีทุก Provider: 5,300,000 Tokens / วัน • ประหยัดงบสะสมได้แล้ว: ~$36.00+ USD • สถานะระบบ: Active บน Cerebras WSE-3.
     * Added `🪙 ตารางโทเคน 11 บอท` button `#btnTownEnterpriseMenu` on island nav bar.
+- **Top Header Atmosphere Switcher, Central Data Center, Clean HUD & Token Cap UI (November 2026)**:
+  - **Move Day/Night Atmosphere Switcher to Top Navigation Bar (User Choice A1)**:
+    * Relocated `#atmosphereSegmentBar` and `<select id="skyTimeSelect">` from `.town-top-right-bar` inside the island canvas to `.status-pills-bar` in the sticky top navigation header next to `#themeToggleBtn`.
+    * Upgraded `.atmosphere-segmented-bar` with theme-aware styling (`background: var(--bg-card)`, `color: var(--text-sub)`, active state `#1e293b`/`#f59e0b`), preventing island canvas overflow and sky blockage.
+  - **100% Elimination of "ตารางบัญชีดิบ" (Raw Ledger) (User Choice A4)**:
+    * Removed legacy store trigger button and any visible text mentioning "ดูตารางบัญชีดิบ".
+    * Preserved `#legacyUnderIslandHiddenStore` strictly hidden (`display: none !important;`) maintaining DOM element contracts for test compatibility.
+  - **Replace 2 Green Battery Cylinders with Central AI Data Center & Knowledge Vault (User Choice A3)**:
+    * Implemented `drawSingleServerRack(ctx, bx, by, rackIndex)` and `drawCentralDataCenter(ctx, cx, cy)`.
+    * Central plaza at `(720, 415)` renders 2 isometric server racks (`#0f172a`, `#1e293b`), glowing activity LEDs (steady green `#10b981`, blinking cyan `#06b6d4`, pulsing amber `#f59e0b`), glass cabinet doors with subtle cyan cyber glow, server cooling exhaust vents, animated optical cyber data conduits on the stone plaza, and a floating dark glassmorphic badge `💾 AI DATA CENTER • KNOWLEDGE VAULT`.
+    * Completely removed old labels `"5-HOUR 65%"` and `"7-DAY 100%"` from the canvas. Preserved `drawGiantBattery` as a backward-compatible alias.
+  - **Remove Energy/Battery & Fake Percentages from HUD and Cards**:
+    * Cleaned `.comic-hud-pill`: purely financial figures `🟢 จริง: ${live_profit_val:+,.2f} • 🧪 เทส: ${test_profit_val:+,.2f}` without any battery percent or energy status text.
+    * Removed fake `🔋 %` from `selectVisualizerAgent`, `renderMiniAgentsStrip`, and `renderTownDirectoryDrawer`.
+  - **Token Usage "ใช้ไปแล้ว / เพดานลิมิต" & Total Company Summary (User Choice A2)**:
+    * **Top Consolidated Banner** in `#tokenLeaderboardModal` and `#page-tokens`:
+      - Shows `ยอดใช้สะสมรวม / เพดานฟรีรวมทุก Provider`: `2,490,000 / 5,300,000 Tokens/วัน` with live failover status for Cerebras, Groq, SambaNova, Gemini, OpenRouter, and Mistral.
+    * **11-Bot Table Columns (7 Distinct Columns)**:
+      1. บอท / แผนก (Avatar, Name, Department)
+      2. Provider หลัก & โมเดล (พร้อมขีดจำกัดชัดเจน เช่น Cerebras Llama-3.3-70B • 30 RPM / 60K TPM)
+      3. การใช้งานเทียบเพดาน (Usage / Cap): `"ใช้ไป / เพดานลิมิต"` (เช่น `10,000 / 60,000 TPM`) with mini progress bar and % of cap.
+      4. Provider สำรอง (Failover Target เช่น Groq LPU)
+      5. สถานะการสลับค่าย (🟢 ใช้ตัวหลัก / 🔄 สลับไปตัวสำรองอัตโนมัติ / ↩️ รีเซ็ตกลับตัวหลัก)
+      6. ยอดสะสมตลอดชีพ (Cumulative Lifetime Tokens)
+      7. ประหยัดงบ ($ Saved)
+    * **Bot Cards & Drawer Profile**:
+      - Displays `Provider: [Provider]` • `โควต้า: [Used] / [Limit]` • `สถานะ: Auto-Failover พร้อม`.

@@ -44,10 +44,11 @@
   - Authorized XM Live account (#430446448) while preserving seamless Demo account testing.
   - Interactive Manual Trading Deck: 1-click BUY/SELL market execution, CLOSE ALL, CLOSE TICKET, and Auto-Trading ON/OFF mode toggle.
   - All 21 tests passing with 100% success rate. Server live at http://localhost:8080.
-- [x] Interactive XAUUSD Comparison Chart, AI Bot Entry Markers, & Modern Executive Financial Cards:
-  - Backend Engine: Added `get_trade_chart_data()` to `XMBridgeHub` with 36-point XAUUSD price series, Demo & Real equity curves, detailed AI Bot entry points (ICT FVG, Asian Range Grab, EMA Pullback, Volatility Breakout, MTF Confluence), financial KPI summary, and REST endpoint `GET /api/mt5/chart_comparison`.
-  - Frontend UI: Redesigned financial KPI metrics into 5 frosted glassmorphic executive cards (`.exec-kpi-grid`, `.exec-kpi-card`) separating Real Account (#430446448) from Demo (#50892104). Implemented interactive retina-scaled Canvas chart (`#xauusdComparisonCanvas`) with buy/sell filters, glowing entry markers, hover/click tooltips, and bottom telemetry strip.
-  - Verification Runner: 25/25 automated pytest tests passing in 1.95s (100% Green). Dashboard regenerated and server restarted at http://localhost:8080.
+- [x] Free LLM Quota (5.3M Ceiling), 11-Bot Usage/Cap Telemetry, Auto-Failover Engine & Central AI Data Center:
+  - Backend Engine: Implemented 5,300,000 TPD Free LLM Quota ceiling across 6 providers (Cerebras, Groq, SambaNova, Gemini, OpenRouter, Mistral). Built `get_bot_quotas()` and `QuotaList` returning `used / limit` metrics, primary/fallback model pairs, and auto-failover/failback state. Added endpoints `GET /api/free_llm_quota` and `POST /api/failover_check`. Created `tests/test_free_llm_quota.py`.
+  - Frontend UI: Relocated Atmosphere Switcher (`☀️ วัน` / `🌅 เย็น` / `🌙 คืน`) to top navbar next to `#themeToggleBtn`, eliminating canvas overflow. Permanently removed raw ledger button (`ดูตารางบัญชีดิบ`). Replaced central green battery cylinders with isometric **AI Data Center & Knowledge Vault** (dual server racks with blinking status LEDs, cooling vents, and cyan data bus). Removed energy/battery percentages from HUD and cards. Added consolidated company token usage banner and 7-column usage/cap table.
+  - Verification: 37/37 automated pytest tests passing in 3.03s (100% Green). Dashboard regenerated fresh. Server verified at http://localhost:8080.
+
 - [x] Japanese Candlestick (OHLC) Chart, Zero-Balance Real Account Invariant, Weekend Market Schedule Guard, & 5-Agent Trading War Room:
   - Backend Engine (`engine/mt5_bridge.py`, `server.py`):
     - Set Real Account default strictly to $0.00 Balance, $0.00 Equity, $0.00 PnL with status "รอเติมเงินทุนจริง (Pending Deposit)" when unbacked.

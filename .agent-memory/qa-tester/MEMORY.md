@@ -1,20 +1,22 @@
 # 🧪 QA & Test Engineer Memory
 
 ## 🎯 Test Suite Status
-- **Last Verified**: 2026-11-16 20:23 UTC+7 (Automated Suite Run by Verification Runner)
-- **Test Targets**: `tests/test_committee.py` & `tests/test_mt5_bridge.py` (including comprehensive `CompanyDatabase` coverage across both test suites)
+- **Last Verified**: 2026-11-16 20:52 UTC+7 (Automated Suite Run by Verification Runner)
+- **Test Targets**: 
+  - `tests/test_committee.py` (11 tests)
+  - `tests/test_free_llm_quota.py` (5 tests)
+  - `tests/test_mt5_bridge.py` (21 tests)
 - **Execution Commands**:
-  - `./run_tests.sh`: 11/11 PASSED (0.46s, Exit Code: 0) — *Target: `tests/test_committee.py`*
-  - `venv/bin/python3 -m pytest tests/ -v`: 32/32 PASSED (2.76s, Exit Code: 0) — *Target: all test files*
+  - `./run_tests.sh`: 11/11 PASSED (0.57s, Exit Code: 0) — *Target: `tests/test_committee.py`*
+  - `venv/bin/python3 -m pytest tests/ -v`: 37/37 PASSED (3.03s, Exit Code: 0) — *Target: all test files*
 - **Current Health**: 
-  - `tests/test_committee.py`: 11/11 PASSED (100% Green, 0.46s)
-  - `tests/test_mt5_bridge.py`: 21/21 PASSED (100% Green, 2.30s)
-  - **Combined Suite**: 32/32 PASSED (100% Green, 0 failures, 0 errors, 2.76s, Exit Code: 0)
+  - `tests/test_committee.py`: 11/11 PASSED (100% Green, 0.57s)
+  - `tests/test_free_llm_quota.py`: 5/5 PASSED (100% Green)
+  - `tests/test_mt5_bridge.py`: 21/21 PASSED (100% Green)
+  - **Combined Suite**: 37/37 PASSED (100% Green, 0 failures, 0 errors, 3.03s, Exit Code: 0)
   - `venv/bin/python3 -m py_compile engine/dashboard_generator.py server.py`: PASSED (Exit Code: 0)
   - Fresh Dashboard Generation (`server.ensure_state()`): PASSED (Exit Code: 0)
   - `reports/latest_dashboard.html`: Successfully regenerated and verified fresh.
-- **Database Test Coverage Note**:
-  - Database functionality (`data/database.py:CompanyDatabase`) is verified directly across both `test_committee.py` (tests 1, 2, 3, 4, 11) and `test_mt5_bridge.py` (tests 11, 19, 20, 21), validating schema initialization, transaction logs, agent states, and portfolio ledgers without errors.
 
 ---
 
@@ -35,7 +37,16 @@
 
 ---
 
-### 2. MT5 Bridge Suite (`tests/test_mt5_bridge.py`) - 21/21 PASSED
+### 2. Free LLM Quota & Multi-Provider Suite (`tests/test_free_llm_quota.py`) - 5/5 PASSED
+1. `test_free_llm_providers_and_company_ceiling`: PASSED
+2. `test_all_11_bots_quotas_and_metrics`: PASSED
+3. `test_auto_failover_and_failback_simulation`: PASSED
+4. `test_api_endpoints_free_llm_quota_and_failover_check`: PASSED
+5. `test_backward_compatibility_get_economy_report`: PASSED
+
+---
+
+### 3. MT5 Bridge Suite (`tests/test_mt5_bridge.py`) - 21/21 PASSED
 1. `test_mt5_execution_bridge_backward_compatibility`: PASSED
 2. `test_xm_bridge_token_generation_and_verification`: PASSED
 3. `test_xm_bridge_heartbeat_and_status_summary`: PASSED
@@ -60,42 +71,9 @@
 
 ---
 
-### 3. Verification of GitHubAutoPusher Native Push & UI Contracts
-- **macOS Native Push & Credential Persistence (`test_github_pusher_mac_native_and_env_persistence`)**:
-  - `_git_env()` sets `GIT_TERMINAL_PROMPT="0"` to prevent interactive terminal hangs.
-  - Safe `.env` token persistence verified via `_save_token_to_env_file()` and `_read_token_from_env_file()`.
-  - Staged commit helper `_ensure_git_committed()` ensures automatic commit of dirty working directory changes before push.
-  - Invalid PAT token handling verifies clean `AUTH_ERROR` status response without crashing or leaking sensitive info.
-  - REST API endpoint `POST /api/github_push` verified via `MockServerHandler` responding with status `AUTH_ERROR` on invalid token.
-- **UI Integration Contracts (`engine/dashboard_generator.py`)**:
-  - `openGitHubPushModal()` and `closeGitHubPushModal()` properly declared and wired.
-  - Top action bar buttons and quick action bar both feature `🚀 อัปโหลด GitHub` button triggering modal.
-  - `submitGitHubPush()` handles custom PAT, token saving, and real-time execution feedback via `/api/github_push`.
-
----
-
-### 4. Deep Verification of Autonomous Learning Daemon & Concurrency
-- **Daemon Lifecycle (`test_autonomous_learning_daemon_lifecycle_and_execution`)**:
-  - `start_autonomous_learning_daemon(interval_seconds=1)` runs in a dedicated background daemon thread.
-  - Periodic execution runs `train_all_agents_open_source_max_tokens` with dynamic simulated/live market snapshots.
-  - Safe stop/teardown via `stop_autonomous_learning_daemon()` terminates daemon cleanly.
-- **REST Endpoints (`test_server_endpoints_autonomous_learning_telemetry`)**:
-  - `GET /api/autonomous_learning/status`: returns `status: "OK"`, daemon `is_running`, `interval_seconds`, `last_run`, and `cycle_count`.
-  - `POST /api/autonomous_learning/toggle`: allows dynamic starting/stopping of the learning daemon via API.
-- **Thread Safety & Deduplication (`test_skill_harvester_concurrency_and_repeated_calls_thread_safe`)**:
-  - Re-entrant `RLock` on `SkillHarvesterEngine` prevents race conditions.
-  - Repeated cycles enforce caps: `mastery_pct <= 100.0`, `accuracy_boost <= 25.0`, individual stats `<= 99`.
-  - `discovered_skills` correctly updates existing entries without runaway duplicates: 4 seed skills + 11 open-source skills = 15 total skills verified.
-
----
-
-### 5. Syntax & Compilation Check (`py_compile`)
+### 4. Compilation & Runtime Health Checks
 - **Command**: `venv/bin/python3 -m py_compile engine/dashboard_generator.py server.py`
-- **Exit Code**: 0 (PASSED - No syntax errors)
-
----
-
-### 6. Fresh Dashboard Generation (`server.ensure_state()`)
+  - **Status**: PASSED (Exit Code: 0)
 - **Command**: `venv/bin/python3 -c "import server; server.ensure_state(); print('OK')"`
-- **Exit Code**: 0 (PASSED - Output: `OK`)
-- **Log**: Successfully regenerated and wrote `reports/latest_dashboard.html`.
+  - **Status**: PASSED (Exit Code: 0, Output: `OK`)
+- **Report Regeneration**: `reports/latest_dashboard.html` verified updated.

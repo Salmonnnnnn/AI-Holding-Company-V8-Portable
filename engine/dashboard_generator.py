@@ -828,33 +828,39 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 
         .atmosphere-segmented-bar {{
             display: inline-flex;
-            background: #ffffff;
-            border: 2px solid #1e293b;
+            align-items: center;
+            background: var(--bg-card, #ffffff);
+            border: 1.5px solid var(--border-col, #cbd5e1);
             border-radius: 999px;
-            box-shadow: 0 3px 0 #1e293b;
-            padding: 3px;
-            gap: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            padding: 2px 4px;
+            gap: 2px;
+            flex-shrink: 0;
         }}
         .atmosphere-segmented-bar .segment-btn {{
             border: none;
             background: transparent;
-            padding: 4px 8px;
+            padding: 3px 9px;
             border-radius: 999px;
             font-weight: 800;
-            font-size: 0.72rem;
-            color: #475569;
+            font-size: 0.74rem;
+            color: var(--text-sub, #475569);
             cursor: pointer;
-            transition: all 0.15s;
+            transition: all 0.15s ease;
             white-space: nowrap;
         }}
         .atmosphere-segmented-bar .segment-btn:hover:not(.active) {{
-            background: #f1f5f9;
-            color: #0f172a;
+            background: rgba(148, 163, 184, 0.16);
+            color: var(--text-main, #0f172a);
         }}
         .atmosphere-segmented-bar .segment-btn.active {{
             background: #1e293b;
             color: #fde68a;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        }}
+        body.dark-theme .atmosphere-segmented-bar .segment-btn.active {{
+            background: #f59e0b;
+            color: #0f172a;
         }}
 
         .town-messages-box {{
@@ -1585,6 +1591,17 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         <button class="cozy-btn green" onclick="triggerLiveMarketRefresh()" id="topLiveSyncBtn">🔄 ดึงกราฟสด</button>
         <button class="cozy-btn gold" onclick="openLiveIntegrationsModal()" id="topIntegrationsBtn">🔌 เชื่อมต่อ API</button>
         <button class="cozy-btn amber" onclick="toggleThemeMode()" id="themeToggleBtn">🌙 สลับโหมดมืด</button>
+        <!-- Sleek Atmosphere Segmented Bar (User choice A1) -->
+        <div class="atmosphere-segmented-bar" id="atmosphereSegmentBar">
+            <button type="button" class="segment-btn active" data-sky="DAY" onclick="setTownSkyAtmosphere('DAY')" title="☀️ กลางวัน (Day)">☀️ วัน</button>
+            <button type="button" class="segment-btn" data-sky="SUNSET" onclick="setTownSkyAtmosphere('SUNSET')" title="🌅 ยามเย็น (Sunset)">🌅 เย็น</button>
+            <button type="button" class="segment-btn" data-sky="NIGHT" onclick="setTownSkyAtmosphere('NIGHT')" title="🌙 กลางคืน (Night)">🌙 คืน</button>
+        </div>
+        <select id="skyTimeSelect" style="display:none;" onchange="setTownSkyAtmosphere(this.value)">
+            <option value="DAY" selected>☀️ กลางวัน (Day)</option>
+            <option value="SUNSET">🌅 ยามเย็น (Sunset)</option>
+            <option value="NIGHT">🌙 กลางคืน (Night)</option>
+        </select>
     </div>
 </div>
 
@@ -1607,31 +1624,35 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             </div>
         </div>
         <div class="deliverables-body">
-            <!-- Summary Metric Cards (Requirement 5) -->
-            <div class="grid-4" style="margin-bottom:14px">
-                <div class="stat-metric-box" style="border-left:4px solid #f59e0b">
-                    <div class="lbl">🪙 รวมโทเคนสะสมทั้ง 11 บอท</div>
-                    <div class="val" id="modalCumulativeLifetimeTokens" style="color:#f59e0b;font-size:1.18rem">2,400,000+ Tokens</div>
-                    <div id="modalTotalTokensUsed" style="display:none">{tok_econ.get('total_tokens_used', 279200):,} Tokens</div>
-                    <div style="font-size:0.73rem;color:var(--text-sub)">ยอดประมวลผลสะสมตลอดชีพทุกบอท</div>
-                </div>
-                <div class="stat-metric-box" style="border-left:4px solid #10b981">
-                    <div class="lbl">⚡ โควต้ารวมฟรีทุก Provider</div>
-                    <div class="val" id="modalTotalFreeDailyQuota" style="color:#10b981;font-size:1.18rem">5,300,000 Tokens / วัน</div>
-                    <div id="modalTotalTokensRemaining" style="display:none">5,300,000 Tokens / วัน</div>
-                    <div style="font-size:0.73rem;color:var(--text-sub)">โควต้าฟรีทุกค่ายรีเซ็ตอัตโนมัติทุกวัน</div>
-                </div>
-                <div class="stat-metric-box" style="border-left:4px solid #38bdf8">
-                    <div class="lbl">💵 ประหยัดงบสะสมได้แล้ว</div>
-                    <div class="val" id="modalTotalUsdSaved" style="color:#38bdf8;font-size:1.18rem">~$36.00+ USD</div>
-                    <div id="modalTotalTokenCostUsd" style="display:none">$0.00</div>
-                    <div style="font-size:0.73rem;color:#10b981;font-weight:700">ประหยัด 100% จาก Free Tier LLM Stack</div>
-                </div>
-                <div class="stat-metric-box" style="border-left:4px solid #8b5cf6">
-                    <div class="lbl">🛡️ สถานะระบบ Auto-Failover</div>
-                    <div class="val" id="modalActiveProviderStatus" style="color:#8b5cf6;font-size:1.02rem;font-weight:900">Active บน Cerebras WSE-3</div>
-                    <div id="modalActiveBotsCount" style="display:none">11 บอท</div>
-                    <div style="font-size:0.73rem;color:var(--text-sub)">พร้อมสลับ Groq เมื่อชนลิมิต</div>
+            <!-- Consolidated Company Token Telemetry Banner (Requirement 5) -->
+            <div class="stat-metric-box" style="border-left:4px solid #f59e0b;padding:14px 18px;margin-bottom:14px;background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(16,185,129,0.08))">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+                    <div>
+                        <div style="font-size:0.84rem;font-weight:800;color:var(--text-sub)">🪙 ยอดรวมทั้งบริษัท (ยอดใช้สะสมรวม / เพดานฟรีรวมทุก Provider):</div>
+                        <div style="font-size:1.55rem;font-weight:900;color:#f59e0b;margin-top:2px" id="modalCumulativeLifetimeTokens">
+                            2,490,000 / 5,300,000 Tokens/วัน
+                        </div>
+                        <div id="modalTotalTokensUsed" style="display:none">{tok_econ.get('total_tokens_used', 279200):,} Tokens</div>
+                        <div id="modalTotalFreeDailyQuota" style="display:none">5,300,000 Tokens / วัน</div>
+                        <div id="modalTotalTokensRemaining" style="display:none">5,300,000 Tokens / วัน</div>
+                        <div style="font-size:0.75rem;color:var(--text-sub);margin-top:2px">
+                            รวมยอดใช้จริง 11 บอท เทียบเพดานฟรีรวม 6 Providers ชั้นนำ (Cerebras, Groq, SambaNova, Gemini, OpenRouter, Mistral)
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:16px;flex-wrap:wrap">
+                        <div style="border-left:2px solid var(--border-soft);padding-left:12px">
+                            <div style="font-size:0.75rem;color:var(--text-sub)">💵 ประหยัดงบสะสม ($)</div>
+                            <div style="font-size:1.25rem;font-weight:900;color:#10b981" id="modalTotalUsdSaved">~$37.35+ USD</div>
+                            <div id="modalTotalTokenCostUsd" style="display:none">$0.00</div>
+                            <div style="font-size:0.7rem;color:#10b981;font-weight:700">ประหยัด 100% Free LLM Stack</div>
+                        </div>
+                        <div style="border-left:2px solid var(--border-soft);padding-left:12px">
+                            <div style="font-size:0.75rem;color:var(--text-sub)">🛡️ สถานะระบบ Auto-Failover</div>
+                            <div style="font-size:1.05rem;font-weight:900;color:#8b5cf6" id="modalActiveProviderStatus">Active บน Cerebras WSE-3</div>
+                            <div id="modalActiveBotsCount" style="display:none">11 บอท</div>
+                            <div style="font-size:0.7rem;color:#0284c7;font-weight:700">สลับ Groq LPU เมื่อแตะเพดาน</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1683,14 +1704,13 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                 <table style="width:100%">
                     <thead style="position:sticky;top:0;background:var(--bg-card);z-index:2">
                         <tr>
-                            <th style="min-width:170px">บอท / แผนก</th>
-                            <th style="min-width:210px">Provider หลัก & โมเดล</th>
+                            <th style="min-width:160px">บอท / แผนก</th>
+                            <th style="min-width:200px">Provider หลัก & โมเดล (ขีดจำกัด)</th>
+                            <th style="min-width:180px">การใช้งานเทียบเพดาน (ใช้ไป / เพดานลิมิต)</th>
                             <th style="min-width:130px">Provider สำรอง</th>
-                            <th style="text-align:right;min-width:105px">โทเคนวันนี้</th>
-                            <th style="text-align:right;min-width:115px">โควต้าคงเหลือ</th>
-                            <th style="text-align:right;min-width:130px;color:#f59e0b">ยอดใช้สะสมรวมทั้งหมด</th>
-                            <th style="text-align:right;min-width:110px;color:#10b981">ประหยัดจากฟรี ($)</th>
-                            <th style="text-align:center;min-width:125px">สถานะ</th>
+                            <th style="text-align:center;min-width:140px">สถานะการสลับค่าย</th>
+                            <th style="text-align:right;min-width:130px;color:#f59e0b">ยอดสะสมตลอดชีพ</th>
+                            <th style="text-align:right;min-width:100px;color:#10b981">ประหยัดงบ ($)</th>
                         </tr>
                     </thead>
                     <tbody id="tokenLeaderboardModalTableBody"></tbody>
@@ -2026,26 +2046,13 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                 <button class="comic-pill-btn" id="btnTownEnterpriseMenu" onclick="openTokenLeaderboardModal()" title="ดูตารางโทเคนและสถานะ Free LLM Auto-Failover">🪙 ตารางโทเคน 11 บอท</button>
             </div>
 
-            <!-- Right pill & Atmosphere Switcher -->
+            <!-- Right pill (Clean Financial Figures Only - No Battery / No Island Switcher) -->
             <div class="town-top-right-bar">
                 <div class="comic-hud-pill">
                     <span style="color:#16a34a;font-weight:900" id="townHudLiveVal">🟢 จริง: ${live_profit_val:+,.2f}</span>
                     <span class="hud-sep">•</span>
                     <span class="hud-gold" id="townHudGoldVal">🧪 เทส: ${test_profit_val:+,.2f}</span>
-                    <span class="hud-sep">•</span>
-                    <span class="hud-batt">⚡ {b5h_pct:.0f}%</span>
                 </div>
-                <!-- 3-Button Segmented Atmosphere Bar -->
-                <div class="atmosphere-segmented-bar" id="atmosphereSegmentBar">
-                    <button type="button" class="segment-btn active" data-sky="DAY" onclick="setTownSkyAtmosphere('DAY')" title="☀️ กลางวัน (Day)">☀️ วัน</button>
-                    <button type="button" class="segment-btn" data-sky="SUNSET" onclick="setTownSkyAtmosphere('SUNSET')" title="🌅 ยามเย็น (Sunset)">🌅 เย็น</button>
-                    <button type="button" class="segment-btn" data-sky="NIGHT" onclick="setTownSkyAtmosphere('NIGHT')" title="🌙 กลางคืน (Night)">🌙 คืน</button>
-                </div>
-                <select id="skyTimeSelect" style="display:none;" onchange="setTownSkyAtmosphere(this.value)">
-                    <option value="DAY" selected>☀️ กลางวัน (Day)</option>
-                    <option value="SUNSET">🌅 ยามเย็น (Sunset)</option>
-                    <option value="NIGHT">🌙 กลางคืน (Night)</option>
-                </select>
             </div>
         </div>
 
@@ -2904,26 +2911,30 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         </div>
     </div>
 
-    <div class="grid-4" style="margin-bottom:16px">
-        <div class="stat-metric-box" style="border-left:4px solid #f59e0b">
-            <div class="lbl">🪙 รวมโทเคนสะสมทั้ง 11 บอท</div>
-            <div class="val" style="color:#f59e0b">2,400,000+ Tokens</div>
-            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">ยอดประมวลผลสะสมตลอดชีพทุกบอท</div>
-        </div>
-        <div class="stat-metric-box" style="border-left:4px solid #8b5cf6">
-            <div class="lbl">🧠 Reasoning Tokens ที่ประมวลผลจริง</div>
-            <div class="val" style="color:#8b5cf6" id="econReasoningVal">{tok_econ.get('reasoning_tokens', 142000):,} Tokens</div>
-            <div style="font-size:0.75rem;color:#10b981;margin-top:4px">Extended Thinking & ซิงค์ Obsidian</div>
-        </div>
-        <div class="stat-metric-box" style="border-left:4px solid #0ea5e9">
-            <div class="lbl">⚡ โควต้ารวมฟรีทุก Provider</div>
-            <div class="val" id="econUsedVal" style="color:#0ea5e9">5,300,000 Tokens / วัน</div>
-            <div style="font-size:0.75rem;color:#10b981;margin-top:4px" id="econRemainingSub">Active บน Cerebras WSE-3 • Auto-Failover พร้อม</div>
-        </div>
-        <div class="stat-metric-box" style="border-left:4px solid #10b981">
-            <div class="lbl">💵 ประหยัดงบสะสมได้แล้ว ($ USD)</div>
-            <div class="val" style="color:#10b981" id="econSkillsCountVal">~$36.00+ USD</div>
-            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">ประหยัด 100% จาก Free Tier LLM Stack</div>
+    <!-- Consolidated Company Token Telemetry Banner (Requirement 5) -->
+    <div class="stat-metric-box" style="border-left:4px solid #f59e0b;padding:14px 18px;margin-bottom:16px;background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(16,185,129,0.08))">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+            <div>
+                <div style="font-size:0.84rem;font-weight:800;color:var(--text-sub)">🪙 ยอดรวมทั้งบริษัท (ยอดใช้สะสมรวม / เพดานฟรีรวมทุก Provider):</div>
+                <div style="font-size:1.55rem;font-weight:900;color:#f59e0b;margin-top:2px" id="pageCumulativeLifetimeTokens">
+                    2,490,000 / 5,300,000 Tokens/วัน
+                </div>
+                <div style="font-size:0.75rem;color:var(--text-sub);margin-top:2px">
+                    รวมยอดใช้จริง 11 บอท เทียบเพดานฟรีรวม 6 Providers ชั้นนำ (Cerebras, Groq, SambaNova, Gemini, OpenRouter, Mistral)
+                </div>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap">
+                <div style="border-left:2px solid var(--border-soft);padding-left:12px">
+                    <div style="font-size:0.75rem;color:var(--text-sub)">💵 ประหยัดงบสะสม ($)</div>
+                    <div style="font-size:1.25rem;font-weight:900;color:#10b981" id="pageTotalUsdSaved">~$37.35+ USD</div>
+                    <div style="font-size:0.7rem;color:#10b981;font-weight:700">ประหยัด 100% Free LLM Stack</div>
+                </div>
+                <div style="border-left:2px solid var(--border-soft);padding-left:12px">
+                    <div style="font-size:0.75rem;color:var(--text-sub)">🛡️ สถานะระบบ Auto-Failover</div>
+                    <div style="font-size:1.05rem;font-weight:900;color:#8b5cf6">Active บน Cerebras WSE-3</div>
+                    <div style="font-size:0.7rem;color:#0284c7;font-weight:700">สลับ Groq LPU เมื่อแตะเพดาน</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2945,14 +2956,13 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <table>
                 <thead>
                     <tr>
-                        <th style="min-width:170px">บอท / แผนก</th>
-                        <th style="min-width:210px">Provider หลัก & โมเดล</th>
+                        <th style="min-width:160px">บอท / แผนก</th>
+                        <th style="min-width:200px">Provider หลัก & โมเดล (ขีดจำกัด)</th>
+                        <th style="min-width:180px">การใช้งานเทียบเพดาน (ใช้ไป / เพดานลิมิต)</th>
                         <th style="min-width:130px">Provider สำรอง</th>
-                        <th style="text-align:right;min-width:105px">โทเคนวันนี้</th>
-                        <th style="text-align:right;min-width:115px">โควต้าคงเหลือ</th>
-                        <th style="text-align:right;min-width:130px;color:#f59e0b">ยอดใช้สะสมรวมทั้งหมด</th>
-                        <th style="text-align:right;min-width:110px;color:#10b981">ประหยัดจากฟรี ($)</th>
-                        <th style="text-align:center;min-width:125px">สถานะ</th>
+                        <th style="text-align:center;min-width:140px">สถานะการสลับค่าย</th>
+                        <th style="text-align:right;min-width:130px;color:#f59e0b">ยอดสะสมตลอดชีพ</th>
+                        <th style="text-align:right;min-width:100px;color:#10b981">ประหยัดงบ ($)</th>
                     </tr>
                 </thead>
                 <tbody id="pageTokensLeaderboardTableBody"></tbody>
@@ -4622,8 +4632,9 @@ function renderTownDirectoryDrawer() {{
                 </div>
             </div>
             <div style="text-align:right">
-                <span class="pill" style="font-size:0.65rem;background:#dbeafe;color:#1e40af;font-weight:700">${{prov}}</span>
-                <div style="font-size:0.65rem;color:#64748b;margin-top:2px">${{Number(used).toLocaleString()}} Tok</div>
+                <span class="pill" style="font-size:0.65rem;background:#dbeafe;color:#1e40af;font-weight:700">Provider: ${{prov}}</span>
+                <div style="font-size:0.65rem;color:#64748b;margin-top:2px">โควต้า: ${{Number(used).toLocaleString()}} / ${{Number(ag.token_quota || 60000).toLocaleString()}}</div>
+                <div style="font-size:0.62rem;color:#10b981;font-weight:700">🟢 Auto-Failover พร้อม</div>
             </div>
         </div>
         `;
@@ -5477,103 +5488,198 @@ function drawPicketFence(ctx, x1, y1, x2, y2) {{
     ctx.restore();
 }}
 
-// Draw Giant 3D Glowing Green Battery Cylinder in Central Plaza (Exmple.mp4)
-function drawGiantBattery(ctx, bx, by, labelText, pctVal, isOverclock) {{
-    const radX = 17;
-    const radY = 8.5;
-    const cylH = 58;
-    const fillH = Math.round((pctVal / 100) * cylH);
+// Draw Isometric High-Tech Server Rack Cabinet in Central Plaza
+function drawSingleServerRack(ctx, bx, by, rackIndex) {{
+    const rackW = 42;
+    const rackH = 68;
 
-    // 1. Outer pulsating green aura
-    const glow = ctx.createRadialGradient(bx, by - cylH / 2, 6, bx, by - cylH / 2, 48);
-    glow.addColorStop(0, "rgba(74, 222, 128, 0.55)");
-    glow.addColorStop(0.5, "rgba(34, 197, 94, 0.25)");
-    glow.addColorStop(1, "rgba(34, 197, 94, 0.0)");
-    ctx.fillStyle = glow;
+    ctx.save();
+
+    // 1. Soft cyber shadow on ground
+    ctx.fillStyle = "rgba(15, 23, 42, 0.4)";
     ctx.beginPath();
-    ctx.arc(bx, by - cylH / 2, 48, 0, Math.PI * 2);
+    ctx.ellipse(bx, by + 6, rackW * 0.7, 10, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // 2. Heavy dark metallic pedestal
+    // Subtle cyan ground aura under server rack
+    const aura = ctx.createRadialGradient(bx, by, 4, bx, by, 36);
+    aura.addColorStop(0, "rgba(6, 182, 212, 0.35)");
+    aura.addColorStop(1, "rgba(6, 182, 212, 0.0)");
+    ctx.fillStyle = aura;
+    ctx.beginPath();
+    ctx.ellipse(bx, by, 36, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. Heavy dark metallic pedestal base
     ctx.fillStyle = "#0f172a";
-    ctx.strokeStyle = "#22c55e";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.ellipse(bx, by + 4, radX + 5, radY + 2.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // 3. Cylinder transparent glass shell
-    ctx.fillStyle = "rgba(15, 23, 42, 0.65)";
-    ctx.fillRect(bx - radX, by - cylH, radX * 2, cylH);
-
-    // 4. Glowing green plasma energy fill
-    const grad = ctx.createLinearGradient(bx - radX, by - fillH, bx + radX, by);
-    grad.addColorStop(0, "#86efac");
-    grad.addColorStop(0.3, "#4ade80");
-    grad.addColorStop(0.7, "#22c55e");
-    grad.addColorStop(1, "#15803d");
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.moveTo(bx - radX, by);
-    ctx.lineTo(bx - radX, by - fillH);
-    ctx.ellipse(bx, by - fillH, radX, radY, 0, Math.PI, 0, true);
-    ctx.lineTo(bx + radX, by);
-    ctx.ellipse(bx, by, radX, radY, 0, 0, Math.PI, false);
-    ctx.closePath();
-    ctx.fill();
-
-    // 5. Animated electrical sparks inside cylinder
-    const sparkPhase = (Date.now() / 200) % 6;
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 1.6;
-    ctx.beginPath();
-    const sy1 = by - 8 - sparkPhase * 6;
-    ctx.moveTo(bx - 6, sy1);
-    ctx.lineTo(bx + 2, sy1 - 5);
-    ctx.lineTo(bx - 3, sy1 - 10);
-    ctx.lineTo(bx + 6, sy1 - 15);
-    ctx.stroke();
-
-    // 6. Cylinder top glowing ellipse & metallic cap
-    ctx.fillStyle = "#86efac";
-    ctx.strokeStyle = "#4ade80";
+    ctx.strokeStyle = "#06b6d4";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.ellipse(bx, by - cylH, radX, radY, 0, 0, Math.PI * 2);
+    ctx.roundRect(bx - rackW / 2 - 3, by - 6, rackW + 6, 12, 3);
     ctx.fill();
     ctx.stroke();
 
+    // 3. Main server cabinet chassis (dark metallic #0f172a, #1e293b)
     ctx.fillStyle = "#1e293b";
-    ctx.strokeStyle = "#64748b";
+    ctx.strokeStyle = "#334155";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(bx - rackW / 2, by - rackH, rackW, rackH - 4, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // 4. Server blade unit slots (5 blade server units)
+    const unitCount = 5;
+    const unitH = 9.5;
+    const nowMs = Date.now();
+    for (let u = 0; u < unitCount; u++) {{
+        const uy = by - rackH + 6 + u * 10.5;
+        // Blade unit face
+        ctx.fillStyle = (u % 2 === 0) ? "#0f172a" : "#172554";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 0.8;
+        ctx.fillRect(bx - rackW / 2 + 3, uy, rackW - 6, unitH);
+        ctx.strokeRect(bx - rackW / 2 + 3, uy, rackW - 6, unitH);
+
+        // Horizontal cooling ventilation slats
+        ctx.fillStyle = "#475569";
+        for (let s = 0; s < 4; s++) {{
+            ctx.fillRect(bx - 4 + s * 4, uy + 3, 2.5, unitH - 6);
+        }}
+
+        // Glowing LED activity lights
+        // LED 1: Green power LED (steady)
+        ctx.fillStyle = "#10b981";
+        ctx.shadowColor = "#10b981";
+        ctx.shadowBlur = 4;
+        ctx.beginPath();
+        ctx.arc(bx - rackW / 2 + 7, uy + unitH / 2, 1.6, 0, Math.PI * 2);
+        ctx.fill();
+
+        // LED 2: Cyan network bus LED (rapid blinking)
+        const blinkPhase = Math.floor((nowMs / 140 + rackIndex * 7 + u * 3) % 4);
+        ctx.fillStyle = blinkPhase < 2 ? "#06b6d4" : "#083344";
+        ctx.shadowColor = "#06b6d4";
+        ctx.shadowBlur = blinkPhase < 2 ? 5 : 0;
+        ctx.beginPath();
+        ctx.arc(bx - rackW / 2 + 12, uy + unitH / 2, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // LED 3: Amber model inference activity LED (pulsing)
+        const amberPhase = Math.floor((nowMs / 220 + rackIndex * 5 + u * 2) % 5);
+        ctx.fillStyle = amberPhase === 0 ? "#f59e0b" : "#451a03";
+        ctx.shadowColor = "#f59e0b";
+        ctx.shadowBlur = amberPhase === 0 ? 4 : 0;
+        ctx.beginPath();
+        ctx.arc(bx - rackW / 2 + 17, uy + unitH / 2, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+    }}
+
+    // 5. Glass Server Cabinet Door with subtle cyber cyan reflective sheen
+    const glassGrad = ctx.createLinearGradient(bx - rackW / 2, by - rackH, bx + rackW / 2, by);
+    glassGrad.addColorStop(0, "rgba(6, 182, 212, 0.22)");
+    glassGrad.addColorStop(0.4, "rgba(255, 255, 255, 0.12)");
+    glassGrad.addColorStop(0.8, "rgba(6, 182, 212, 0.08)");
+    ctx.fillStyle = glassGrad;
+    ctx.strokeStyle = "rgba(6, 182, 212, 0.55)";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.roundRect(bx - rackW / 2 + 1, by - rackH + 1, rackW - 2, rackH - 6, 3);
+    ctx.fill();
+    ctx.stroke();
+
+    // 6. Top Server Cooling Fan Exhaust
+    ctx.fillStyle = "#0f172a";
+    ctx.strokeStyle = "#06b6d4";
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.ellipse(bx, by - cylH - 3, 7, 3.5, 0, 0, Math.PI * 2);
+    ctx.ellipse(bx, by - rackH - 1, rackW / 2 - 2, 4.5, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
 
-    // 7. Floating White Rounded Status Badge above Cylinder ("2-HOUR 99%" or "7-DAY 100%")
-    const badgeW = 98;
-    const badgeH = 26;
-    const tagX = bx - badgeW / 2;
-    const tagY = by - cylH - 36;
+    ctx.restore();
+}}
 
-    ctx.fillStyle = "rgba(15, 23, 42, 0.25)";
+// Draw Central High-Tech AI Data Center & Knowledge Vault in Central Plaza (User choice A3)
+function drawCentralDataCenter(ctx, cx, cy) {{
+    if (!ctx) return;
+    ctx.save();
+
+    const leftX = 615;
+    const rightX = 825;
+    const rackY = 415;
+
+    // Glowing cyan optical lines connecting the racks to central plaza civic hub
+    ctx.strokeStyle = "rgba(6, 182, 212, 0.75)";
+    ctx.lineWidth = 2.4;
+    ctx.shadowColor = "#06b6d4";
+    ctx.shadowBlur = 6;
     ctx.beginPath();
-    ctx.roundRect(tagX + 2, tagY + 2, badgeW, badgeH, 7);
+    ctx.moveTo(leftX + 22, rackY + 2);
+    ctx.lineTo(690, rackY + 12);
+    ctx.lineTo(720, rackY + 14);
+    ctx.lineTo(750, rackY + 12);
+    ctx.lineTo(rightX - 22, rackY + 2);
+    ctx.stroke();
+
+    // Animated data pulse moving along conduit
+    const pulseT = (Date.now() / 600) % 1.0;
+    const px = leftX + 22 + (rightX - leftX - 44) * pulseT;
+    ctx.fillStyle = "#ffffff";
+    ctx.shadowColor = "#38bdf8";
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(px, rackY + 10, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Draw the 2 High-Tech Server Racks (Left at 615, Right at 825)
+    drawSingleServerRack(ctx, leftX, rackY, 0);
+    drawSingleServerRack(ctx, rightX, rackY, 1);
+
+    // Compact High-Tech Badge/Label: 💾 AI DATA CENTER • KNOWLEDGE VAULT
+    const badgeW = 232;
+    const badgeH = 26;
+    const badgeX = 720 - badgeW / 2;
+    const badgeY = 328;
+
+    // Badge drop shadow
+    ctx.fillStyle = "rgba(15, 23, 42, 0.4)";
+    ctx.beginPath();
+    ctx.roundRect(badgeX + 2, badgeY + 2, badgeW, badgeH, 7);
     ctx.fill();
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.98)";
-    ctx.strokeStyle = "#0f172a";
+    // Badge background (dark glassmorphic chassis with cyan cyber border)
+    ctx.fillStyle = "rgba(15, 23, 42, 0.94)";
+    ctx.strokeStyle = "#06b6d4";
     ctx.lineWidth = 1.6;
     ctx.beginPath();
-    ctx.roundRect(tagX, tagY, badgeW, badgeH, 7);
+    ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 7);
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = "#0f172a";
-    ctx.font = "900 11.5px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-    fillCenteredText(ctx, labelText, bx, tagY + 17.5);
+    // Glowing cyan accent dot
+    ctx.fillStyle = "#06b6d4";
+    ctx.shadowColor = "#06b6d4";
+    ctx.shadowBlur = 5;
+    ctx.beginPath();
+    ctx.arc(badgeX + 14, badgeY + badgeH / 2, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Badge text
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    fillCenteredText(ctx, "💾 AI DATA CENTER • KNOWLEDGE VAULT", 720 + 4, badgeY + 17.5);
+
+    ctx.restore();
+}}
+
+// Backwards-compatible alias for any legacy call
+function drawGiantBattery(ctx, bx, by, labelText, pctVal, isOverclock) {{
+    drawSingleServerRack(ctx, bx, by, isOverclock ? 1 : 0);
 }}
 
 // Draw Central Town Square Building between the 2 Giant Batteries
@@ -7159,13 +7265,8 @@ function renderIsometricCompany() {{
     // 3. Central Plaza Civic Hall (blue roof, red clock tower)
     drawCentralSquareBuilding(isoCtx, 720, 390);
 
-    // 4. Two Giant Glowing Green Battery Cylinders ("5-HOUR 99%" and "7-DAY 100%")
-    const b5hPct = (APP.venture_ledger && APP.venture_ledger.battery_5h_pct != null) ? Math.round(APP.venture_ledger.battery_5h_pct) : 99;
-    const b7dPct = (APP.venture_ledger && APP.venture_ledger.battery_7d_pct != null) ? Math.round(APP.venture_ledger.battery_7d_pct) : 100;
-    const b5hLabel = (APP.venture_ledger && APP.venture_ledger.battery_5h_pct != null) ? `5-HOUR ${{b5hPct}}%` : "5-HOUR 99%";
-    const b7dLabel = (APP.venture_ledger && APP.venture_ledger.battery_7d_pct != null) ? `7-DAY ${{b7dPct}}%` : "7-DAY 100%";
-    drawGiantBattery(isoCtx, 615, 415, b5hLabel, b5hPct, false);
-    drawGiantBattery(isoCtx, 825, 415, b7dLabel, b7dPct, true);
+    // 4. Central High-Tech AI Data Center & Knowledge Vault (User choice A3 - Replaces old battery cylinders)
+    drawCentralDataCenter(isoCtx, 720, 415);
 
     // 5. Town Hall at 12:00 (Neoclassical columns, green dome, stairs & The Boss)
     drawTownHallBuilding(isoCtx, 720, 165);
@@ -7692,15 +7793,21 @@ function selectVisualizerAgent(agentId) {{
     const ag = APP.office.agents_roster.find(a => a.agent_id === agentId);
     if (!ag) return;
     selectedAgent = ag;
-    const energyPct = computeAgentEnergyPct(ag);
     const used = ag.tokens_used_today || 18500;
-    const remAvail = ag.tokens_remaining_available || Math.max(125000, (ag.token_quota || 80000) * 2 - used);
+    const quota = ag.token_quota || 60000;
+    const remAvail = ag.tokens_remaining_available || Math.max(0, quota - used);
+    const defaultProvMap = {{
+        "ag_macro": "Cerebras", "ag_ta": "Groq", "ag_quant": "SambaNova", "ag_bear": "Gemini",
+        "ag_cio": "Cerebras", "ag_mt5": "Groq", "ag_risk": "SambaNova", "ag_news": "Gemini",
+        "ag_bull": "Groq", "ag_media": "OpenRouter", "ag_graph": "Mistral"
+    }};
+    const prov = ag.free_provider || defaultProvMap[ag.agent_id] || "Cerebras";
     const avEl = document.getElementById('bannerAvatar');
     const spEl = document.getElementById('bannerSpeaker');
     const msgEl = document.getElementById('bannerMessage');
     if (avEl) avEl.textContent = ag.avatar;
-    if (spEl) spEl.textContent = `${{ag.name}} (${{ag.role}}) — สมองกล: ${{ag.llm_model}} [${{ag.compute_mode || 'BALANCED'}} • 🔋 ${{energyPct}}%]`;
-    if (msgEl) msgEl.innerHTML = `ภารกิจล่าสุด: <strong>${{ag.current_task}}</strong> • โทเคนใช้จริง: <strong>${{used.toLocaleString()}} Tokens</strong> (คงเหลือพร้อมใช้ <strong>${{remAvail.toLocaleString()}} Tokens</strong>)`;
+    if (spEl) spEl.textContent = `${{ag.name}} (${{ag.role}}) — Provider: ${{prov}} (${{ag.llm_model}}) • โควต้า: ${{used.toLocaleString()}} / ${{quota.toLocaleString()}} • สถานะ: Auto-Failover พร้อม`;
+    if (msgEl) msgEl.innerHTML = `ภารกิจล่าสุด: <strong>${{ag.current_task}}</strong> • โทเคนใช้จริง: <strong>${{used.toLocaleString()}} Tokens</strong> (คงเหลือ <strong>${{remAvail.toLocaleString()}} Tokens</strong> • Auto-Failover พร้อม)`;
     renderMiniAgentsStrip();
 }}
 
@@ -7713,8 +7820,8 @@ function renderMiniAgentsStrip() {{
         "ag_bull": "Groq", "ag_media": "OpenRouter", "ag_graph": "Mistral"
     }};
     strip.innerHTML = APP.office.agents_roster.map(ag => {{
-        const energyPct = computeAgentEnergyPct(ag);
         const used = ag.tokens_used_today || 18500;
+        const quota = ag.token_quota || 60000;
         const prov = ag.free_provider || defaultProvMap[ag.agent_id] || "Cerebras";
         return `
         <div class="mini-agent-card ${{ag.agent_id === selectedAgent.agent_id ? 'active' : ''}}" onclick="selectVisualizerAgent('${{ag.agent_id}}')">
@@ -7722,10 +7829,10 @@ function renderMiniAgentsStrip() {{
             <div style="overflow:hidden;flex:1">
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:4px">
                     <div style="font-weight:800;font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${{ag.name}}</div>
-                    <span style="font-size:0.68rem;background:#dcfce7;color:#15803d;padding:1px 6px;border-radius:99px;font-weight:800">🔋 ${{energyPct}}%</span>
+                    <span style="font-size:0.62rem;background:#dcfce7;color:#15803d;padding:1px 6px;border-radius:99px;font-weight:800">🟢 พร้อม Failover</span>
                 </div>
-                <div style="font-size:0.72rem;color:#0284c7;font-weight:700">⚡ ${{prov}} Free</div>
-                <div style="font-size:0.68rem;color:var(--text-sub)">🧠 ${{(ag.llm_model || '').split(' ')[0]}} • ใช้จริง ${{Math.round(used/1000)}}K Tok</div>
+                <div style="font-size:0.71rem;color:#0284c7;font-weight:700">Provider: ${{prov}} Free</div>
+                <div style="font-size:0.68rem;color:var(--text-sub)">โควต้า: ${{used.toLocaleString()}} / ${{quota.toLocaleString()}}</div>
             </div>
         </div>
         `;
@@ -8083,17 +8190,17 @@ function renderTokenLeaderboard() {{
     const histTable = (APP.tok_econ && APP.tok_econ.bot_historical_token_table) ? APP.tok_econ.bot_historical_token_table : null;
 
     const defaultBotSpecs = {{
-        "ag_macro": {{ provider: "Cerebras", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", fallback: "Groq (Standby)", histTok: 245000, saved: 3.68 }},
-        "ag_ta": {{ provider: "Groq", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", fallback: "SambaNova", histTok: 280000, saved: 4.20 }},
-        "ag_quant": {{ provider: "SambaNova", model: "Llama-3.3-70B", rpm: "20 RPM", tpm: "40K TPM", fallback: "Gemini 2.0 Flash", histTok: 360000, saved: 5.40 }},
-        "ag_bear": {{ provider: "Gemini", model: "Gemini 2.0 Flash", rpm: "15 RPM", tpm: "1M TPM", fallback: "Cerebras", histTok: 210000, saved: 3.15 }},
-        "ag_cio": {{ provider: "Cerebras", model: "WSE-3 Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", fallback: "Groq", histTok: 390000, saved: 5.85 }},
-        "ag_mt5": {{ provider: "Groq", model: "Mixtral-8x7B", rpm: "30 RPM", tpm: "30K TPM", fallback: "Cerebras", histTok: 195000, saved: 2.93 }},
-        "ag_risk": {{ provider: "SambaNova", model: "Llama-3.3-70B", rpm: "20 RPM", tpm: "40K TPM", fallback: "Gemini", histTok: 185000, saved: 2.78 }},
-        "ag_news": {{ provider: "Gemini", model: "Gemini 2.0 Flash", rpm: "15 RPM", tpm: "1M TPM", fallback: "Cerebras", histTok: 165000, saved: 2.48 }},
-        "ag_bull": {{ provider: "Groq", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", fallback: "SambaNova", histTok: 155000, saved: 2.33 }},
-        "ag_media": {{ provider: "OpenRouter", model: "Free Auto Llama-3.3", rpm: "20 RPM", tpm: "50K TPM", fallback: "Mistral", histTok: 140000, saved: 2.10 }},
-        "ag_graph": {{ provider: "Mistral", model: "Codestral Free", rpm: "30 RPM", tpm: "60K TPM", fallback: "Cerebras", histTok: 135000, saved: 2.03 }}
+        "ag_macro": {{ provider: "Cerebras", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "Groq LPU (Standby)", histTok: 245000, saved: 3.68, status: "PRIMARY" }},
+        "ag_ta": {{ provider: "Groq", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "SambaNova", histTok: 280000, saved: 4.20, status: "PRIMARY" }},
+        "ag_quant": {{ provider: "SambaNova", model: "Llama-3.3-70B", rpm: "20 RPM", tpm: "40K TPM", capVal: 40000, capUnit: "TPM", fallback: "Gemini 2.0 Flash", histTok: 360000, saved: 5.40, status: "PRIMARY" }},
+        "ag_bear": {{ provider: "Gemini", model: "Gemini 2.0 Flash", rpm: "15 RPM", tpm: "1M TPM", capVal: 1000000, capUnit: "TPM", fallback: "Cerebras", histTok: 210000, saved: 3.15, status: "PRIMARY" }},
+        "ag_cio": {{ provider: "Cerebras", model: "WSE-3 Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "Groq LPU", histTok: 390000, saved: 5.85, status: "PRIMARY" }},
+        "ag_mt5": {{ provider: "Groq", model: "Mixtral-8x7B", rpm: "30 RPM", tpm: "30K TPM", capVal: 30000, capUnit: "TPM", fallback: "Cerebras", histTok: 195000, saved: 2.93, status: "PRIMARY" }},
+        "ag_risk": {{ provider: "SambaNova", model: "Llama-3.3-70B", rpm: "20 RPM", tpm: "40K TPM", capVal: 40000, capUnit: "TPM", fallback: "Gemini", histTok: 185000, saved: 2.78, status: "PRIMARY" }},
+        "ag_news": {{ provider: "Gemini", model: "Gemini 2.0 Flash", rpm: "15 RPM", tpm: "1M TPM", capVal: 1000000, capUnit: "TPM", fallback: "Cerebras", histTok: 165000, saved: 2.48, status: "PRIMARY" }},
+        "ag_bull": {{ provider: "Groq", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "SambaNova", histTok: 155000, saved: 2.33, status: "PRIMARY" }},
+        "ag_media": {{ provider: "OpenRouter", model: "Free Auto Llama-3.3", rpm: "20 RPM", tpm: "50K TPM", capVal: 50000, capUnit: "TPM", fallback: "Mistral", histTok: 140000, saved: 2.10, status: "PRIMARY" }},
+        "ag_graph": {{ provider: "Mistral", model: "Codestral Free", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "Cerebras", histTok: 135000, saved: 2.03, status: "PRIMARY" }}
     }};
 
     let totalUsedToday = 0;
@@ -8102,20 +8209,29 @@ function renderTokenLeaderboard() {{
 
     const modalRowsHtml = roster.map((ag, idx) => {{
         const spec = (histTable && histTable.find(h => h.agent_id === ag.agent_id)) || defaultBotSpecs[ag.agent_id] || {{
-            provider: "Cerebras", model: ag.llm_model || "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", fallback: "Groq", histTok: 180000, saved: 2.70
+            provider: "Cerebras", model: ag.llm_model || "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "Groq LPU", histTok: 180000, saved: 2.70, status: "PRIMARY"
         }};
 
         const usedToday = Number(spec.tokens_used_today || ag.tokens_used_today || 18500);
-        const remToday = Number(spec.tokens_remaining_today || Math.max(0, 1000000 - usedToday));
+        const capVal = Number(spec.capVal || spec.primary_provider?.tpm_limit || 60000);
+        const capUnit = spec.capUnit || "TPM";
+        const capPct = Math.min(100, Math.round((usedToday / Math.max(capVal, 1)) * 100));
+        const capBarCol = capPct > 90 ? '#ef4444' : (capPct > 70 ? '#f59e0b' : '#10b981');
         const lifetime = Number(spec.tokens_used_total || spec.histTok || (usedToday + 160000));
         const saved = Number(spec.usd_saved || spec.saved || +(lifetime / 1000000 * 15.0).toFixed(2));
         const pName = spec.primary_provider?.name || spec.provider || "Cerebras";
         const pModel = spec.primary_provider?.model || spec.model || "Llama-3.3-70B";
         const pLimit = spec.primary_provider ? `${{spec.primary_provider.rpm_limit || 30}} RPM • ${{Math.round((spec.primary_provider.tpm_limit||60000)/1000)}}K TPM` : `${{spec.rpm}} • ${{spec.tpm}}`;
-        const fbName = spec.fallback_provider?.name || spec.fallback || "Groq (Standby)";
-        const status = spec.status === 'FAILOVER_STANDBY'
-            ? `<span class="pill" style="background:#fee2e2;color:#991b1b;font-size:0.7rem;font-weight:800">🔄 สำรองพร้อมสลับ</span>`
-            : `<span class="pill" style="background:#dcfce7;color:#15803d;font-size:0.7rem;font-weight:800">🟢 โควต้าสมบูรณ์</span>`;
+        const fbName = spec.fallback_provider?.name || spec.fallback || "Groq LPU (Standby)";
+
+        let statusBadge = '';
+        if (capPct >= 100 || spec.status === 'FAILOVER_ACTIVE' || spec.status === 'FAILOVER_STANDBY') {{
+            statusBadge = `<span class="pill" style="background:#fee2e2;color:#991b1b;font-size:0.72rem;font-weight:800">🔄 สลับไปตัวสำรองอัตโนมัติ</span>`;
+        }} else if (spec.status === 'AUTO_RESET') {{
+            statusBadge = `<span class="pill" style="background:#fef3c7;color:#92400e;font-size:0.72rem;font-weight:800">↩️ รีเซ็ตกลับตัวหลัก</span>`;
+        }} else {{
+            statusBadge = `<span class="pill" style="background:#dcfce7;color:#15803d;font-size:0.72rem;font-weight:800">🟢 ใช้ตัวหลัก</span>`;
+        }}
 
         totalUsedToday += usedToday;
         totalLifetime += lifetime;
@@ -8123,6 +8239,7 @@ function renderTokenLeaderboard() {{
 
         return `
         <tr>
+            <!-- 1. บอท / แผนก -->
             <td>
                 <div style="display:flex;align-items:center;gap:8px">
                     <span style="font-size:1.35rem">${{ag.avatar || '🤖'}}</span>
@@ -8132,21 +8249,32 @@ function renderTokenLeaderboard() {{
                     </div>
                 </div>
             </td>
+            <!-- 2. Provider หลัก & โมเดล (พร้อมขีดจำกัดชัดเจน) -->
             <td>
                 <div style="display:flex;align-items:center;gap:6px">
                     <span class="pill blue" style="font-weight:800;font-size:0.72rem;padding:2px 7px">${{htmlEscape(pName)}}</span>
                     <span style="font-weight:700;font-size:0.78rem;color:var(--text-main)">${{htmlEscape(pModel)}}</span>
                 </div>
-                <div style="font-size:0.69rem;color:var(--text-sub);margin-top:2px">ลิมิต: ${{htmlEscape(pLimit)}}</div>
+                <div style="font-size:0.69rem;color:var(--text-sub);margin-top:2px">ขีดจำกัด: <strong>${{htmlEscape(pLimit)}}</strong></div>
             </td>
+            <!-- 3. การใช้งานเทียบเพดาน (Usage / Cap: ใช้ไป / เพดานลิมิต) -->
             <td>
-                <span class="pill" style="font-size:0.72rem;background:#f1f5f9;color:#475569;font-weight:700">${{htmlEscape(fbName)}}</span>
+                <div style="font-weight:800;font-size:0.84rem;color:var(--text-main)">${{usedToday.toLocaleString()}} / ${{capVal.toLocaleString()}} ${{capUnit}}</div>
+                <div style="width:100%;max-width:140px;height:6px;background:rgba(148,163,184,0.25);border-radius:99px;margin-top:4px;overflow:hidden">
+                    <div style="width:${{capPct}}%;height:100%;background:${{capBarCol}};border-radius:99px;transition:width 0.3s ease"></div>
+                </div>
+                <div style="font-size:0.68rem;color:var(--text-sub);margin-top:2px">${{capPct}}% ของเพดานโควต้า</div>
             </td>
-            <td class="num" style="text-align:right;font-weight:800;color:var(--text-main);font-size:0.86rem">${{usedToday.toLocaleString()}}</td>
-            <td class="num" style="text-align:right;font-weight:800;color:#10b981;font-size:0.86rem">${{remToday.toLocaleString()}}</td>
-            <td class="num" style="text-align:right;font-weight:900;color:#f59e0b;font-size:0.9rem">${{lifetime.toLocaleString()}} Tok</td>
+            <!-- 4. Provider สำรอง (Failover Target) -->
+            <td>
+                <span class="pill" style="font-size:0.72rem;background:#f1f5f9;color:#475569;font-weight:700">🛡️ ${{htmlEscape(fbName)}}</span>
+            </td>
+            <!-- 5. สถานะการสลับค่าย -->
+            <td style="text-align:center">${{statusBadge}}</td>
+            <!-- 6. ยอดสะสมตลอดชีพ -->
+            <td class="num" style="text-align:right;font-weight:900;color:#f59e0b;font-size:0.88rem">${{lifetime.toLocaleString()}} Tok</td>
+            <!-- 7. ประหยัดงบ ($ Saved) -->
             <td class="num" style="text-align:right;font-weight:900;color:#10b981;font-size:0.88rem">$${{saved.toFixed(2)}}</td>
-            <td style="text-align:center">${{status}}</td>
         </tr>`;
     }}).join('');
 
@@ -8170,21 +8298,17 @@ function renderTokenLeaderboard() {{
     const topCostEl = document.getElementById('topTokenCostUsdText');
     if (topCostEl) topCostEl.textContent = `$${{(totalUsedToday * 0.000014).toFixed(2)}}`;
 
-    // Modal Metric Cards (Requirement 5)
+    // Consolidated Company Banners (Modal + Page) (Requirement 5)
+    const companySummaryText = `${{totalLifetime.toLocaleString()}} / 5,300,000 Tokens/วัน`;
     const modLifeEl = document.getElementById('modalCumulativeLifetimeTokens');
-    if (modLifeEl) modLifeEl.textContent = `${{totalLifetime.toLocaleString()}}+ Tokens`;
-    const modUsedEl = document.getElementById('modalTotalTokensUsed');
-    if (modUsedEl && modUsedEl !== modLifeEl) modUsedEl.textContent = `${{totalLifetime.toLocaleString()}}+ Tokens`;
-
-    const modDailyEl = document.getElementById('modalTotalFreeDailyQuota');
-    if (modDailyEl) modDailyEl.textContent = `5,300,000 Tokens / วัน`;
-    const modRemEl = document.getElementById('modalTotalTokensRemaining');
-    if (modRemEl && modRemEl !== modDailyEl) modRemEl.textContent = `5,300,000 Tokens / วัน`;
+    if (modLifeEl) modLifeEl.textContent = companySummaryText;
+    const pageLifeEl = document.getElementById('pageCumulativeLifetimeTokens');
+    if (pageLifeEl) pageLifeEl.textContent = companySummaryText;
 
     const modSavedEl = document.getElementById('modalTotalUsdSaved');
     if (modSavedEl) modSavedEl.textContent = `~$${{totalUsdSaved.toFixed(2)}} USD`;
-    const modCostEl = document.getElementById('modalTotalTokenCostUsd');
-    if (modCostEl && modCostEl !== modSavedEl) modCostEl.textContent = `~$${{totalUsdSaved.toFixed(2)}} USD`;
+    const pageSavedEl = document.getElementById('pageTotalUsdSaved');
+    if (pageSavedEl) pageSavedEl.textContent = `~$${{totalUsdSaved.toFixed(2)}} USD`;
 
     const modStatusEl = document.getElementById('modalActiveProviderStatus');
     if (modStatusEl) modStatusEl.textContent = `Active บน Cerebras WSE-3`;
@@ -8972,12 +9096,16 @@ function renderProfileStudio(ag) {{
     const provInfo = defaultProvMap[ag.agent_id] || "Cerebras (30 RPM • 60K TPM)";
     const used = Number(ag.tokens_used_today || 18500);
 
+    const quotaVal = ag.token_quota || 60000;
     const lvlEl = document.getElementById('profLevelTxt');
     if (lvlEl) lvlEl.textContent = `Provider: ${{provInfo}}`;
     const mstEl = document.getElementById('profMasteryTxt');
-    if (mstEl) mstEl.textContent = `Model: ${{ag.llm_model || 'Llama-3.3-70B'}} • ใช้ไป ${{used.toLocaleString()}} Tok`;
+    if (mstEl) mstEl.textContent = `โควต้า: ${{used.toLocaleString()}} / ${{quotaVal.toLocaleString()}} • สถานะ: Auto-Failover พร้อม`;
     const expBar = document.getElementById('profExpBar');
-    if (expBar) expBar.style.width = `100%`;
+    if (expBar) {{
+        const barPct = Math.min(100, Math.round((used / Math.max(quotaVal, 1)) * 100));
+        expBar.style.width = `${{barPct}}%`;
+    }}
 
     const selEl = document.getElementById('profModelSelect');
     if (selEl) selEl.value = ag.llm_model;
@@ -9468,7 +9596,7 @@ function renderLiveIntegrationsModal() {{
         {{ metric: "XAUUSD Spot Gold, DXY & US10Y Yield", source: "Yahoo Finance (GC=F / XAUUSD=X) + Binance PAXG/USD 24/7 Feed", status_badge: "100% LIVE MARKET", detail: "ดึงแท่งเทียนจริง D1 & H1 คำนวณอินดิเคเตอร์สด" }},
         {{ metric: "Multi-Venture Revenue ($1,000 Challenge)", source: "SQLite Table: venture_revenue_ledger + Live Trading PnL", status_badge: "REAL TRANSACTION LEDGER", detail: "รวมกำไรเทรดจริง + สมุดบัญชีรายได้ 3 สตูดิโอ" }},
         {{ metric: "Portfolio Equity, Win Rate & Open Positions", source: "SQLite Tables: portfolio_account + portfolio_trades", status_badge: "VERIFIED SQLITE LEDGER", detail: "คำนวณ Floating PnL ตามราคาตลาดจริงทุก Tick" }},
-        {{ metric: "5-Hour & 7-Day Battery Cylinders", source: "SQLite Tables: token_treasury + portfolio_account", status_badge: "LIVE TELEMETRY", detail: "คำนวณจากสัดส่วน Token คงเหลือ และสุขภาพพอร์ตจริง" }}
+        {{ metric: "Central AI Data Center & Knowledge Vault", source: "SQLite Tables: token_treasury + obsidian_vault", status_badge: "LIVE TELEMETRY", detail: "ศูนย์กลางจัดเก็บข้อมูล โมเดล AI และโควต้า Free LLM อัตโนมัติ" }}
     ];
     const provBody = document.getElementById('dataProvenanceTableBody');
     if (provBody) {{
