@@ -23,6 +23,7 @@ from engine.dashboard_generator import generate_html_dashboard
 from engine.github_pusher import GitHubAutoPusher
 from engine.llm_router import MultiLLMRouter
 from engine.mt5_bridge import xm_bridge_hub, check_xauusd_market_status
+from engine.token_economy import TokenEconomyEngine
 
 GLOBAL_ROOM = None
 LATEST_REPORT = None
@@ -194,6 +195,14 @@ def ensure_state():
 
 
 class V7RequestHandler(BaseHTTPRequestHandler):
+    @property
+    def db(self):
+        room, _ = ensure_state()
+        return room.db
+
+    def send_json_response(self, status: int, payload: dict):
+        self._send_json(payload, status=status)
+
     def _send_json(self, payload: dict, status: int = 200):
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
@@ -275,6 +284,26 @@ class V7RequestHandler(BaseHTTPRequestHandler):
             self._send_json({"status": "ok", "token": xm_bridge_hub.token})
             return
 
+        path = self.path.split("?")[0]
+        if path == "/api/free_llm_quota":
+            econ = TokenEconomyEngine(self.db)
+            self.send_json_response(200, econ.get_economy_report())
+            return
+
+        if self.path.startswith("/api/free_llm_quota") or self.path.startswith("/api/token_economy"):
+            econ_rep = room.token_economy.get_economy_report()
+            self._send_json({
+                "status": "ok",
+                "free_llm_providers": econ_rep.get("free_llm_providers", {}),
+                "active_provider": econ_rep.get("active_provider", {}),
+                "fallback_chain": econ_rep.get("fallback_chain", []),
+                "bot_historical_token_table": econ_rep.get("bot_historical_token_table", []),
+                "provider_telemetry": econ_rep.get("provider_telemetry", []),
+                "failover_history": econ_rep.get("failover_history", []),
+                "token_economy": econ_rep
+            })
+            return
+
         self._send_json({"error": "Not found"}, status=404)
 
     def do_POST(self):
@@ -285,6 +314,12 @@ class V7RequestHandler(BaseHTTPRequestHandler):
             body = json.loads(raw)
         except Exception:
             body = {}
+
+        if self.path == "/api/failover_check":
+            econ = TokenEconomyEngine(self.db)
+            rep = econ.get_economy_report()
+            self._send_json({"status": "OK", "report": rep})
+            return
 
         if self.path in ("/api/autonomous_learning_cycle", "/api/mt5/autonomous_learning_cycle"):
             res = run_autonomous_learning_cycle()

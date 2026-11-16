@@ -147,3 +147,38 @@
     - Preserved exact calculation and schema of `daily_budget_tokens`, `total_tokens_used`, `remaining_tokens`, `utilization_pct`, `prompt_tokens`, `reasoning_tokens`, `output_tokens`, `estimated_cost_usd`, `agent_allocations`, and `available_models` for 100% backward compatibility with unit tests.
     - Added top-level `"is_uncapped": True`, `"token_limit_mode": "UNCAPPED_REAL_USAGE"`, and `"leaderboard_by_usage"` (list of `agent_allocations` sorted descending by `tokens_used_today`).
     - Enriched each agent in `agent_allocations` with `"tokens_remaining_available"` (`max(125000, int(quota * 2.5) - ag_used)`), `"real_cost_usd"` (`round((ag_used / 1000.0) * MODE_MULTIPLIERS.get(mode, MODE_MULTIPLIERS["BALANCED"])["cost_per_1k"], 4)`), and `"energy_pct"` (`max(20, min(100, 100 - int((ag_used / max(quota * 1.5, 1)) * 45)))`).
+- Added Curated Free LLM Providers Catalog (awesome-free-llm-apis), Auto-Failover Engine, Institutional Tiering, and Bot Historical Token Accounting:
+  - `data/database.py`:
+    - Added `extra_cols`: `("tokens_used_total", "INTEGER DEFAULT 148000")` and `("free_provider_key", "TEXT DEFAULT 'cerebras'"` for `agent_skills`.
+    - Updated `spend_agent_tokens()` to increment both `tokens_used_today` and `tokens_used_total`.
+    - Updated `get_all_agents()` to query `s.tokens_used_total, s.free_provider_key`.
+  - `engine/token_economy.py`:
+    - Defined `FREE_LLM_PROVIDERS` (Cerebras, Groq, SambaNova, Google Gemini, OpenRouter, Mistral) with explicit rate limits (RPM, TPM, RPD, daily token limits, benchmark speeds, context windows).
+    - Implemented `DEFAULT_FAILOVER_CHAIN` (`["cerebras", "groq", "sambanova", "gemini", "openrouter", "mistral"]`) and `check_and_failover()` / `trip_provider_failover()` / `get_active_provider_status()` / `get_provider_telemetry()`.
+    - Replaced RPG "OVERCLOCK" gamey terms with `"INSTITUTIONAL_PRO"` while retaining `"OVERCLOCK"` as a backward-compatible alias.
+    - Implemented `get_bot_historical_token_table()` returning all 11 bots with model, primary & fallback providers, today's tokens, cumulative tokens, remaining quota tokens, provider status, and commercial USD savings.
+    - Preserved 100% backward compatibility in `get_economy_report()`.
+  - `server.py`:
+    - Added `GET /api/free_llm_quota` (and alias `/api/token_economy`) endpoint returning full provider telemetry, failover status, bot historical token table, and token economy report.
+- Enhanced Free LLM Quota Engine, Auto-Failover Provider Routing & Bot Historical Ledger:
+  - `data/database.py`:
+    - Verified `agent_skills` schema with `tokens_used_total INTEGER DEFAULT 148000` and `free_provider_key TEXT DEFAULT 'cerebras'` in `CREATE TABLE` and `extra_cols`.
+    - Verified `spend_agent_tokens()` updates both `tokens_used_today` and `tokens_used_total`.
+    - Extended `update_agent_token_allocation()` to optionally update `free_provider_key`.
+    - Verified `get_all_agents()` queries `s.tokens_used_total, s.free_provider_key`.
+  - `engine/token_economy.py`:
+    - Defined `FREE_LLM_PROVIDERS` catalog based on `awesome-free-llm-apis` containing:
+      * `cerebras`: "Cerebras Inference", "Llama-3.3-70B", rpm_limit 30, tpm_limit 60000, daily_token_limit 1000000, latency "Ultra-Fast (2,600+ tok/s)", status "ACTIVE"
+      * `groq`: "Groq LPU", "Llama-3.3-70B-Versatile / DeepSeek-R1-Distill-70B", rpm_limit 30, tpm_limit 30000, daily_token_limit 500000, latency "Ultra-Fast (300+ tok/s)", status "STANDBY"
+      * `sambanova`: "SambaNova Cloud", "Meta-Llama-3.1-405B / Qwen-2.5-72B", rpm_limit 20, tpm_limit 50000, daily_token_limit 1000000, latency "High Quality (180+ tok/s)", status "STANDBY"
+      * `gemini`: "Google Gemini API", "Gemini 2.0 Flash", rpm_limit 15, tpm_limit 1000000, daily_token_limit 1500000, latency "High Speed & Multimodal", status "STANDBY"
+      * `openrouter`: "OpenRouter Free Tier", "Llama-3.3-70B:free / DeepSeek-R1:free", rpm_limit 20, tpm_limit 40000, daily_token_limit 800000, latency "Dynamic Routing", status "STANDBY"
+      * `mistral`: "Mistral La Plateforme", "Codestral-25.01", rpm_limit 60, tpm_limit 35000, daily_token_limit 500000, latency "Fast Coding Specialist", status "STANDBY"
+    - `MODE_MULTIPLIERS`: Synchronized `"OVERCLOCK"` and `"INSTITUTIONAL_PRO"` to 85,000 tokens, 0.68 reasoning ratio, $0.0120/1k cost, with Frontier Reasoning 128K description.
+    - Implemented `check_and_failover_provider(total_used_today: int) -> dict`: automatically cycles through fallback chain `["cerebras", "groq", "sambanova", "gemini", "openrouter", "mistral"]`, marking exhausted providers and switching active provider smoothly with remaining quota telemetry.
+    - Implemented `get_bot_historical_token_table() -> list`: returns all 11 bots with `agent_id`, `name`, `avatar`, `department`, `role`, `primary_provider`, `fallback_provider`, `tokens_used_today`, `tokens_remaining_today`, `tokens_used_total`, `usd_saved`, and `status`.
+    - Extended `TokenEconomyEngine.get_economy_report()`: retained all 13 existing return keys and added `free_llm_providers`, `active_provider`, `fallback_chain`, `bot_historical_token_table`, `total_lifetime_tokens`, and `total_usd_saved`.
+  - `server.py`:
+    - Added `send_json_response(status, payload)` and `db` property to `V7RequestHandler`.
+    - Added `GET /api/free_llm_quota` endpoint invoking `econ = TokenEconomyEngine(self.db); self.send_json_response(200, econ.get_economy_report())`.
+    - Added `POST /api/failover_check` endpoint returning `{"status": "OK", "report": report}`.

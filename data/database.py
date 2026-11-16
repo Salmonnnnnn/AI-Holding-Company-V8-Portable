@@ -65,7 +65,9 @@ class CompanyDatabase:
                     bio TEXT DEFAULT '',
                     token_quota INTEGER DEFAULT 80000,
                     tokens_used_today INTEGER DEFAULT 18500,
-                    compute_mode TEXT DEFAULT 'BALANCED'
+                    compute_mode TEXT DEFAULT 'BALANCED',
+                    tokens_used_total INTEGER DEFAULT 148000,
+                    free_provider_key TEXT DEFAULT 'cerebras'
                 )
             """)
             existing_cols = [r["name"] for r in cur.execute("PRAGMA table_info(agent_skills)").fetchall()]
@@ -79,7 +81,9 @@ class CompanyDatabase:
                 ("bio", "TEXT DEFAULT ''"),
                 ("token_quota", "INTEGER DEFAULT 80000"),
                 ("tokens_used_today", "INTEGER DEFAULT 18500"),
-                ("compute_mode", "TEXT DEFAULT 'BALANCED'")
+                ("compute_mode", "TEXT DEFAULT 'BALANCED'"),
+                ("tokens_used_total", "INTEGER DEFAULT 148000"),
+                ("free_provider_key", "TEXT DEFAULT 'cerebras'")
             ]
             for c_name, c_def in extra_cols:
                 if c_name not in existing_cols:
@@ -410,21 +414,26 @@ class CompanyDatabase:
             conn.commit()
         return {"agent_id": agent_id, "llm_model": new_model}
 
-    def update_agent_token_allocation(self, agent_id: str, token_quota: int, compute_mode: str, llm_model: str | None = None) -> dict:
+    def update_agent_token_allocation(
+        self,
+        agent_id: str,
+        token_quota: int,
+        compute_mode: str,
+        llm_model: str | None = None,
+        free_provider_key: str | None = None
+    ) -> dict:
         with self._get_conn() as conn:
             cur = conn.cursor()
+            updates = ["token_quota = ?", "compute_mode = ?"]
+            params = [int(token_quota), compute_mode]
             if llm_model:
-                cur.execute("""
-                    UPDATE agent_skills
-                    SET token_quota = ?, compute_mode = ?, llm_model = ?
-                    WHERE agent_id = ?
-                """, (int(token_quota), compute_mode, llm_model, agent_id))
-            else:
-                cur.execute("""
-                    UPDATE agent_skills
-                    SET token_quota = ?, compute_mode = ?
-                    WHERE agent_id = ?
-                """, (int(token_quota), compute_mode, agent_id))
+                updates.append("llm_model = ?")
+                params.append(llm_model)
+            if free_provider_key:
+                updates.append("free_provider_key = ?")
+                params.append(free_provider_key)
+            params.append(agent_id)
+            cur.execute(f"UPDATE agent_skills SET {', '.join(updates)} WHERE agent_id = ?", params)
             conn.commit()
         return {"agent_id": agent_id, "token_quota": int(token_quota), "compute_mode": compute_mode}
 
@@ -435,9 +444,10 @@ class CompanyDatabase:
             cur = conn.cursor()
             cur.execute("""
                 UPDATE agent_skills
-                SET tokens_used_today = COALESCE(tokens_used_today, 0) + ?
+                SET tokens_used_today = COALESCE(tokens_used_today, 0) + ?,
+                    tokens_used_total = COALESCE(tokens_used_total, 148000) + ?
                 WHERE agent_id = ?
-            """, (total_t, agent_id))
+            """, (total_t, total_t, agent_id))
             cur.execute("""
                 UPDATE token_treasury
                 SET total_tokens_used = total_tokens_used + ?,
@@ -729,7 +739,8 @@ class CompanyDatabase:
                        s.ultimate_skill, s.mastery_pct, s.accuracy_bonus_pct, s.training_sessions,
                        s.home_room, s.color_hex, s.llm_model, s.stat_accuracy, s.stat_speed,
                        s.stat_risk, s.stat_macro, s.stat_creativity, s.bio,
-                       s.token_quota, s.tokens_used_today, s.compute_mode
+                       s.token_quota, s.tokens_used_today, s.compute_mode,
+                       s.tokens_used_total, s.free_provider_key
                 FROM agents_status a
                 LEFT JOIN agent_skills s ON a.agent_id = s.agent_id
             """)

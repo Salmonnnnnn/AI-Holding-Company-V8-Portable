@@ -119,3 +119,31 @@
       * Update `.page-view` to `padding: 16px 20px 48px 20px; background: var(--bg-body);`.
       * Change `.visualizer-layout` to `align-items: stretch;`.
 
+- **Audit 2026-11-16 (Post-Fix Final Visual & Layout Verification — Ledger Removal, 3D Town Collision & Background Continuity)**:
+  - **Verdict**: `APPROVED (All 9 Inspection Checks Passed)` | **Score**: **100 / 100**
+  - **Audit Scope**: Comprehensive verification of `reports/latest_dashboard.html` and `engine/dashboard_generator.py` after frontend fixes.
+  - **Detailed Checklist Results**:
+    1. **`btnToggleLegacyUnderIsland` Removal**: `PASS` — Button element `btnToggleLegacyUnderIsland` ("📂 ดูตารางบัญชีดิบ") is 100% removed from DOM. Safe fallback preserved in JS.
+    2. **`#legacyUnderIslandHiddenStore` Isolation**: `PASS` — Defined with `style="display:none !important"` in both files (`engine/dashboard_generator.py` L2110, `reports/latest_dashboard.html` L1741). All child test IDs preserved without DOM leakage.
+    3. **`.town-top-nav-bar` No-Wrap Enforcement**: `PASS` — Configured with `flex-wrap: nowrap !important;` (`engine/dashboard_generator.py` L715, `reports/latest_dashboard.html` L346). Zero push of atmosphere bar into 3D town canvas.
+    4. **`.town-top-right-bar` Wrap & Width Fix**: `PASS` — Configured with `flex-wrap: nowrap !important;`, `flex-shrink: 0;`, and previous restrictive `max-width: 48%` removed (`engine/dashboard_generator.py` L795, `reports/latest_dashboard.html` L426).
+    5. **Compact Atmosphere Buttons**: `PASS` — Compact segmented button labels (`☀️ วัน`, `🌅 เย็น`, `🌙 คืน`) verified in both template and HTML (`engine/dashboard_generator.py` L1980–1982, `reports/latest_dashboard.html` L1611–1613).
+    6. **Root Background Continuity & Overflow Control**: `PASS` — `html, body` configured with `background: var(--bg-body); min-height: 100%; overflow-x: hidden;` (`engine/dashboard_generator.py` L405–412, `reports/latest_dashboard.html` L36–43).
+    7. **Sticky Navigation Tabs**: `PASS` — `.nav-tabs` configured with `position: sticky; top: 58px; z-index: 99; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);` (`engine/dashboard_generator.py` L451–452, `reports/latest_dashboard.html` L82–83).
+    8. **Page View Background & Bottom Clearance**: `PASS` — `.page-view` configured with `padding: 16px 20px 48px 20px; background: var(--bg-body);` (`engine/dashboard_generator.py` L495, `reports/latest_dashboard.html` L126).
+    9. **Visualizer Column Heights**: `PASS` — `.visualizer-layout` configured with `align-items: stretch;` (`engine/dashboard_generator.py` L593, `reports/latest_dashboard.html` L224), preventing column background gaps.
+
+- **Audit 2026-11-16 (Free LLM Quota, Auto-Failover & Visual Polish Verification Audit)**:
+  - **Verdict**: `APPROVED (All 8 Checklist Items Passed)` | **Score**: **100 / 100**
+  - **Audit Scope**: Full audit of `reports/latest_dashboard.html` and `engine/dashboard_generator.py` against the 8-item UX/UI and Telemetry checklist.
+  - **Checklist Verification & Findings**:
+    1. **"ดูตารางบัญชีดิบ" (Raw Ledger Button) Elimination**: `PASS` — Confirmed 100% removed. Zero occurrences in HTML/generator. `#legacyUnderIslandHiddenStore` is isolated with `style="display:none !important;"` (`html` L1741, `generator` L2110).
+    2. **"OVERCOOK" / "เผาโควต้า" RPG Mechanics Replacement**: `PASS` — "OVERCOOK" and "เผาโควต้า" are completely eliminated. Replaced with Free LLM Quota & Auto-Failover terms (e.g. `⚡ โทเคน Free LLM ที่ใช้จริงวันนี้`, `⚡ โควต้ารวมฟรี 5.3M Tokens/วัน`).
+    3. **"Lv.16" / "Level" / "Mastery" Removal & Frontier Model Limits**: `PASS` — Agent cards (`profLevelTxt`, `profMasteryTxt`) and War Room cards display provider and RPM/TPM limits (`Cerebras Llama-3.3-70B • 30 RPM`, `Groq • 30 RPM`, `SambaNova • 20 RPM`, `Gemini 2.0 Flash • 15 RPM`, `Cerebras WSE-3 • 60K TPM`).
+    4. **Town Hall Badge Collision Prevention (`badgeY: 125`)**: `PASS` — In `ISO_ROOMS`, TOWN_HALL is explicitly defined with `badgeX: 720, badgeY: 125` (`html` L4353, `generator` L4682), clearing the top floating navbar.
+    5. **Top-Right HUD Text Overflow Prevention**: `PASS` — `.town-top-right-bar` uses `flex-wrap: nowrap !important; max-width: 50%; overflow: hidden; justify-content: flex-end;` (`html` L423-434, `generator` L791-802), and `.comic-hud-pill` has `white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis;`.
+    6. **3D Island Viewport Full Bleed & Seam Elimination**: `PASS` — Canvas island dimensions configured at `rx = 670, ry = 310` (`html` L5901, `generator` L6230). Container `.town-fullscreen-card` and `.iso-canvas-wrap` styled with dark immersion background `#050811` (`html` L227, L326; `generator` L596, L695).
+    7. **11-Bot Cumulative Token Table in `#tokenLeaderboardModal`**: `PASS` — `#tokenLeaderboardModal` (`html` L1225-1335, `generator` L1594-1704) features all 8 required columns: `บอท / แผนก`, `Provider หลัก & โมเดล`, `Provider สำรอง`, `โทเคนวันนี้`, `โควต้าคงเหลือ`, `ยอดใช้สะสมรวมทั้งหมด`, `ประหยัดจากฟรี ($)`, `สถานะ`.
+    8. **Free LLM Quota Telemetry Deck & Refresh Button**: `PASS` — Button `🔄 รีเฟรชโควต้า & ตรวจสอบ Auto-Failover` (`html` L1236, `generator` L1605) is wired to `refreshFreeLlmQuotaAndFailover()`, executing `fetch('/api/free_llm_quota')` (`html` L7664, `generator` L7992) and refreshing leaderboard telemetry.
+
+

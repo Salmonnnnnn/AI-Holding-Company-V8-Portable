@@ -315,3 +315,21 @@
     * Set `.nav-tabs` to `position: sticky; top: 58px; z-index: 99; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);` docked smoothly below sticky `.top-header` (`top: 0; z-index: 100;`).
     * Updated `.page-view` with `padding: 16px 20px 48px 20px; max-width: 1680px; width: 100%; margin: 0 auto; flex: 1; background: var(--bg-body);`.
     * Updated `.visualizer-layout` to `align-items: stretch;` eliminating background gaps between uneven two-column layouts.
+- **Visual Layout Fixes, Free LLM Telemetry & 11-Bot Cumulative Token Table (November 2026)**:
+  - **Town Hall Badge Repositioning**:
+    * Changed `badgeY: 72` to `badgeY: 125` for `TOWN_HALL` in `ISO_ROOMS`. Eliminates visual clipping behind top floating nav bar.
+  - **Top-Right Overflow & Island Fill**:
+    * Sized `.town-top-right-bar` with `max-width: 50%`, `overflow: hidden`, and added responsive rule `@media (max-width: 1300px)` keeping `.comic-hud-pill` strictly contained.
+    * Adjusted `drawLushCircularIsland` dimensions to `rx = 670, ry = 310` filling canvas without excessive empty oceans or letterbox seams.
+    * Set `.town-fullscreen-card .iso-canvas-wrap` background to `#050811`.
+  - **De-gamification & Free LLM Transformation**:
+    * Completely removed raw ledger button references ("ดูตารางบัญชีดิบ").
+    * Removed gamey "OVERCOOK", "เผาโควต้า 100%", and "Lv." badges across all agent cards, profiles, directory drawers, and HR matrices.
+    * Replaced with Frontier Model names, Free Providers (Cerebras, Groq, SambaNova, Gemini, OpenRouter, Mistral), and Rate Limits (RPM/TPM).
+  - **Free LLM Quota Telemetry & Auto-Failover Monitor**:
+    * Rendered dynamic telemetry deck in `#tokenLeaderboardModal`: Active Provider banner, Real-time Quota Progress Bar, and Auto-Failover Chain Pill Diagram (`Cerebras ➔ Groq ➔ SambaNova ➔ Gemini ➔ OpenRouter ➔ Mistral`).
+    * Added `refreshFreeLlmQuotaAndFailover()` fetching `/api/free_llm_quota`, updating gauges dynamically, and alerting via `#modalQuotaToast`.
+  - **11-Bot Cumulative Historical Token Table**:
+    * Built 8-column table (บอท / แผนก, Provider หลัก & โมเดล, Provider สำรอง, โทเคนวันนี้, โควต้าคงเหลือ, ยอดใช้สะสมรวมทั้งหมด, ประหยัดเงินจาก Free Tier $, สถานะ).
+    * Summary Metric Cards at modal top: รวมโทเคนสะสมทั้ง 11 บอท: 2,400,000+ Tokens • โควต้ารวมฟรีทุก Provider: 5,300,000 Tokens / วัน • ประหยัดงบสะสมได้แล้ว: ~$36.00+ USD • สถานะระบบ: Active บน Cerebras WSE-3.
+    * Added `🪙 ตารางโทเคน 11 บอท` button `#btnTownEnterpriseMenu` on island nav bar.

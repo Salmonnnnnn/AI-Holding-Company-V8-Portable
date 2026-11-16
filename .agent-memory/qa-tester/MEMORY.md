@@ -1,18 +1,20 @@
 # 🧪 QA & Test Engineer Memory
 
 ## 🎯 Test Suite Status
-- **Last Verified**: 2026-11-16 19:47 UTC+7 (Automated Suite Run by Verification Runner)
-- **Test Targets**: `tests/test_committee.py` & `tests/test_mt5_bridge.py`
+- **Last Verified**: 2026-11-16 20:23 UTC+7 (Automated Suite Run by Verification Runner)
+- **Test Targets**: `tests/test_committee.py` & `tests/test_mt5_bridge.py` (including comprehensive `CompanyDatabase` coverage across both test suites)
 - **Execution Commands**:
-  - `./run_tests.sh`: 11/11 PASSED (0.45s, Exit Code: 0) — *Target: `tests/test_committee.py`*
-  - `venv/bin/python3 -m pytest tests/ -v`: 32/32 PASSED (2.78s, Exit Code: 0) — *Target: all test files*
+  - `./run_tests.sh`: 11/11 PASSED (0.46s, Exit Code: 0) — *Target: `tests/test_committee.py`*
+  - `venv/bin/python3 -m pytest tests/ -v`: 32/32 PASSED (2.76s, Exit Code: 0) — *Target: all test files*
 - **Current Health**: 
-  - `tests/test_committee.py`: 11/11 PASSED (100% Green, 0.45s)
-  - `tests/test_mt5_bridge.py`: 21/21 PASSED (100% Green, 2.33s)
-  - **Combined Suite**: 32/32 PASSED (100% Green, 2.78s, Exit Code: 0)
+  - `tests/test_committee.py`: 11/11 PASSED (100% Green, 0.46s)
+  - `tests/test_mt5_bridge.py`: 21/21 PASSED (100% Green, 2.30s)
+  - **Combined Suite**: 32/32 PASSED (100% Green, 0 failures, 0 errors, 2.76s, Exit Code: 0)
   - `venv/bin/python3 -m py_compile engine/dashboard_generator.py server.py`: PASSED (Exit Code: 0)
   - Fresh Dashboard Generation (`server.ensure_state()`): PASSED (Exit Code: 0)
   - `reports/latest_dashboard.html`: Successfully regenerated and verified fresh.
+- **Database Test Coverage Note**:
+  - Database functionality (`data/database.py:CompanyDatabase`) is verified directly across both `test_committee.py` (tests 1, 2, 3, 4, 11) and `test_mt5_bridge.py` (tests 11, 19, 20, 21), validating schema initialization, transaction logs, agent states, and portfolio ledgers without errors.
 
 ---
 
