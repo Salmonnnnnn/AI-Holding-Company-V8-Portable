@@ -142,3 +142,8 @@
     - When token is present, configures authenticated remote `https://Salmonnnnnn:${GITHUB_TOKEN}@github.com/Salmonnnnnn/AI-Holding-Company-V8-Portable.git`, pushes changes, and uses `trap cleanup EXIT` to reliably restore remote back to clean `https://github.com/Salmonnnnnn/AI-Holding-Company-V8-Portable.git`.
     - Guarantees 100% push success whether run in Terminal or via double-click.
   - Regenerated `reports/latest_dashboard.html`.
+- Added Uncapped Real Token & Per-Bot Cost/Remaining Telemetry in `engine/token_economy.py`:
+  - `get_economy_report()`:
+    - Preserved exact calculation and schema of `daily_budget_tokens`, `total_tokens_used`, `remaining_tokens`, `utilization_pct`, `prompt_tokens`, `reasoning_tokens`, `output_tokens`, `estimated_cost_usd`, `agent_allocations`, and `available_models` for 100% backward compatibility with unit tests.
+    - Added top-level `"is_uncapped": True`, `"token_limit_mode": "UNCAPPED_REAL_USAGE"`, and `"leaderboard_by_usage"` (list of `agent_allocations` sorted descending by `tokens_used_today`).
+    - Enriched each agent in `agent_allocations` with `"tokens_remaining_available"` (`max(125000, int(quota * 2.5) - ag_used)`), `"real_cost_usd"` (`round((ag_used / 1000.0) * MODE_MULTIPLIERS.get(mode, MODE_MULTIPLIERS["BALANCED"])["cost_per_1k"], 4)`), and `"energy_pct"` (`max(20, min(100, 100 - int((ag_used / max(quota * 1.5, 1)) * 45)))`).

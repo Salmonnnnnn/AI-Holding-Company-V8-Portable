@@ -35,6 +35,10 @@ class TokenEconomyEngine:
             acc_bonus = float(ag.get("accuracy_bonus_pct") or 7.0)
             roi_score = round((acc_bonus * 10000.0) / max(ag_used, 5000), 2)
 
+            tokens_remaining_available = max(125000, int(quota * 2.5) - ag_used)
+            real_cost_usd = round((ag_used / 1000.0) * MODE_MULTIPLIERS.get(mode, MODE_MULTIPLIERS["BALANCED"])["cost_per_1k"], 4)
+            energy_pct = max(20, min(100, 100 - int((ag_used / max(quota * 1.5, 1)) * 45)))
+
             agent_allocations.append({
                 "agent_id": ag["agent_id"],
                 "name": ag["name"],
@@ -44,11 +48,22 @@ class TokenEconomyEngine:
                 "compute_mode": mode,
                 "token_quota": quota,
                 "tokens_used_today": ag_used,
+                "tokens_remaining_available": tokens_remaining_available,
+                "real_cost_usd": real_cost_usd,
+                "energy_pct": energy_pct,
                 "quota_pct": round(min(100.0, (ag_used / max(quota, 1)) * 100.0), 1),
                 "roi_per_10k_tokens": roi_score
             })
 
+        leaderboard_by_usage = sorted(
+            agent_allocations,
+            key=lambda x: x["tokens_used_today"],
+            reverse=True
+        )
+
         return {
+            "is_uncapped": True,
+            "token_limit_mode": "UNCAPPED_REAL_USAGE",
             "daily_budget_tokens": budget,
             "total_tokens_used": used,
             "remaining_tokens": remaining,
@@ -58,6 +73,7 @@ class TokenEconomyEngine:
             "output_tokens": int(used * 0.17),
             "estimated_cost_usd": round(used * 0.000014, 2),
             "agent_allocations": agent_allocations,
+            "leaderboard_by_usage": leaderboard_by_usage,
             "available_models": AVAILABLE_MODELS
         }
 

@@ -34,6 +34,24 @@
   - **Atmosphere Switcher**: 3 segmented buttons (`☀️ กลางวัน (Day)`, `🌅 ยามเย็น (Sunset)`, `🌙 กลางคืน (Night)`) switch palettes and active indicators cleanly. Default starts on cartoon day-blue sky/ocean matching `Exmple.mp4`.
   - **Test Suite**: 10/10 automated pytest tests passing.
 
+- **Audit 2026-11-16 (5-Requirement UI/UX & Declutter Audit)**:
+  - **Verdict**: `APPROVED (All 5 User Requirements Passed)` | **Score**: **100 / 100**
+  - **1. Uncapped Token Display & 11-Bot Token Leaderboard**:
+    - Top header pill (`engine/dashboard_generator.py` L1537–1543, `reports/latest_dashboard.html` L1168–1174): Displays `#topTokenUsedText` + `#topTokenCostUsdText` + `• ไร้ขีดจำกัด (คลิกดูรายบอท)` with `#topTokenBudgetText` hidden (`style="display:none"`). Zero `/ 1,000,000` cap anywhere.
+    - `#tokenLeaderboardModal` (`engine/dashboard_generator.py` L1558–1625, `reports/latest_dashboard.html` L1189–1256): Contains 4 executive metric cards + 7-column leaderboard table (`อันดับ`, `บอท AI & แผนก`, `สมองกล`, `โทเคนที่ใช้จริง (Used)`, `โทเคนคงเหลือพร้อมใช้ (Remaining Available)`, `ต้นทุนจริง ($ USD)`, `พลังงาน & สถานะ (Energy %)`), populated by `openTokenLeaderboardModal()` (L7894 / L7566) and `renderTokenLeaderboard()` (L7947–8023 / L7619–7695).
+  - **2. Under-Island Cleanup (`#page-island`)**:
+    - `.town-fullscreen-card` (`#townFullscreenCard`, CSS L586–597 / L217–228; DOM L1934 / L1565) occupies `height: 75vh` (`min-height: 580px; max-height: 780px`).
+    - `.minimal-island-workflow-strip` (`#minimalIslandWorkflowStrip`, CSS L598–609 / L229–240; DOM L2042–2092 / L1673–1723) sits directly underneath as the sole visible strip.
+    - Bulky legacy sections (`#challengeBanner` L2098 / L1729, `#ventureLedgerCard` L2235 / L1866) are isolated inside `#legacyUnderIslandHiddenStore` (`style="display:none"`, L2095 / L1726).
+  - **3. Dynamic 5-Stage Live Task Pipeline**:
+    - `window.liveTaskSprintState` (`engine/dashboard_generator.py` L7643–7698, `reports/latest_dashboard.html` L7314–7369) defines 5 distinct stages (1/5 Dr. Marcus, 2/5 Alex Vance, 3/5 Viktor Kane, 4/5 Sophia & Maya, 5/5 Arthur CIO), replacing the stuck `8/8` counter.
+    - `renderRightSidebarMission()` (L7700–7776 / L7371–7447) and `advanceLiveTaskSprint()` (L7778–7810 / L7449–7481, auto-cycling every 6000ms at L7828 / L7499) dynamically update `#topTaskCountText`, `#liveWorkflowStepper` (L2060 / L1691), and `#liveActivityTickerText` (L2088 / L1719).
+  - **4. Monthly P&L Calendar (`#page-replay`)**:
+    - `#page-replay` (`engine/dashboard_generator.py` L2964–3038, `reports/latest_dashboard.html` L2595–2669) features 4 consolidated monthly summary cards (Real Account P&L `#calRealPnlMonthVal`, Demo Account P&L `#calTestPnlMonthVal`, Monthly Win Rate `#calWinDaysVal`/`#calLossDaysVal`, Venture Commissions `#calVentureMonthVal` + 1-Click Reinvest & CSV Export) above a 7-column CSS Grid `#monthlyCalendarGrid` (`grid-template-columns:repeat(7, minmax(115px, 1fr))`, L3035 / L2666).
+    - `renderMonthlyPnlCalendar()` (L8234–8457 / L7908–8131) renders clickable `.cal-day-box` cards (CSS L642–667 / L273–298; JS L8386, L8409 / L8060, L8083) that invoke `openCalendarDayModal(dateStr)` (L8459–8600 / L8133–8274) to open `#calendarDayDetailModal` (L1630–1735 / L1261–1366) with side-by-side Real (`XM Real #430446448`) vs Demo (`XM Demo #50892104`) comparison cards and executed trade log.
+  - **5. Zero Visible GitHub Push Buttons**:
+    - Zero visible buttons or links invoke `openGitHubPushModal()` anywhere in the rendered HTML. `#githubPushModal` (L1822 / L1453) remains hidden (`style="display:none"`) solely for legacy test compatibility.
+
 - **Audit 2026-11-16 (Git/GitHub UI & Controls Verification)**:
   - **Verdict**: `VERIFIED & CONFIRMED` | **Status**: Zero visible Git push buttons in active UI
   - **Audit Scope**: Meticulous verification of `reports/latest_dashboard.html` and `engine/dashboard_generator.py` for any visible buttons or clickable links triggering Git push.
@@ -43,10 +61,3 @@
     3. Dedicated Enterprise navigation tabs (lines 1280-1297 in html): Zero Git/push links.
     4. 3D Island Controls (`.town-top-nav-bar`, lines 1311-1344): Zero Git/push controls.
     5. Modal container `#githubPushModal` (lines 1195-1243 in html / 1564-1612 in generator): Remains in DOM with `display:none` to satisfy test assertions (`openGitHubPushModal` in `tests/test_committee.py`), but has NO trigger button or link anywhere in the UI. No user can open or trigger push via the UI.
-  - **Verdict**: `REJECTED (Requires Fixes)` | **Score**: 82/100
-  - **Issue 1 (Critical Layout Collision)**: On 1280px–1440px viewports, `.town-top-left-bar` (7 pills, width ~880px) and `.town-top-right-bar` (pill width ~515px + switcher width ~424px = ~939px) collide horizontally in the center (`x=453` to `x=968`). `.town-top-right-bar` renders directly on top of `👥 View all`, `📊 Stats`, `📬 Inbox 8`, and `🗂️ 6 แท็บระบบ (Menu)`, rendering them completely invisible.
-    * *Fix Required*: Make top bar layout collision-proof (e.g., compact `.comic-hud-pill` to show only `🪙 $+502 / $1,000` or split HUD into a dedicated top-center or right-side column as seen in `unmirrored_frame_0_0s.jpg`).
-  - **Issue 2 (Modal Opacity & Animation Keyframe)**: `.deliverables-modal-card` lacks `animation-fill-mode: forwards` and defaults to `opacity: 0` before animation kicks in, causing headless snapshot renderers to capture an empty/invisible modal card.
-    * *Fix Required*: Add `animation-fill-mode: forwards` and `opacity: 1`.
-  - **Issue 3 (Literal `\n` in Deliverable Previews)**: `TECH_STUDIO` code preview displayed literal `\n` instead of actual linebreaks due to escaped python string literals (`\\n`).
-    * *Fix Required*: Use actual newline formatting in `engine/dashboard_generator.py`.

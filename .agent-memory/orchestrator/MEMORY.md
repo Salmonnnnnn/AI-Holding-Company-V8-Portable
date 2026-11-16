@@ -118,6 +118,11 @@
   - Removed GitHub push buttons from navbar and catchup banner per user request ('เอาปุ่มดึงขึ้น git ออกต่อไปจะพิมบอกเอง').
   - Verified 32/32 tests PASSED by `verification-runner`.
   - Pushed all updates directly to GitHub `https://github.com/Salmonnnnnn/AI-Holding-Company-V8-Portable.git` via native macOS Keychain.
+- [x] 4 Major System Upgrades (Uncapped Real Tokens, 75vh Island Decluttering, 5-Stage Live Task Engine, & Monthly P&L Calendar Grid):
+  - Backend Engine: Added `is_uncapped: True`, per-agent `tokens_remaining_available`, `real_cost_usd`, `energy_pct`, and `leaderboard_by_usage` in `engine/token_economy.py`.
+  - Frontend UI: Replaced `/ 1,000,000` token cap with clickable Uncapped Real Token & Cost pill + 11-Bot Leaderboard modal; decluttered under-island into 75vh centerpiece + single minimal workflow strip; replaced frozen `8/8` with 5-stage live market sprint engine cycling in real time; overhauled monthly calendar into 7-column CSS grid with consolidated monthly totals and click-to-view Real ($50) vs Demo drill-down modal.
+  - Quality Assurance: `ui-inspector` audited visual elements with 100/100 score; `verification-runner` confirmed 32/32 tests PASSED (100% Green).
+
 
 
 
