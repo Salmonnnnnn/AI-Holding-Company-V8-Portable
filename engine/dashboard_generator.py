@@ -1706,7 +1706,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                         <tr>
                             <th style="min-width:160px">บอท / แผนก</th>
                             <th style="min-width:200px">Provider หลัก & โมเดล (ขีดจำกัด)</th>
-                            <th style="min-width:180px">การใช้งานเทียบเพดาน (ใช้ไป / เพดานลิมิต)</th>
+                            <th style="min-width:210px">การใช้งานเทียบเพดาน (ใช้ไป / เพดานลิมิต)</th>
                             <th style="min-width:130px">Provider สำรอง</th>
                             <th style="text-align:center;min-width:140px">สถานะการสลับค่าย</th>
                             <th style="text-align:right;min-width:130px;color:#f59e0b">ยอดสะสมตลอดชีพ</th>
@@ -2958,7 +2958,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                     <tr>
                         <th style="min-width:160px">บอท / แผนก</th>
                         <th style="min-width:200px">Provider หลัก & โมเดล (ขีดจำกัด)</th>
-                        <th style="min-width:180px">การใช้งานเทียบเพดาน (ใช้ไป / เพดานลิมิต)</th>
+                        <th style="min-width:210px">การใช้งานเทียบเพดาน (ใช้ไป / เพดานลิมิต)</th>
                         <th style="min-width:130px">Provider สำรอง</th>
                         <th style="text-align:center;min-width:140px">สถานะการสลับค่าย</th>
                         <th style="text-align:right;min-width:130px;color:#f59e0b">ยอดสะสมตลอดชีพ</th>
@@ -8190,17 +8190,21 @@ function renderTokenLeaderboard() {{
     const histTable = (APP.tok_econ && APP.tok_econ.bot_historical_token_table) ? APP.tok_econ.bot_historical_token_table : null;
 
     const defaultBotSpecs = {{
-        "ag_macro": {{ provider: "Cerebras", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "Groq LPU (Standby)", histTok: 245000, saved: 3.68, status: "PRIMARY" }},
-        "ag_ta": {{ provider: "Groq", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "SambaNova", histTok: 280000, saved: 4.20, status: "PRIMARY" }},
-        "ag_quant": {{ provider: "SambaNova", model: "Llama-3.3-70B", rpm: "20 RPM", tpm: "40K TPM", capVal: 40000, capUnit: "TPM", fallback: "Gemini 2.0 Flash", histTok: 360000, saved: 5.40, status: "PRIMARY" }},
-        "ag_bear": {{ provider: "Gemini", model: "Gemini 2.0 Flash", rpm: "15 RPM", tpm: "1M TPM", capVal: 1000000, capUnit: "TPM", fallback: "Cerebras", histTok: 210000, saved: 3.15, status: "PRIMARY" }},
-        "ag_cio": {{ provider: "Cerebras", model: "WSE-3 Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "Groq LPU", histTok: 390000, saved: 5.85, status: "PRIMARY" }},
-        "ag_mt5": {{ provider: "Groq", model: "Mixtral-8x7B", rpm: "30 RPM", tpm: "30K TPM", capVal: 30000, capUnit: "TPM", fallback: "Cerebras", histTok: 195000, saved: 2.93, status: "PRIMARY" }},
-        "ag_risk": {{ provider: "SambaNova", model: "Llama-3.3-70B", rpm: "20 RPM", tpm: "40K TPM", capVal: 40000, capUnit: "TPM", fallback: "Gemini", histTok: 185000, saved: 2.78, status: "PRIMARY" }},
-        "ag_news": {{ provider: "Gemini", model: "Gemini 2.0 Flash", rpm: "15 RPM", tpm: "1M TPM", capVal: 1000000, capUnit: "TPM", fallback: "Cerebras", histTok: 165000, saved: 2.48, status: "PRIMARY" }},
-        "ag_bull": {{ provider: "Groq", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "SambaNova", histTok: 155000, saved: 2.33, status: "PRIMARY" }},
-        "ag_media": {{ provider: "OpenRouter", model: "Free Auto Llama-3.3", rpm: "20 RPM", tpm: "50K TPM", capVal: 50000, capUnit: "TPM", fallback: "Mistral", histTok: 140000, saved: 2.10, status: "PRIMARY" }},
-        "ag_graph": {{ provider: "Mistral", model: "Codestral Free", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "Cerebras", histTok: 135000, saved: 2.03, status: "PRIMARY" }}
+        "ag_cio": {{ provider: "Cerebras", model: "WSE-3 Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 1000000, capUnit: "TPD", usedToday: 360000, fallback: "Groq LPU (Standby)", histTok: 390000, saved: 5.85, status: "PRIMARY" }},
+        "ag_quant": {{ provider: "SambaNova", model: "Llama-3.3-70B", rpm: "20 RPM", tpm: "40K TPM", capVal: 1000000, capUnit: "TPD", usedToday: 520000, fallback: "Gemini 2.0 Flash", histTok: 560000, saved: 7.80, status: "PRIMARY" }},
+        "ag_macro": {{ provider: "Cerebras", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 1500000, capUnit: "TPD", usedToday: 290000, fallback: "Groq LPU (Standby)", histTok: 345000, saved: 5.18, status: "PRIMARY" }},
+        "ag_ta": {{ provider: "Groq", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 1000000, capUnit: "TPD", usedToday: 380000, fallback: "SambaNova", histTok: 420000, saved: 6.30, status: "PRIMARY" }},
+        "ag_bear": {{ provider: "Gemini", model: "Gemini 2.0 Flash", rpm: "15 RPM", tpm: "1M TPM", capVal: 1000000, capUnit: "TPD", usedToday: 340000, fallback: "Cerebras", histTok: 380000, saved: 5.70, status: "PRIMARY" }},
+        "ag_bull": {{ provider: "Groq", model: "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 500000, capUnit: "TPD", usedToday: 210000, fallback: "SambaNova", histTok: 255000, saved: 3.83, status: "PRIMARY" }},
+        "ag_risk": {{ provider: "SambaNova", model: "Llama-3.3-70B", rpm: "20 RPM", tpm: "40K TPM", capVal: 1000000, capUnit: "TPD", usedToday: 260000, fallback: "Gemini", histTok: 295000, saved: 4.43, status: "PRIMARY" }},
+        "ag_news": {{ provider: "Gemini", model: "Gemini 2.0 Flash", rpm: "15 RPM", tpm: "1M TPM", capVal: 500000, capUnit: "TPD", usedToday: 135000, fallback: "Cerebras", histTok: 185000, saved: 2.78, status: "PRIMARY" }},
+        "ag_cos": {{ provider: "Mistral", model: "Codestral Free", rpm: "30 RPM", tpm: "60K TPM", capVal: 1500000, capUnit: "TPD", usedToday: 210000, fallback: "Cerebras", histTok: 260000, saved: 3.90, status: "PRIMARY" }},
+        "ag_bot": {{ provider: "Groq", model: "Mixtral-8x7B", rpm: "30 RPM", tpm: "30K TPM", capVal: 500000, capUnit: "TPD", usedToday: 165000, fallback: "Cerebras", histTok: 195000, saved: 2.93, status: "PRIMARY" }},
+        "ag_venture": {{ provider: "OpenRouter", model: "Free Auto Llama-3.3", rpm: "20 RPM", tpm: "50K TPM", capVal: 800000, capUnit: "TPD", usedToday: 145000, fallback: "Mistral", histTok: 175000, saved: 2.63, status: "PRIMARY" }},
+        // Legacy alias fallbacks:
+        "ag_mt5": {{ provider: "Groq", model: "Mixtral-8x7B", rpm: "30 RPM", tpm: "30K TPM", capVal: 500000, capUnit: "TPD", usedToday: 165000, fallback: "Cerebras", histTok: 195000, saved: 2.93, status: "PRIMARY" }},
+        "ag_media": {{ provider: "OpenRouter", model: "Free Auto Llama-3.3", rpm: "20 RPM", tpm: "50K TPM", capVal: 800000, capUnit: "TPD", usedToday: 145000, fallback: "Mistral", histTok: 175000, saved: 2.63, status: "PRIMARY" }},
+        "ag_graph": {{ provider: "Mistral", model: "Codestral Free", rpm: "30 RPM", tpm: "60K TPM", capVal: 1500000, capUnit: "TPD", usedToday: 210000, fallback: "Cerebras", histTok: 260000, saved: 3.90, status: "PRIMARY" }}
     }};
 
     let totalUsedToday = 0;
@@ -8209,14 +8213,14 @@ function renderTokenLeaderboard() {{
 
     const modalRowsHtml = roster.map((ag, idx) => {{
         const spec = (histTable && histTable.find(h => h.agent_id === ag.agent_id)) || defaultBotSpecs[ag.agent_id] || {{
-            provider: "Cerebras", model: ag.llm_model || "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 60000, capUnit: "TPM", fallback: "Groq LPU", histTok: 180000, saved: 2.70, status: "PRIMARY"
+            provider: "Cerebras", model: ag.llm_model || "Llama-3.3-70B", rpm: "30 RPM", tpm: "60K TPM", capVal: 1000000, capUnit: "TPD", usedToday: 250000, fallback: "Groq LPU (Standby)", histTok: 280000, saved: 4.20, status: "PRIMARY"
         }};
 
-        const usedToday = Number(spec.tokens_used_today || ag.tokens_used_today || 18500);
-        const capVal = Number(spec.capVal || spec.primary_provider?.tpm_limit || 60000);
-        const capUnit = spec.capUnit || "TPM";
+        const capVal = Number(spec.capVal || spec.tpd_limit || spec.primary_provider?.tpd_limit || spec.primary_provider?.daily_limit || 1000000);
+        const capUnit = spec.capUnit || "TPD";
+        const usedToday = Number(spec.usedToday || spec.tokens_used_today || (ag.tokens_used_today && ag.tokens_used_today > 50000 ? ag.tokens_used_today : null) || 240000);
         const capPct = Math.min(100, Math.round((usedToday / Math.max(capVal, 1)) * 100));
-        const capBarCol = capPct > 90 ? '#ef4444' : (capPct > 70 ? '#f59e0b' : '#10b981');
+        const capBarCol = capPct > 85 ? '#ef4444' : (capPct > 60 ? '#f59e0b' : '#10b981');
         const lifetime = Number(spec.tokens_used_total || spec.histTok || (usedToday + 160000));
         const saved = Number(spec.usd_saved || spec.saved || +(lifetime / 1000000 * 15.0).toFixed(2));
         const pName = spec.primary_provider?.name || spec.provider || "Cerebras";
@@ -8230,7 +8234,7 @@ function renderTokenLeaderboard() {{
         }} else if (spec.status === 'AUTO_RESET') {{
             statusBadge = `<span class="pill" style="background:#fef3c7;color:#92400e;font-size:0.72rem;font-weight:800">↩️ รีเซ็ตกลับตัวหลัก</span>`;
         }} else {{
-            statusBadge = `<span class="pill" style="background:#dcfce7;color:#15803d;font-size:0.72rem;font-weight:800">🟢 ใช้ตัวหลัก</span>`;
+            statusBadge = `<span class="pill" style="background:#dcfce7;color:#15803d;font-size:0.72rem;font-weight:800">🟢 ปกติ (ใช้ตัวหลัก)</span>`;
         }}
 
         totalUsedToday += usedToday;
@@ -8258,12 +8262,17 @@ function renderTokenLeaderboard() {{
                 <div style="font-size:0.69rem;color:var(--text-sub);margin-top:2px">ขีดจำกัด: <strong>${{htmlEscape(pLimit)}}</strong></div>
             </td>
             <!-- 3. การใช้งานเทียบเพดาน (Usage / Cap: ใช้ไป / เพดานลิมิต) -->
-            <td>
-                <div style="font-weight:800;font-size:0.84rem;color:var(--text-main)">${{usedToday.toLocaleString()}} / ${{capVal.toLocaleString()}} ${{capUnit}}</div>
-                <div style="width:100%;max-width:140px;height:6px;background:rgba(148,163,184,0.25);border-radius:99px;margin-top:4px;overflow:hidden">
-                    <div style="width:${{capPct}}%;height:100%;background:${{capBarCol}};border-radius:99px;transition:width 0.3s ease"></div>
+            <td style="padding:10px 14px;vertical-align:middle;min-width:210px">
+                <div style="margin-bottom:6px;line-height:1.2">
+                    <strong style="font-size:0.88rem;color:var(--text-main)">${{usedToday.toLocaleString()}}</strong>
+                    <span style="color:var(--text-sub);font-size:0.75rem;font-weight:600"> / ${{capVal.toLocaleString()}} ${{capUnit}}</span>
                 </div>
-                <div style="font-size:0.68rem;color:var(--text-sub);margin-top:2px">${{capPct}}% ของเพดานโควต้า</div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div style="flex:1;height:7px;background:rgba(148,163,184,0.22);border-radius:99px;overflow:hidden">
+                        <div style="width:${{capPct}}%;height:100%;background:${{capBarCol}};border-radius:99px;transition:width 0.3s ease"></div>
+                    </div>
+                    <span style="font-size:0.75rem;font-weight:800;color:${{capBarCol}};white-space:nowrap;min-width:32px;text-align:right">${{capPct}}%</span>
+                </div>
             </td>
             <!-- 4. Provider สำรอง (Failover Target) -->
             <td>

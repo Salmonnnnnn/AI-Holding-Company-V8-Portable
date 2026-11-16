@@ -360,3 +360,27 @@
       7. ประหยัดงบ ($ Saved)
     * **Bot Cards & Drawer Profile**:
       - Displays `Provider: [Provider]` • `โควต้า: [Used] / [Limit]` • `สถานะ: Auto-Failover พร้อม`.
+- **Token Table Layout De-clutter & Realistic Daily TPD Benchmark (Option A2 + A1)**:
+  - **Realistic Daily Token Limits (TPD 500K - 1.5M)**:
+    * Replaced tight 60K TPM minute rate limit with authentic Daily Quota (`capUnit: "TPD"`):
+      - `ag_cio`: `1,000,000 TPD`, used `360,000` (36% 🟢)
+      - `ag_quant`: `1,000,000 TPD`, used `520,000` (52% 🟢)
+      - `ag_macro`: `1,500,000 TPD`, used `290,000` (19% 🟢)
+      - `ag_ta`: `1,000,000 TPD`, used `380,000` (38% 🟢)
+      - `ag_bear`: `1,000,000 TPD`, used `340,000` (34% 🟢)
+      - `ag_bull`: `500,000 TPD`, used `210,000` (42% 🟢)
+      - `ag_risk`: `1,000,000 TPD`, used `260,000` (26% 🟢)
+      - `ag_news`: `500,000 TPD`, used `135,000` (27% 🟢)
+      - `ag_cos`: `1,500,000 TPD`, used `210,000` (14% 🟢)
+      - `ag_bot`: `500,000 TPD`, used `165,000` (33% 🟢)
+      - `ag_venture`: `800,000 TPD`, used `145,000` (18% 🟢)
+    * All bots operate at comfortable green usage (14%–52%), completely eliminating the artificial 100% red bottleneck.
+  - **De-cluttered Layout for Column 3 ("การใช้งานเทียบเพดาน")**:
+    * Sized `<th>` with `min-width: 210px` in `#tokenLeaderboardModal` and `#page-tokens`.
+    * Implemented distinct 2-line vertical hierarchy:
+      - Line 1: `<strong>{usedToday.toLocaleString()}</strong> / {capVal.toLocaleString()} {capUnit}`
+      - Line 2: Flex row with 7px progress bar and right-aligned percentage badge `{capPct}%` (`color: {capBarCol}`).
+    * Zero text clipping, zero number overlap, generous cell padding.
+  - **Status Badge Accuracy**:
+    * Displays `🟢 ปกติ (ใช้ตัวหลัก)` for all active bots within quota.
+    * Only switches to `🔄 สลับไปตัวสำรองอัตโนมัติ` if `capPct >= 100` or explicit failover trigger.
