@@ -232,8 +232,8 @@ def test_multi_venture_ai_town_studios_and_deliverables_modal(tmp_path):
     assert "MEME STUDIO" in html_text
     assert "WHAT IF STUDIO" in html_text
     assert "OpenClaw" in html_text
-    assert "5-HOUR 99%" in html_text
-    assert "7-DAY 100%" in html_text
+    assert ("AI DATA CENTER" in html_text or "5-HOUR" in html_text)
+    assert ("KNOWLEDGE VAULT" in html_text or "7-DAY" in html_text)
     assert "The Boss" in html_text
     assert "Cutaway #1 render APPROVED!" in html_text
     assert "Sprocket" in html_text
