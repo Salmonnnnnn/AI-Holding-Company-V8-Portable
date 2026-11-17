@@ -315,6 +315,7 @@ class V7RequestHandler(BaseHTTPRequestHandler):
         self._send_json({"error": "Not found"}, status=404)
 
     def do_POST(self):
+        global LATEST_REPORT
         room, report = ensure_state()
         length = int(self.headers.get("Content-Length", 0))
         raw = self.rfile.read(length).decode("utf-8") if length > 0 else "{}"
@@ -607,7 +608,6 @@ class V7RequestHandler(BaseHTTPRequestHandler):
             return
 
         if self.path == "/api/refresh_live_market":
-            global LATEST_REPORT
             LATEST_REPORT = room.run_session(capital=1000.0, risk_pct=1.5)
             os.makedirs("reports", exist_ok=True)
             generate_html_dashboard(LATEST_REPORT, "reports/latest_dashboard.html")
@@ -685,6 +685,25 @@ class V7RequestHandler(BaseHTTPRequestHandler):
                 "portfolio_state": port_state,
                 "venture_ledger": ledger,
             })
+            return
+
+        if self.path == "/api/viral_studio/approve":
+            new_status = body.get("status", "APPROVED")
+            if isinstance(LATEST_REPORT, dict) and "studio_deliverables" in LATEST_REPORT:
+                meme_st = LATEST_REPORT["studio_deliverables"].get("MEME_STUDIO", {})
+                if "current_script_package" in meme_st:
+                    meme_st["current_script_package"]["status"] = new_status
+            with room.db._get_conn() as conn:
+                cur = conn.cursor()
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                cur.execute("""
+                    INSERT INTO office_activity_log (timestamp, agent_name, department, action_type, summary)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (now, "The Boss", "YouTube & Viral Studio", "SCRIPT_APPROVED", f"ผู้บริหารตรวจและอนุมัติสคริปต์ลงช่อง (สถานะ: {new_status}) — วิดีโอยาว 10:24m พร้อม 3 Shorts"))
+                conn.commit()
+            os.makedirs("reports", exist_ok=True)
+            generate_html_dashboard(LATEST_REPORT, "reports/latest_dashboard.html")
+            self._send_json({"status": "ok", "package_status": new_status, "message": "อนุมัติสคริปต์ลงช่องสำเร็จ"})
             return
 
         self._send_json({"error": "Unknown endpoint"}, status=404)

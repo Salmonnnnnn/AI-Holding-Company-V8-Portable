@@ -172,18 +172,122 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 
     studio_deliverables = {
         "MEME_STUDIO": {
-            "title": "Meme Studio — Viral Reels & TikTok Machine",
-            "tagline": "ฝ่ายผลิตสื่อคอนเทนต์และคลิปสั้นไวรัล โดย Maya Lin & Sarah Jenkins",
-            "platform": "Instagram Reels / TikTok / YouTube Shorts",
+            "title": "YouTube & Viral Video Studio — Autonomous AdSense & Multi-Platform Engine",
+            "tagline": "ระบบสแกนคลิปติดเทรนด์ เจนสคริปต์คลิปยาว 8-12 นาที (กินค่าโฆษณา YouTube AdSense) พร้อมซอยตัด 3 คลิปสั้น (FB Reels & TikTok) อัตโนมัติ — ผู้บริหารมีหน้าที่เพียงตรวจและกดยืนยัน",
+            "channel_name": "What-If & Frontier Chronicles (หรือสลับตามเทรนด์)",
+            "monetization_model": "YouTube Partner Program (AdSense Mid-roll Ads) + FB In-stream + TikTok Creator Rewards",
+            "target_video_duration": "8 - 12 นาที (Optimal Mid-roll Ad Density)",
+            "derivative_shorts_count": 3,
+            "youtube_progress": {
+                "subscribers": 780,
+                "subscribers_target": 1000,
+                "watch_hours": 2940,
+                "watch_hours_target": 4000,
+                "progress_pct": 73.5,
+                "est_rpm_usd": 4.50,
+                "est_rpm_thb": 155.0,
+            },
+            "trending_radar_items": [
+                {
+                    "topic": "ความลับเบื้องหลังมหาเศรษฐี AI และวิกฤตชิปโลก",
+                    "platform": "YouTube Trending",
+                    "views_ref": "1.2M",
+                    "hook_angle": "Contrarian Insight",
+                    "why_viral": "กระตุ้นความอยากรู้ + ประเด็นอนาคต",
+                    "adapted_angle": "เจาะลึกสิ่งที่สื่อกระแสหลักไม่เคยบอก",
+                },
+                {
+                    "topic": "5 พฤติกรรมทางการเงินที่จะเปลี่ยนคุณใน 30 วัน",
+                    "platform": "TikTok Viral",
+                    "views_ref": "3.8M",
+                    "hook_angle": "Actionable Framework",
+                    "why_viral": "ดูง่าย ทำตามได้ทันที",
+                    "adapted_angle": "โมเดลการเงินแบบอัตโนมัติ 4 ขั้นตอน",
+                },
+                {
+                    "topic": "ถ้าโลกนี้หยุดหมุน 5 วินาที จะเกิดอะไรขึ้น? (What-If)",
+                    "platform": "FB Reels / Shorts",
+                    "views_ref": "5.4M",
+                    "hook_angle": "Hypothetical Curiosity",
+                    "why_viral": "Visual Retention สูงมาก",
+                    "adapted_angle": "หลักการฟิสิกส์และความจริงอันน่าสะพรึง",
+                },
+            ],
+            "current_script_package": {
+                "status": "READY_FOR_REVIEW",  # READY_FOR_REVIEW -> APPROVED -> PUBLISHED
+                "title": "ความลับที่ทำให้คน 1% รวยขึ้นเรื่อยๆ ในยุค AI (และความจริงที่ 99% ไม่เคยรู้)",
+                "youtube_longform": {
+                    "duration": "10:24 นาที",
+                    "midroll_breaks": ["03:45", "07:15"],
+                    "sections": [
+                        {
+                            "time": "00:00 - 00:45",
+                            "phase": "Hook & Pattern Interrupt",
+                            "b_roll": "ภาพสลับเร็ว ตัวเลขตลาดหุ้น พาดหัวข่าว และแผนที่ความมั่งคั่ง",
+                            "script": "ถ้าคุณยังคิดว่าคนรวยทำงานหนักกว่าคนทั่วไป... คุณกำลังตกหลุมพรางที่ถูกออกแบบมาเป็นร้อยปี วันนี้เราจะแกะรหัส 3 ความจริงที่ไม่มีใครสอนคุณในห้องเรียน...",
+                        },
+                        {
+                            "time": "00:45 - 03:45",
+                            "phase": "The Shift: ทำไมแรงกายถึงสู้ระบบไม่ได้",
+                            "b_roll": "กราฟผลตอบแทน ดอกเบี้ยทบต้น และการเปรียบเทียบระบบอัตโนมัติ",
+                            "script": "ในประวัติศาสตร์ มนุษย์ถูกสอนให้แลกเวลาเป็นเงิน แต่ในยุค AI กฎข้อนี้ถูกฉีกทิ้งทั้งหมด...",
+                        },
+                        {
+                            "time": "03:45 - 07:15",
+                            "phase": "Deep-Dive: 3 เสาหลักของการสร้างเครื่องจักรเงินสด [Mid-roll Ad #1]",
+                            "b_roll": "ภาพเซิร์ฟเวอร์ AI การรันโค้ด และการไหลของกระแสเงินสด",
+                            "script": "เสาหลักที่หนึ่งคือ Leverage หรือคานงัดที่ไม่ต้องใช้คน... [โฆษณาแทรกสร้างรายได้จุดที่ 1]",
+                        },
+                        {
+                            "time": "07:15 - 09:30",
+                            "phase": "Case Study & Psychological Traps [Mid-roll Ad #2]",
+                            "b_roll": "บทเรียนจากวิกฤตเศรษฐกิจในอดีต และกราฟฟิกเปรียบเทียบ Before/After",
+                            "script": "จุดที่คน 99% สะดุดล้มคือกับดักทางความคิด... [โฆษณาแทรกสร้างรายได้จุดที่ 2]",
+                        },
+                        {
+                            "time": "09:30 - 10:24",
+                            "phase": "High-Retention Outro & Subscribe CTA",
+                            "b_roll": "ภาพสรุปคีย์เฟรม เชิญชวนกด Subscribe และแนะนำคลิปถัดไป",
+                            "script": "ถ้าคุณไม่อยากพลาดกลยุทธ์ใหม่ๆ อย่าลืมกด Subscribe และแชร์คลิปนี้ให้เพื่อนที่คุณอยากเติบโตไปด้วยกัน...",
+                        },
+                    ],
+                },
+                "shorts_derivatives": [
+                    {
+                        "platform": "YouTube Shorts (9:16)",
+                        "duration": "58s",
+                        "hook": "ทำไมคนทำงานหนัก 12 ชม. ถึงจนกว่าคนใช้ระบบ?",
+                        "script": "คนส่วนใหญ่คิดว่าอยากรวยต้องทำงานหนักขึ้น แต่ความจริงคือ...",
+                    },
+                    {
+                        "platform": "Facebook Reels (9:16)",
+                        "duration": "45s",
+                        "hook": "3 กับดักการเงินที่ดูดเงินออกจากกระเป๋าคุณทุกเดือน!",
+                        "script": "เช็กด่วน ก่อนหมดปี คุณกำลังทำ 3 สิ่งนี้อยู่หรือเปล่า?...",
+                    },
+                    {
+                        "platform": "TikTok (9:16)",
+                        "duration": "50s",
+                        "hook": "ถ้าอยากมีอิสรภาพใน 1 ปี ให้เริ่มจากสิ่งนี้สิ่งเดียว!",
+                        "script": "หยุดเลื่อนผ่าน 50 วินาทีนี้อาจเปลี่ยนวิธีคิดของคุณไปตลอดชีวิต...",
+                    },
+                ],
+                "faceless_assets": {
+                    "voiceover_tone": "เสียงสุขุม หนักแน่น ทรงพลัง เว้นจังหวะ 0.5s ทุกจุดเน้น (Narrative Authority)",
+                    "b_roll_prompts": "Cinematic 4K, dark moody tech lighting, financial data visualization, minimalist studio B-roll",
+                    "youtube_seo_tags": ["การเงินส่วนบุคคล", "สร้างรายได้ออนไลน์", "AI2026", "passive income", "AdSense", "สารคดีธุรกิจ"],
+                },
+            },
+            "platform": "YouTube (Long-form 8-12m) + Shorts / FB Reels / TikTok",
             "account": "@aurum.isle",
-            "video_title": "เมื่อปล่อยบอท AI 11 ตัวไปล่าเงิน $1,000 บนเกาะร้าง...",
+            "video_title": "ความลับที่ทำให้คน 1% รวยขึ้นเรื่อยๆ ในยุค AI (และความจริงที่ 99% ไม่เคยรู้)",
             "views": "24,850",
             "likes": "1,940",
             "comments": "142",
             "shares": "389",
             "retention": "78.4%",
             "avg_watch": "28s",
-            "hashtags": "#ai #money #trading #aurumisle #gold #algorithmictrading #passiveincome",
+            "hashtags": "#ai #money #trading #aurumisle #gold #algorithmictrading #passiveincome #adsense",
             "hook_script": (
                 "[00:00 - 00:03] Hook: คุณเคยคิดมั้ยว่าถ้าปล่อยบอท AI 11 ตัวไปอยู่บนเกาะร้าง แล้วสั่งให้หาเงิน $1,000 ใน 30 วัน จะเกิดอะไรขึ้น?\n"
                 "[00:03 - 00:09] Scene 1: นี่คือ Aurum Isle! บอทตัวแรกเป็น CIO วางแผน, ตัวสองเขียนโค้ด Micro-SaaS, ตัวสามเป็นมีมครีเอเตอร์ทำคลิปนี้ที่คุณกำลังดูอยู่!\n"
@@ -830,6 +934,69 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             </div>
         </div>
         """
+
+    # Prepare YouTube & Viral Video Studio (MEME_STUDIO) variables
+    meme_d = studio_deliverables.get("MEME_STUDIO", {})
+    meme_yt = meme_d.get("youtube_progress", {})
+    meme_subs = int(meme_yt.get("subscribers", 780))
+    meme_subs_target = int(meme_yt.get("subscribers_target", 1000))
+    meme_hours = int(meme_yt.get("watch_hours", 2940))
+    meme_hours_target = int(meme_yt.get("watch_hours_target", 4000))
+    meme_prog_pct = float(meme_yt.get("progress_pct", 73.5))
+    meme_rpm_usd = float(meme_yt.get("est_rpm_usd", 4.50))
+    meme_rpm_thb = float(meme_yt.get("est_rpm_thb", 155.0))
+
+    meme_radar = meme_d.get("trending_radar_items", [])
+    meme_radar_rows_html = ""
+    for item in meme_radar:
+        meme_radar_rows_html += f"""
+        <tr>
+            <td><span class="pill" style="background:#fee2e2;color:#991b1b;font-weight:700">{html.escape(str(item.get('platform', '')))}</span></td>
+            <td><strong>{html.escape(str(item.get('topic', '')))}</strong></td>
+            <td class="num" style="color:#10b981;font-weight:800">{html.escape(str(item.get('views_ref', '')))}</td>
+            <td><span class="pill" style="background:#e0f2fe;color:#0369a1">{html.escape(str(item.get('hook_angle', '')))}</span></td>
+            <td>{html.escape(str(item.get('why_viral', '')))}</td>
+            <td style="color:#d97706;font-weight:700">{html.escape(str(item.get('adapted_angle', '')))}</td>
+        </tr>
+        """
+
+    meme_pkg = meme_d.get("current_script_package", {})
+    meme_pkg_title = html.escape(str(meme_pkg.get("title", "")))
+    meme_long = meme_pkg.get("youtube_longform", {})
+    meme_pkg_duration = html.escape(str(meme_long.get("duration", "10:24 นาที")))
+    meme_midrolls = html.escape(", ".join(meme_long.get("midroll_breaks", ["03:45", "07:15"])))
+
+    meme_sections_rows_html = ""
+    for sec in meme_long.get("sections", []):
+        meme_sections_rows_html += f"""
+        <tr>
+            <td class="num" style="font-weight:800;color:#f43f5e;white-space:nowrap">{html.escape(str(sec.get('time', '')))}</td>
+            <td style="font-weight:700;white-space:nowrap">{html.escape(str(sec.get('phase', '')))}</td>
+            <td style="font-size:0.75rem;color:var(--text-sub)">{html.escape(str(sec.get('b_roll', '')))}</td>
+            <td style="font-size:0.8rem;line-height:1.45">{html.escape(str(sec.get('script', '')))}</td>
+        </tr>
+        """
+
+    meme_shorts = meme_pkg.get("shorts_derivatives", [])
+    meme_shorts_cards_html = ""
+    for sh in meme_shorts:
+        meme_shorts_cards_html += f"""
+        <div style="background:var(--bg-main);border:1px solid var(--border-col);border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between">
+            <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <span class="pill" style="background:#f3e8ff;color:#6b21a8;font-weight:800">{html.escape(str(sh.get('platform', '')))}</span>
+                    <span style="font-size:0.75rem;color:var(--text-sub)">⏱️ {html.escape(str(sh.get('duration', '')))}</span>
+                </div>
+                <div style="font-weight:800;color:#f43f5e;margin-bottom:6px;font-size:0.86rem">🎯 Hook: "{html.escape(str(sh.get('hook', '')))}"</div>
+                <div style="color:var(--text-main);font-size:0.8rem;line-height:1.45">{html.escape(str(sh.get('script', '')))}</div>
+            </div>
+        </div>
+        """
+
+    meme_assets = meme_pkg.get("faceless_assets", {})
+    meme_voiceover_tone = html.escape(str(meme_assets.get("voiceover_tone", "")))
+    meme_b_roll_prompts = html.escape(str(meme_assets.get("b_roll_prompts", "")))
+    meme_seo_tags_pills = " ".join([f'<span class="pill" style="margin-right:4px">#{html.escape(str(t))}</span>' for t in meme_assets.get("youtube_seo_tags", [])])
 
     html_doc = f"""<!DOCTYPE html>
 <html lang="th" data-theme="light">
@@ -2848,12 +3015,13 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     </div>
     <div class="catchup-banner" style="border-color:#f43f5e;background:linear-gradient(90deg,rgba(244,63,94,0.12),rgba(249,115,22,0.12))">
         <div>
-            <strong style="color:#f43f5e">🎬 Enterprise Viral Media & Creator Attribution OS (Maya Lin & Sarah Jenkins):</strong>
-            <span>ระบบสร้างสคริปต์และสตอรี่บอร์ดคลิปสั้น 9:16 พร้อมวิเคราะห์ Conversion Funnel (Hook Hold Rate ➔ CTR ➔ Leads ➔ Revenue)</span>
+            <strong style="color:#f43f5e">🎬 YouTube & Viral Video Studio — Autonomous AdSense & Multi-Platform Engine (MEME STUDIO):</strong>
+            <span>ระบบสแกนคลิปติดเทรนด์ เจนสคริปต์คลิปยาว 8-12 นาที (กินค่าโฆษณา YouTube AdSense) พร้อมซอยตัด 3 คลิปสั้น (FB Reels & TikTok) อัตโนมัติ — ผู้บริหารมีหน้าที่เพียงตรวจและกดยืนยัน</span>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="cozy-btn gold" onclick="generateEnterpriseViralScript()">✨ สุ่มสร้างสคริปต์ใหม่</button>
-            <button class="cozy-btn green" onclick="submitQuickStoreOrder('MEME_STUDIO', 'TikTok Creator Fund & Brand Sponsor Payout', 35.0)">🧪 บันทึกรายได้สปอนเซอร์เข้าบัญชีเทส (+$35.00)</button>
+            <button class="cozy-btn green btn-approve-viral-pkg" id="pageBtnApproveViralPkg" onclick="approveViralPackage()">✅ ตรวจสอบแล้ว อนุมัติลงช่อง (Approve to Publish)</button>
+            <button class="cozy-btn" style="background:#f43f5e;color:#ffffff" onclick="submitQuickStoreOrder('MEME_STUDIO', 'YouTube AdSense & Multi-Platform Ad Revenue', 35.0)">🧪 บันทึกรายได้ AdSense เข้าบัญชีเทส (+$35.00)</button>
         </div>
     </div>
 
@@ -2862,22 +3030,138 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         <div class="stat-metric-box" style="border-left:4px solid #10b981">
             <div class="lbl">🟢 รายได้สื่อบัญชีจริง (Live Media Revenue)</div>
             <div class="val" style="color:#10b981">$0.00</div>
-            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">🧪 บัญชีเทสจำลองแคมเปญ: <strong style="color:#f59e0b" id="memePageTestRevVal">${v_media:+,.2f}</strong></div>
+            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">🧪 บัญชีเทสจำลองแคมเปญ: <strong style="color:#f59e0b" id="memePageTestRevVal">${{v_media:+,.2f}}</strong></div>
         </div>
         <div class="stat-metric-box" style="border-left:4px solid #f43f5e">
-            <div class="lbl">🎯 3-Second Hook Hold Rate & Avg Watch</div>
-            <div class="val" style="color:#f43f5e">78.4% Hold Rate</div>
-            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">เวลาดูเฉลี่ย 28.4 วินาที (สูงกว่าเกณฑ์ 65%)</div>
+            <div class="lbl">🎯 YouTube Partner Progress (AdSense)</div>
+            <div class="val" style="color:#f43f5e">{meme_prog_pct}% ของเป้าหมาย</div>
+            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">{meme_subs:,}/{meme_subs_target:,} Subs • {meme_hours:,}/{meme_hours_target:,} ชม. • RPM ${meme_rpm_usd:.2f} (฿{meme_rpm_thb:.0f})</div>
         </div>
         <div class="stat-metric-box" style="border-left:4px solid #0ea5e9">
-            <div class="lbl">🔗 Click-Through Rate (CTR) & Leads</div>
-            <div class="val" style="color:#0ea5e9">3.85% CTR</div>
-            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">89,400 วิว ➔ 1,840 คลิก ➔ 312 Qualified Leads</div>
+            <div class="lbl">🎬 Hybrid Production Format</div>
+            <div class="val" style="color:#0ea5e9">1 คลิปยาว + 3 คลิปสั้น</div>
+            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">วิดีโอ 8-12 นาที (2 Mid-roll Ads) ➔ ซอยตัด 3 Shorts/Reels/TikTok</div>
         </div>
         <div class="stat-metric-box" style="border-left:4px solid #8b5cf6">
-            <div class="lbl">📊 ต้นทุนหาลูกค้า (CAC) & ผลตอบแทน (ROAS)</div>
-            <div class="val" style="color:#8b5cf6">Organic CAC $0.00</div>
-            <div style="font-size:0.75rem;color:#10b981;margin-top:4px">Paid Boost ROAS เฉลี่ย 5.4x</div>
+            <div class="lbl">🤖 Autonomous Pipeline Status</div>
+            <div class="val" style="color:#8b5cf6">READY FOR REVIEW</div>
+            <div style="font-size:0.75rem;color:#10b981;margin-top:4px">สแกนเทรนด์ YT/TikTok ➔ คิดบท ➔ รอคลิกอนุมัติ 1 ปุ่ม</div>
+        </div>
+    </div>
+
+    <!-- YouTube Monetization Milestone Card -->
+    <div class="white-card" style="border:1px solid rgba(244,63,94,0.3);margin-bottom:16px;background:linear-gradient(135deg,rgba(244,63,94,0.04),rgba(249,115,22,0.04))">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+            <div>
+                <strong style="color:#f43f5e;font-size:0.95rem">🎯 เส้นทางสู่ YouTube Partner Program (เปิดรับส่วนแบ่งค่าโฆษณา AdSense):</strong>
+                <div style="font-size:0.78rem;color:var(--text-sub)">เป้าหมาย: ผู้ติดตาม 1,000 คน + เวลาดู 4,000 ชั่วโมง เพื่อเปิดสร้างรายได้จากโฆษณาคั่นคลิป (Mid-roll Ads) ในวิดีโอ 8-12 นาที</div>
+            </div>
+            <span style="font-size:1.1rem;font-weight:900;color:#f43f5e">{meme_prog_pct}% สำเร็จแล้ว</span>
+        </div>
+        <div style="background:rgba(0,0,0,0.08);border-radius:99px;height:12px;overflow:hidden;margin-bottom:12px">
+            <div style="background:linear-gradient(90deg,#f43f5e,#f59e0b);height:100%;width:{meme_prog_pct}%;border-radius:99px"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:0.8rem">
+            <div style="background:var(--bg-main);border:1px solid var(--border-col);border-radius:8px;padding:8px 12px">👥 ผู้ติดตามปัจจุบัน: <strong>{meme_subs:,}</strong> / {meme_subs_target:,} คน ({meme_subs/meme_subs_target*100:.1f}%)</div>
+            <div style="background:var(--bg-main);border:1px solid var(--border-col);border-radius:8px;padding:8px 12px">⏱️ ชั่วโมงรับชมสะสม: <strong>{meme_hours:,}</strong> / {meme_hours_target:,} ชม. ({meme_hours/meme_hours_target*100:.1f}%)</div>
+            <div style="background:var(--bg-main);border:1px solid var(--border-col);border-radius:8px;padding:8px 12px">💵 ประมาณการรายได้ต่อพันวิว (RPM): <strong>${meme_rpm_usd:.2f} (~฿{meme_rpm_thb:.0f})</strong></div>
+        </div>
+    </div>
+
+    <!-- AI Trend Radar Card (Option A2) -->
+    <div class="white-card" style="margin-bottom:16px">
+        <div class="section-head">
+            <div>
+                <h2>📡 เรดาร์จับคลิปติดเทรนด์ & ถอดรหัสจิตวิทยาไวรัล (AI Trend Radar — YouTube, TikTok, Facebook)</h2>
+                <p style="font-size:0.82rem;color:var(--text-sub);margin-top:3px">
+                    AI สแกนคลิปที่กำลังเป็นกระแสใน YouTube Trending, TikTok Viral และ FB Reels เพื่อแกะรหัส Hook และจิตวิทยาความอยากรู้ แล้วนำมาประยุกต์เป็นคอนเทนต์ของช่องทันที
+                </p>
+            </div>
+            <span class="pill" style="background:#fee2e2;color:#991b1b;font-weight:800">Auto Trend Scanner</span>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>แพลตฟอร์ม</th>
+                        <th>หัวข้อคลิปติดเทรนด์ที่ตรวจพบ</th>
+                        <th>ยอดวิวอ้างอิง</th>
+                        <th>มุมจิตวิทยา (Winning Hook)</th>
+                        <th>ทำไมถึงไวรัล?</th>
+                        <th>ไอเดียปรับใช้กับช่องเรา (Adapted Original Angle)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {meme_radar_rows_html}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Autonomous Production Package Card (Option A1 + A3) -->
+    <div class="white-card" style="border:2px solid #f43f5e;margin-bottom:16px">
+        <div class="section-head">
+            <div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <h2>📦 แพ็กเกจวิดีโอยาว 10:24 นาที + 3 คลิปสั้น (Autonomous Production Package — Human in the Loop)</h2>
+                    <span id="viralPkgStatusBadge" class="pill viral-status-badge" style="background:#fef3c7;color:#92400e;font-weight:800;font-size:0.85rem">⏳ READY FOR REVIEW</span>
+                </div>
+                <p style="font-size:0.83rem;color:var(--text-sub);margin-top:3px">
+                    AI คิดหัวข้อ วางโครงสร้างสคริปต์ 10:24m กำหนดจุดคั่นโฆษณา Mid-roll และซอยตัด 3 Shorts/Reels/TikTok พร้อม Prompt วิดีโอ 4K และเสียงพากย์ — ผู้บริหารมีหน้าที่เพียงตรวจและกดยืนยัน
+                </p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="cozy-btn green btn-approve-viral-pkg" id="btnApproveViralPkg" onclick="approveViralPackage()" style="font-weight:800">✅ ผู้บริหารกดอนุมัติลงช่อง (Approve to Publish)</button>
+                <button class="cozy-btn gold" onclick="copyLongformScript()">📋 คัดลอกสคริปต์คลิปยาว (10:24m)</button>
+                <button class="cozy-btn purple" onclick="copyShortsScripts()">📱 คัดลอก 3 คลิปสั้น (Shorts/Reels)</button>
+            </div>
+        </div>
+
+        <!-- Video Header Info -->
+        <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-radius:12px;padding:14px;margin-bottom:16px">
+            <h3 style="font-size:1.05rem;color:#f43f5e;font-weight:900;margin:0 0 6px 0">{meme_pkg_title}</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:0.78rem">
+                <span class="pill" style="background:#fee2e2;color:#991b1b">🔴 YouTube หลัก: <strong>{meme_pkg_duration}</strong></span>
+                <span class="pill" style="background:#fef3c7;color:#92400e">💰 จุดคั่นโฆษณา AdSense Mid-rolls: <strong>{meme_midrolls}</strong></span>
+                <span class="pill" style="background:#e0f2fe;color:#075985">✂️ คลิปสั้นดึงดูดคน: <strong>3 แพลตฟอร์ม (YT Shorts, FB Reels, TikTok)</strong></span>
+                <span class="pill" style="background:#f3e8ff;color:#6b21a8">🎙️ โมเดลช่อง: <strong>Faceless AI Authority</strong></span>
+            </div>
+        </div>
+
+        <!-- 10:24m Storyboard Table -->
+        <div style="margin-bottom:16px">
+            <strong style="font-size:0.86rem;color:#f59e0b;display:block;margin-bottom:8px">🎬 สตอรี่บอร์ดคลิปยาว 10:24 นาที (YouTube Long-form Production & Mid-roll Slots):</strong>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ช่วงเวลา (Timecode)</th>
+                            <th>ช่วงเนื้อหา (Phase)</th>
+                            <th>มุมกล้องและ Visual / B-Roll Prompts</th>
+                            <th>บทพูด / เสียงพากย์ (Voiceover Script)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {meme_sections_rows_html}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3 Derivative Shorts Cards -->
+        <div style="margin-bottom:16px">
+            <strong style="font-size:0.86rem;color:#8b5cf6;display:block;margin-bottom:8px">✂️ 3 คลิปสั้นซอยตัดเชื่อมคนดูเข้าช่องหลัก (Derivative Shorts / Reels / TikTok):</strong>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">
+                {meme_shorts_cards_html}
+            </div>
+        </div>
+
+        <!-- Faceless Production Assets -->
+        <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-radius:12px;padding:14px;font-size:0.8rem">
+            <div style="font-weight:800;color:#10b981;margin-bottom:6px">🎙️ ข้อมูลประกอบการผลิตแบบ Faceless (ไม่ต้องออกหน้ากล้อง):</div>
+            <div style="margin-bottom:4px"><strong>โทนเสียงพากย์:</strong> {meme_voiceover_tone}</div>
+            <div style="margin-bottom:4px"><strong>Cinematic B-Roll Prompts:</strong> <code>{meme_b_roll_prompts}</code></div>
+            <div><strong>YouTube SEO Tags:</strong> {meme_seo_tags_pills}</div>
         </div>
     </div>
 
@@ -8293,6 +8577,74 @@ function copyViralScript() {{
     }}
 }}
 
+function copyLongformScript() {{
+    const pkg = APP.studio_deliverables?.MEME_STUDIO?.current_script_package;
+    if (!pkg) return;
+    const yl = pkg.youtube_longform || {{}};
+    let txt = `🎬 [YOUTUBE LONG-FORM SCRIPT (8-12m) — AdSense Mid-roll Monetization]\n`;
+    txt += `ชื่อเรื่อง: ${{pkg.title}}\nความยาว: ${{yl.duration}} | จุดแทรกโฆษณา Mid-roll: ${{(yl.midroll_breaks || []).join(', ')}}\n\n`;
+    (yl.sections || []).forEach(sec => {{
+        txt += `⏱️ [${{sec.time}}] ${{sec.phase}}\n`;
+        txt += `🎥 B-Roll / Visual: ${{sec.b_roll}}\n`;
+        txt += `🎙️ Voiceover: ${{sec.script}}\n\n`;
+    }});
+    if (navigator.clipboard) {{
+        navigator.clipboard.writeText(txt).then(() => {{
+            alert("📋 คัดลอกสคริปต์คลิปยาว 10:24 นาที (YouTube Longform) เรียบร้อยแล้ว!");
+        }}).catch(() => alert("คัดลอกสคริปต์เรียบร้อย!"));
+    }} else {{
+        alert("คัดลอกสคริปต์เรียบร้อย!");
+    }}
+}}
+
+function copyShortsScripts() {{
+    const pkg = APP.studio_deliverables?.MEME_STUDIO?.current_script_package;
+    if (!pkg) return;
+    const shorts = pkg.shorts_derivatives || [];
+    let txt = `📱 [3 DERIVATIVE SHORTS / REELS / TIKTOK — Multi-Platform Funnel]\n\n`;
+    shorts.forEach((s, idx) => {{
+        txt += `[คลิปที่ ${{idx + 1}}] แพลตฟอร์ม: ${{s.platform}} (${{s.duration}})\n`;
+        txt += `🎯 Hook: ${{s.hook}}\n`;
+        txt += `📜 Script: ${{s.script}}\n\n`;
+    }});
+    if (navigator.clipboard) {{
+        navigator.clipboard.writeText(txt).then(() => {{
+            alert("📱 คัดลอกสคริปต์ 3 คลิปสั้น (Shorts / Reels / TikTok) เรียบร้อยแล้ว!");
+        }}).catch(() => alert("คัดลอกสคริปต์เรียบร้อย!"));
+    }} else {{
+        alert("คัดลอกสคริปต์เรียบร้อย!");
+    }}
+}}
+
+function approveViralPackage() {{
+    const pkg = APP.studio_deliverables?.MEME_STUDIO?.current_script_package;
+    if (pkg) pkg.status = "APPROVED";
+    const badges = document.querySelectorAll('.viral-status-badge, #viralPkgStatusBadge, #modalViralPkgStatusBadge');
+    badges.forEach(b => {{
+        b.innerHTML = "✅ APPROVED TO PUBLISH";
+        b.style.background = "#dcfce7";
+        b.style.color = "#166534";
+    }});
+    const btns = document.querySelectorAll('.btn-approve-viral-pkg, #btnApproveViralPkg, #pageBtnApproveViralPkg, #modalBtnApproveViralPkg');
+    btns.forEach(btn => {{
+        btn.textContent = "✅ อนุมัติลงช่องเรียบร้อย";
+        btn.disabled = true;
+        btn.style.opacity = "0.75";
+    }});
+    const kpiStatus = document.getElementById('kpiPipelineStatusText');
+    if (kpiStatus) {{
+        kpiStatus.textContent = "APPROVED TO PUBLISH";
+        kpiStatus.style.color = "#10b981";
+    }}
+    // Call server API
+    fetch('/api/viral_studio/approve', {{
+        method: 'POST',
+        headers: {{ 'Content-Type': 'application/json' }},
+        body: JSON.stringify({{ status: 'APPROVED' }})
+    }}).catch(e => console.log('Approve API called:', e));
+    alert("🎉 ผู้บริหารตรวจและอนุมัติแพ็กเกจวิดีโอยาว 10:24m + 3 Shorts เรียบร้อยแล้ว!\nระบบเตรียมส่งต่อไปยังคิวเรนเดอร์และเผยแพร่ลงช่องอัตโนมัติ");
+}}
+
 function copyTechCode() {{
     const c = APP.studio_deliverables?.TECH_STUDIO?.code || "";
     if (navigator.clipboard) {{
@@ -8363,58 +8715,212 @@ function switchDeliverableStudio(studioId) {{
     if (!body) return;
 
     if (studioId === 'MEME_STUDIO') {{
+        const pkg = d.current_script_package || {{}};
+        const yl = pkg.youtube_longform || {{}};
+        const shorts = pkg.shorts_derivatives || [];
+        const assets = pkg.faceless_assets || {{}};
+        const radar = d.trending_radar_items || [];
+        const yt = d.youtube_progress || {{ subscribers: 780, subscribers_target: 1000, watch_hours: 2940, watch_hours_target: 4000, progress_pct: 73.5, est_rpm_usd: 4.5, est_rpm_thb: 155 }};
+        const statusText = pkg.status || 'READY_FOR_REVIEW';
+        const isApproved = statusText === 'APPROVED';
+
         body.innerHTML = `
-        <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
-            <div class="phone-mockup-frame">
-                <div class="phone-notch"></div>
-                <div style="padding:4px 12px 6px 12px;display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;font-weight:700">
-                    <span>${{d.account || '@aurum.isle'}}</span>
-                    <span style="color:#10b981;font-size:0.68rem;background:rgba(16,185,129,0.2);padding:1px 6px;border-radius:99px">● Live Reel</span>
-                </div>
-                <div class="reel-video-preview">
-                    <div class="reel-play-icon">▶</div>
-                    <div class="reel-action-col">
-                        <div class="reel-action-btn"><span>❤️</span><span>${{d.likes || '1.9K'}}</span></div>
-                        <div class="reel-action-btn"><span>💬</span><span>${{d.comments || '142'}}</span></div>
-                        <div class="reel-action-btn"><span>↗️</span><span>${{d.shares || '389'}}</span></div>
-                        <div class="reel-action-btn"><span>🎵</span><span style="font-size:0.6rem">Original</span></div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+            <!-- Header Banner -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;background:var(--bg-sub);border:1px solid var(--border-col);border-radius:14px;padding:16px">
+                <div style="max-width:700px">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                        <span style="font-size:1.4rem">🎬</span>
+                        <h3 style="font-size:1.15rem;font-weight:900;color:var(--text-main);margin:0">${{d.title}}</h3>
+                        <span class="pill" style="background:#fee2e2;color:#991b1b;font-weight:800">MEME STUDIO</span>
                     </div>
-                    <div class="reel-overlay-content">
-                        <div style="font-weight:900;font-size:0.86rem;color:#fde68a;margin-bottom:4px;text-shadow:0 1px 4px rgba(0,0,0,0.8)">
-                            ${{d.video_title || ''}}
-                        </div>
-                        <div style="font-size:0.72rem;color:#e2e8f0;line-height:1.35;max-height:85px;overflow:hidden">
-                            ${{d.caption || ''}}
-                        </div>
+                    <p style="font-size:0.8rem;color:var(--text-sub);margin:0 0 8px 0;line-height:1.4">${{d.tagline}}</p>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;font-size:0.75rem">
+                        <span class="pill" style="background:#fee2e2;color:#991b1b">🔴 ช่องหลัก: ${{d.channel_name || 'What-If & Frontier Chronicles'}}</span>
+                        <span class="pill" style="background:#dcfce7;color:#166534">💰 ${{d.monetization_model || 'YouTube Partner Program (AdSense)'}}</span>
+                        <span class="pill" style="background:#e0f2fe;color:#075985">⏱️ ${{d.target_video_duration || '8-12 นาที (Mid-roll Ads)'}}</span>
+                        <span class="pill" style="background:#f3e8ff;color:#6b21a8">✂️ ${{d.derivative_shorts_count || 3}} คลิปสั้นเชื่อมช่องหลัก</span>
                     </div>
                 </div>
-                <div class="reel-stats-bar">
-                    <div>👁️ ${{d.views || '24.8K'}} วิว</div>
-                    <div>⏱️ เฉลี่ย ${{d.avg_watch || '28s'}}</div>
-                    <div>📈 Retention ${{d.retention || '78.4%'}}</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button class="cozy-btn ${{isApproved ? '' : 'green'}} btn-approve-viral-pkg" id="modalBtnApproveViralPkg" onclick="approveViralPackage()" style="font-size:0.8rem;padding:6px 14px;font-weight:800">
+                        ${{isApproved ? '✅ อนุมัติลงช่องเรียบร้อย' : '✅ ตรวจสอบแล้ว อนุมัติลงช่อง (Approve to Publish)'}}
+                    </button>
+                    <button class="cozy-btn gold" onclick="copyLongformScript()" style="font-size:0.8rem;padding:6px 14px">📋 คัดลอกคลิปยาว 10:24m</button>
+                    <button class="cozy-btn purple" onclick="copyShortsScripts()" style="font-size:0.8rem;padding:6px 14px">📱 คัดลอก 3 คลิปสั้น</button>
+                    <button class="cozy-btn" onclick="copyViralScript()" style="font-size:0.8rem;padding:6px 14px">📋 คัดลอกสคริปต์ไวรัล</button>
                 </div>
             </div>
 
-            <div style="flex:1;min-width:300px">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+            <!-- YouTube Partner Monetization Progress Bar (AdSense) -->
+            <div style="background:linear-gradient(135deg, rgba(244,63,94,0.08), rgba(249,115,22,0.08));border:1px solid rgba(244,63,94,0.3);border-radius:14px;padding:14px 18px">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+                    <strong style="color:#f43f5e;font-size:0.88rem">🎯 ความคืบหน้าสู่ YouTube Partner Program (เปิดสร้างรายได้ค่าโฆษณา AdSense):</strong>
+                    <span style="font-weight:900;color:#f43f5e;font-size:0.95rem">${{yt.progress_pct}}% ของเกณฑ์ขั้นต่ำ</span>
+                </div>
+                <div style="background:rgba(0,0,0,0.1);border-radius:99px;height:12px;overflow:hidden;margin-bottom:10px">
+                    <div style="background:linear-gradient(90deg,#f43f5e,#f59e0b);height:100%;width:${{yt.progress_pct}}%;border-radius:99px;transition:width 0.4s ease"></div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.78rem">
+                    <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">👥 ผู้ติดตาม: <strong>${{yt.subscribers}}</strong> / ${{yt.subscribers_target}} คน (78%)</div>
+                    <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">⏱️ ชั่วโมงรับชม: <strong>${{yt.watch_hours}}</strong> / ${{yt.watch_hours_target}} ชม. (73.5%)</div>
+                    <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">💵 ประมาณการ RPM: <strong>$${{yt.est_rpm_usd?.toFixed(2)}} (~฿${{yt.est_rpm_thb?.toFixed(0)}})</strong> / 1,000 วิว</div>
+                </div>
+            </div>
+
+            <!-- Trend Radar (Option A2) -->
+            <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-radius:14px;padding:16px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                    <span style="font-size:1.2rem">📡</span>
                     <div>
-                        <h3 style="font-size:1.1rem;font-weight:900;color:var(--text-main)">🎬 ${{d.title}}</h3>
-                        <p style="font-size:0.78rem;color:var(--text-sub)">${{d.tagline}}</p>
+                        <strong style="font-size:0.88rem;color:var(--text-main)">AI Trend Radar — วิเคราะห์คลิปติดเทรนด์จาก YouTube, TikTok, Facebook (Option A2):</strong>
+                        <div style="font-size:0.75rem;color:var(--text-sub)">AI ดึงคลิปยอดวิวหลักล้านมาถอดรหัสจิตวิทยาความอยากรู้ เพื่อนำมาปรับใช้กับคอนเทนต์ใหม่ของช่องอย่างต่อเนื่อง</div>
                     </div>
-                    <button class="cozy-btn gold" onclick="copyViralScript()" style="padding:6px 14px;font-size:0.82rem">📋 คัดลอกสคริปต์คลิปไวรัล (Copy Script)</button>
+                </div>
+                <div class="table-wrap">
+                    <table style="font-size:0.78rem">
+                        <thead>
+                            <tr>
+                                <th>แพลตฟอร์ม</th>
+                                <th>หัวข้อคลิปติดเทรนด์</th>
+                                <th>ยอดวิวอ้างอิง</th>
+                                <th>มุมจิตวิทยา (Hook Angle)</th>
+                                <th>ทำไมถึงไวรัล?</th>
+                                <th>ไอเดียนำมาปรับใช้ (Adapted Angle)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${{radar.map(item => `
+                                <tr>
+                                    <td><span class="pill" style="background:#fee2e2;color:#991b1b">${{item.platform}}</span></td>
+                                    <td><strong>${{item.topic}}</strong></td>
+                                    <td class="num" style="color:#10b981;font-weight:700">${{item.views_ref}}</td>
+                                    <td><span class="pill" style="background:#e0f2fe;color:#0369a1">${{item.hook_angle}}</span></td>
+                                    <td>${{item.why_viral}}</td>
+                                    <td style="color:#d97706;font-weight:600">${{item.adapted_angle}}</td>
+                                </tr>
+                            `).join('')}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Autonomous Production Package (Option A1 + A3) -->
+            <div style="background:var(--bg-sub);border:2px solid #f43f5e;border-radius:14px;padding:16px">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span style="font-size:1.2rem">📦</span>
+                            <strong style="font-size:0.92rem;color:var(--text-main)">แพ็กเกจผลิตคลิปอัตโนมัติล่าสุด (Autonomous Script Package — Option A3):</strong>
+                            <span id="modalViralPkgStatusBadge" class="pill viral-status-badge" style="background:${{isApproved ? '#dcfce7' : '#fef3c7'}};color:${{isApproved ? '#166534' : '#92400e'}};font-weight:800">
+                                ${{isApproved ? '✅ APPROVED TO PUBLISH' : '⏳ READY FOR REVIEW'}}
+                            </span>
+                        </div>
+                        <h4 style="font-size:1rem;color:#f43f5e;margin:6px 0 2px 0;font-weight:900">${{pkg.title || ''}}</h4>
+                        <div style="font-size:0.75rem;color:var(--text-sub)">
+                            ความยาวคลิปยาว: <strong>${{yl.duration || '10:24 นาที'}}</strong> • จุดคั่นโฆษณา Mid-roll AdSense: <strong>${{(yl.midroll_breaks || ['03:45', '07:15']).join(', ')}}</strong> • ซอยตัด 3 คลิปสั้นเชื่อมช่อง
+                        </div>
+                    </div>
                 </div>
 
-                <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-radius:12px;padding:14px;margin-bottom:12px">
-                    <div style="font-weight:800;font-size:0.82rem;color:#f59e0b;margin-bottom:6px">📜 Full Viral Script & Hook (Instagram Reels / TikTok / Shorts):</div>
-                    <pre style="white-space:pre-wrap;font-family:'Segoe UI',sans-serif;font-size:0.8rem;line-height:1.55;color:var(--text-main)">${{d.hook_script}}</pre>
+                <!-- 10:24m YouTube Long-form Sections -->
+                <div style="margin-bottom:14px">
+                    <strong style="font-size:0.82rem;color:#f59e0b;display:block;margin-bottom:6px">🎬 ลำดับฉากคลิปยาว 10:24 นาที (YouTube Long-form Production & Mid-roll Slots):</strong>
+                    <div class="table-wrap">
+                        <table style="font-size:0.78rem">
+                            <thead>
+                                <tr>
+                                    <th>ช่วงเวลา</th>
+                                    <th>ช่วงเนื้อหา (Phase)</th>
+                                    <th>B-Roll Visual Prompt (ภาพบนจอ)</th>
+                                    <th>สคริปต์เสียงพากย์ (Voiceover Script)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${{ (yl.sections || []).map(sec => `
+                                    <tr>
+                                        <td class="num" style="font-weight:700;color:#f43f5e;white-space:nowrap">${{sec.time}}</td>
+                                        <td style="font-weight:700;white-space:nowrap">${{sec.phase}}</td>
+                                        <td style="font-size:0.75rem;color:var(--text-sub)">${{sec.b_roll}}</td>
+                                        <td style="font-size:0.78rem;line-height:1.4">${{sec.script}}</td>
+                                    </tr>
+                                `).join('')}}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div style="display:flex;gap:8px;flex-wrap:wrap">
-                    <span class="pill" style="background:#fee2e2;color:#991b1b">#ai</span>
-                    <span class="pill" style="background:#fef3c7;color:#92400e">#money</span>
-                    <span class="pill" style="background:#dcfce7;color:#166534">#trading</span>
-                    <span class="pill" style="background:#e0f2fe;color:#075985">#aurumisle</span>
-                    <span class="pill" style="background:#f3e8ff;color:#6b21a8">#algorithmictrading</span>
+                <!-- 3 Derivative Shorts -->
+                <div style="margin-bottom:14px">
+                    <strong style="font-size:0.82rem;color:#8b5cf6;display:block;margin-bottom:8px">✂️ 3 คลิปสั้นซอยตัดเชื่อมคนดูเข้าช่องหลัก (Derivative Shorts / Reels / TikTok):</strong>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px">
+                        ${{ shorts.map((sh, idx) => `
+                            <div style="background:var(--bg-main);border:1px solid var(--border-col);border-radius:10px;padding:12px;font-size:0.78rem">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                                    <span class="pill" style="background:#f3e8ff;color:#6b21a8;font-weight:700">${{sh.platform}}</span>
+                                    <span style="font-size:0.72rem;color:var(--text-sub)">⏱️ ${{sh.duration}}</span>
+                                </div>
+                                <div style="font-weight:800;color:#f43f5e;margin-bottom:4px">🎯 Hook: "${{sh.hook}}"</div>
+                                <div style="color:var(--text-sub);line-height:1.4">${{sh.script}}</div>
+                            </div>
+                        `).join('')}}
+                    </div>
+                </div>
+
+                <!-- Faceless Production Assets -->
+                <div style="background:var(--bg-main);border:1px solid var(--border-col);border-radius:10px;padding:12px;font-size:0.76rem">
+                    <div style="font-weight:800;color:#10b981;margin-bottom:6px">🎙️ Faceless Production Assets:</div>
+                    <div style="margin-bottom:4px"><strong>สไตล์เสียงพากย์:</strong> ${{assets.voiceover_tone || ''}}</div>
+                    <div style="margin-bottom:4px"><strong>Prompt ภาพ B-Roll:</strong> <code>${{assets.b_roll_prompts || ''}}</code></div>
+                    <div><strong>YouTube SEO Tags:</strong> ${{ (assets.youtube_seo_tags || []).map(t => `<span class="pill" style="margin-right:4px">#${{t}}</span>`).join('')}}</div>
+                </div>
+            </div>
+
+            <!-- Phone Mockup Preview & Hashtags (backward compatible) -->
+            <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+                <div class="phone-mockup-frame">
+                    <div class="phone-notch"></div>
+                    <div style="padding:4px 12px 6px 12px;display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;font-weight:700">
+                        <span>${{d.account || '@aurum.isle'}}</span>
+                        <span style="color:#10b981;font-size:0.68rem;background:rgba(16,185,129,0.2);padding:1px 6px;border-radius:99px">● Live Reel</span>
+                    </div>
+                    <div class="reel-video-preview">
+                        <div class="reel-play-icon">▶</div>
+                        <div class="reel-action-col">
+                            <div class="reel-action-btn"><span>❤️</span><span>${{d.likes || '1.9K'}}</span></div>
+                            <div class="reel-action-btn"><span>💬</span><span>${{d.comments || '142'}}</span></div>
+                            <div class="reel-action-btn"><span>↗️</span><span>${{d.shares || '389'}}</span></div>
+                            <div class="reel-action-btn"><span>🎵</span><span style="font-size:0.6rem">Original</span></div>
+                        </div>
+                        <div class="reel-overlay-content">
+                            <div style="font-weight:900;font-size:0.86rem;color:#fde68a;margin-bottom:4px;text-shadow:0 1px 4px rgba(0,0,0,0.8)">
+                                ${{d.video_title || ''}}
+                            </div>
+                            <div style="font-size:0.72rem;color:#e2e8f0;line-height:1.35;max-height:85px;overflow:hidden">
+                                ${{d.caption || ''}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reel-stats-bar">
+                        <div>👁️ ${{d.views || '24.8K'}} วิว</div>
+                        <div>⏱️ เฉลี่ย ${{d.avg_watch || '28s'}}</div>
+                        <div>📈 Retention ${{d.retention || '78.4%'}}</div>
+                    </div>
+                </div>
+
+                <div style="flex:1;min-width:280px">
+                    <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-radius:12px;padding:14px;margin-bottom:12px">
+                        <div style="font-weight:800;font-size:0.82rem;color:#f59e0b;margin-bottom:6px">📜 Full Viral Script & Hook (Instagram Reels / TikTok / Shorts):</div>
+                        <pre style="white-space:pre-wrap;font-family:'Segoe UI',sans-serif;font-size:0.8rem;line-height:1.55;color:var(--text-main)">${{d.hook_script}}</pre>
+                    </div>
+
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <span class="pill" style="background:#fee2e2;color:#991b1b">#ai</span>
+                        <span class="pill" style="background:#fef3c7;color:#92400e">#money</span>
+                        <span class="pill" style="background:#dcfce7;color:#166534">#trading</span>
+                        <span class="pill" style="background:#e0f2fe;color:#075985">#aurumisle</span>
+                        <span class="pill" style="background:#f3e8ff;color:#6b21a8">#algorithmictrading</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -10903,18 +11409,19 @@ async function executePortfolioAction(command, tradeId = null) {{
 // DEDICATED ENTERPRISE STUDIOS (MEME/MEDIA, ONLINE STORE, TECH & MICRO-SAAS)
 // ============================================================================
 function generateEnterpriseViralScript() {{
-    const platEl = document.getElementById('memePlatformSelect');
-    const angleEl = document.getElementById('memeAngleSelect');
-    const ctaEl = document.getElementById('memeCtaSelect');
+    const platEl = document.getElementById('viralPlatformSelect') || document.getElementById('memePlatformSelect');
+    const angleEl = document.getElementById('viralFrameworkSelect') || document.getElementById('memeAngleSelect');
+    const ctaEl = document.getElementById('viralCtaInput') || document.getElementById('memeCtaSelect');
     const customEl = document.getElementById('memeCustomTopicInput');
     const outBox = document.getElementById('memeGeneratedScriptBox');
-    const prevTitle = document.getElementById('memePhonePreviewTitle');
-    const prevCap = document.getElementById('memePhonePreviewCaption');
-    if (!outBox) return;
+    const prevTitle = document.getElementById('memeStudioPhonePreviewTitle') || document.getElementById('memePhonePreviewTitle');
+    const prevCap = document.getElementById('memeStudioPhonePreviewScript') || document.getElementById('memePhonePreviewCaption');
+    const tableBody = document.getElementById('viralStoryboardTableBody');
+    if (!outBox && !tableBody) return;
 
     const platform = platEl ? platEl.value : 'IG_REELS';
     const angle = angleEl ? angleEl.value : 'GOLD_MACRO_ALERT';
-    const ctaKey = ctaEl ? ctaEl.value : 'VIP_SIGNAL_29';
+    const ctaVal = ctaEl ? ctaEl.value : 'VIP_SIGNAL_29';
     const customTxt = (customEl && customEl.value.trim()) ? customEl.value.trim() : '';
 
     const spot = Number(APP.market?.current_price || 2685.50).toFixed(2);
@@ -10932,12 +11439,12 @@ function generateEnterpriseViralScript() {{
         BACKTEST_PRO_39: "พิมพ์ 'QUANT' เพื่อรับโมดูล Python XAUUSD Strategy Backtester Pro ($39) ไปรันทดสอบกลยุทธ์ของคุณเอง!",
         PINE_OVERLAY_24: "พิมพ์ 'PINE' เพื่อรับอินดิเคเตอร์ TradingView PineScript v5 Killzone Overlay ($24) ตีกรอบ Liquidity อัตโนมัติ!"
     }};
-    const ctaLine = ctaMap[ctaKey] || ctaMap.VIP_SIGNAL_29;
+    const ctaLine = ctaMap[ctaVal] || ctaVal || ctaMap.VIP_SIGNAL_29;
 
     let titleStr = "";
     let scriptStr = "";
 
-    if (angle === 'GOLD_MACRO_ALERT') {{
+    if (angle === 'GOLD_MACRO_ALERT' || angle === 'PAS') {{
         titleStr = `🚨 ด่วน! ทองคำ XAUUSD วิ่งทดสอบ $${{spot}} (${{chg >= 0 ? '+' : ''}}${{chg}}%) — บอร์ด AI 11 ตัวฟันธง ${{verdict}}!`;
         scriptStr = `[แพลตฟอร์ม: ${{platform}} | ความยาว: 35 วินาที | สไตล์: Fast-Cut Quant Breakdown]\n\n` +
             `⏱️ [0:00 - 0:04 | THE HOOK — ภาพซูมกราฟทองคำ XAUUSD กระพริบที่ $${{spot}}]\n` +
@@ -10951,7 +11458,7 @@ function generateEnterpriseViralScript() {{
             `• เป้าทำกำไรระยะแรก (TP1 Auto Break-Even): $${{tp1}} (RSI ปัจจุบัน = ${{rsi}})"\n\n` +
             `⏱️ [0:26 - 0:35 | HIGH-CONVERTING CALL TO ACTION]\n` +
             `"${{ctaLine}}"`;
-    }} else if (angle === 'AI_TOWN_BEHIND_SCENES') {{
+    }} else if (angle === 'AI_TOWN_BEHIND_SCENES' || angle === 'CASE_STUDY') {{
         titleStr = `🏝️ เบื้องหลังเกาะ AI 11 ตัวทำงานแทนคน 24 ชม. บนกราฟทองคำจริง ($${{spot}})!`;
         scriptStr = `[แพลตฟอร์ม: ${{platform}} | ความยาว: 38 วินาที | สไตล์: Isometric AI Town Showcase]\n\n` +
             `⏱️ [0:00 - 0:04 | THE HOOK — ภาพมุมสูงเกาะ Aurum Isle 3D]\n` +
@@ -10962,7 +11469,7 @@ function generateEnterpriseViralScript() {{
             `"ทุกไม้อ้างอิงราคาตลาดจริง 100% แยกบัญชีจริงและบัญชีเทสโปร่งใส พร้อมบันทึกสมุดบัญชี SQLite อัตโนมัติ!"\n\n` +
             `⏱️ [0:28 - 0:38 | CALL TO ACTION]\n` +
             `"${{ctaLine}}"`;
-    }} else if (angle === 'QUANT_RISK_LESSON') {{
+    }} else if (angle === 'QUANT_RISK_LESSON' || angle === 'CONTRARIAN') {{
         titleStr = `🛡️ ทำไมพอร์ตทองคำถึงล้างบ่อย? นี่คือกฎเหล็ก 1.5% Risk ของ Elena CRO!`;
         scriptStr = `[แพลตฟอร์ม: ${{platform}} | ความยาว: 32 วินาที | สไตล์: Educational Quant Authority]\n\n` +
             `⏱️ [0:00 - 0:04 | THE HOOK]\n` +
@@ -10984,14 +11491,44 @@ function generateEnterpriseViralScript() {{
             `"${{ctaLine}}"`;
     }}
 
-    outBox.textContent = scriptStr;
+    if (outBox) outBox.textContent = scriptStr;
+    if (tableBody) {{
+        const scenes = [
+            {{ tc: "00:00 - 00:05", visual: "ภาพสลับเร็ว ตัวเลขกราฟทองคำและพาดหัวข่าวสั่นสะเทือน", vo: `หยุดเลื่อนก่อน! ตอนนี้ราคาทองคำ XAUUSD อยู่ที่ $${{spot}} (${{chg >= 0 ? '+' : ''}}${{chg}}%)...`, caption: titleStr, trigger: "Pattern Interrupt & Curiosity" }},
+            {{ tc: "00:05 - 00:15", visual: "กราฟเปรียบเทียบ Before / After และการไหลของเงินทุน", vo: `เทรดเดอร์รายย่อย 90% พลาดตรงจุดนี้ แต่ทีม AI 11 ตัววิเคราะห์ DXY เรียบร้อย!`, caption: "ความจริงที่คนส่วนใหญ่เข้าใจผิด", trigger: "Agitation / Problem Framing" }},
+            {{ tc: "00:15 - 00:25", visual: "หน้าจอโค้ดบอท AI และอัลกอริทึมคำนวณความเสี่ยง 1.5%", vo: `มติเอกฉันท์คือ: ${{verdict}} XAUUSD จุดเข้า $${{entry}} ล็อก Stop Loss $${{sl}}`, caption: "ระบบคุมความเสี่ยงอัตโนมัติ", trigger: "Authority & Solution Proof" }},
+            {{ tc: "00:25 - 00:32", visual: "สรุปผลลัพธ์และตัวเลขกำไรพอร์ตสะสม", vo: `เป้าหมายทำกำไร TP1 ที่ $${{tp1}} เปลี่ยนไม้เสี่ยงให้เป็น Free Trade ทันที!`, caption: "Result Demonstration", trigger: "Social Proof & Momentum" }},
+            {{ tc: "00:32 - 00:38", visual: "หน้าจอโปรไฟล์และลิงก์รับเครื่องมือฟรี", vo: ctaLine, caption: "คลิกลิงก์หน้าโปรไฟล์", trigger: "Urgent Call-To-Action" }}
+        ];
+        tableBody.innerHTML = scenes.map(sc => `
+            <tr>
+                <td class="num" style="font-weight:700;color:#f43f5e;white-space:nowrap">${{sc.tc}}</td>
+                <td>${{sc.visual}}</td>
+                <td style="font-weight:600">${{sc.vo}}</td>
+                <td><span class="pill" style="background:#fef3c7;color:#92400e">${{sc.caption}}</span></td>
+                <td><span class="pill" style="background:#e0f2fe;color:#0369a1">${{sc.trigger}}</span></td>
+            </tr>
+        `).join('');
+    }}
     if (prevTitle) prevTitle.textContent = titleStr;
     if (prevCap) prevCap.textContent = `${{ctaLine}} • #xauusd #goldtrading #quant #aiagents`;
 }}
 
 function copyGeneratedStudioScript() {{
     const box = document.getElementById('memeGeneratedScriptBox');
-    const txt = box ? box.textContent : '';
+    const tableBody = document.getElementById('viralStoryboardTableBody');
+    let txt = box ? box.textContent : '';
+    if (!txt && tableBody) {{
+        txt = tableBody.innerText;
+    }}
+    if (navigator.clipboard && txt) {{
+        navigator.clipboard.writeText(txt).then(() => {{
+            alert("📋 คัดลอกสคริปต์คลิปไวรัลจากสตูดิโอเรียบร้อยแล้ว!");
+        }}).catch(() => alert("📋 คัดลอกสคริปต์เรียบร้อยแล้ว!"));
+    }} else {{
+        alert("📋 คัดลอกสคริปต์เรียบร้อยแล้ว!");
+    }}
+}}
     if (navigator.clipboard && txt) {{
         navigator.clipboard.writeText(txt).then(() => {{
             alert("📋 คัดลอกสคริปต์คลิปไวรัลจากสตูดิโอเรียบร้อยแล้ว!");
