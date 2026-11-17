@@ -442,3 +442,12 @@
     * `assert "vMediaVal" in html_text` preserved on `#vMediaVal` and `#memePageTestRevVal`.
     * `assert "generateEnterpriseViralScript" in html_text` preserved in interactive script generator card and JS handlers.
 
+- **Critical JavaScript Syntax & Unclickable Dashboard Bug Fix (November 2026)**:
+  - **Root Cause 1**: In `engine/dashboard_generator.py` line 8791 (`approveViralPackage()`), `alert("... \n ...")` inside a Python f-string converted `\n` to a literal ASCII newline character in a double-quoted JS string literal, causing `SyntaxError: Invalid or unexpected token`.
+  - **Fix 1**: Converted string to JS template literal with escaped newline:
+    `alert(\`🎉 ผู้บริหารตรวจและอนุมัติแพ็กเกจวิดีโอยาว 10:24m + 3 Shorts เรียบร้อยแล้ว!\\nระบบเตรียมส่งต่อไปยังคิวเรนเดอร์และเผยแพร่ลงช่องอัตโนมัติ\`);`
+  - **Root Cause 2**: In `engine/dashboard_generator.py` lines 11678-11685, an accidental duplicate block of clipboard logic with an unmatched closing brace was sitting outside `copyGeneratedStudioScript()`, causing `SyntaxError: Unexpected token '}'`.
+  - **Fix 2**: Removed redundant block and unmatched brace.
+  - **Verification**: Regenerated `reports/latest_dashboard.html` and verified all extracted `<script>` blocks via `node --check /tmp/script_*.js` returning exit code 0 and ZERO syntax errors.
+
+

@@ -8788,7 +8788,7 @@ function approveViralPackage() {{
         headers: {{ 'Content-Type': 'application/json' }},
         body: JSON.stringify({{ status: 'APPROVED' }})
     }}).catch(e => console.log('Approve API called:', e));
-    alert("🎉 ผู้บริหารตรวจและอนุมัติแพ็กเกจวิดีโอยาว 10:24m + 3 Shorts เรียบร้อยแล้ว!\nระบบเตรียมส่งต่อไปยังคิวเรนเดอร์และเผยแพร่ลงช่องอัตโนมัติ");
+    alert(`🎉 ผู้บริหารตรวจและอนุมัติแพ็กเกจวิดีโอยาว 10:24m + 3 Shorts เรียบร้อยแล้ว!\\nระบบเตรียมส่งต่อไปยังคิวเรนเดอร์และเผยแพร่ลงช่องอัตโนมัติ`);
 }}
 
 function copyTechCode() {{
@@ -11667,14 +11667,6 @@ function copyGeneratedStudioScript() {{
     if (!txt && tableBody) {{
         txt = tableBody.innerText;
     }}
-    if (navigator.clipboard && txt) {{
-        navigator.clipboard.writeText(txt).then(() => {{
-            alert("📋 คัดลอกสคริปต์คลิปไวรัลจากสตูดิโอเรียบร้อยแล้ว!");
-        }}).catch(() => alert("📋 คัดลอกสคริปต์เรียบร้อยแล้ว!"));
-    }} else {{
-        alert("📋 คัดลอกสคริปต์เรียบร้อยแล้ว!");
-    }}
-}}
     if (navigator.clipboard && txt) {{
         navigator.clipboard.writeText(txt).then(() => {{
             alert("📋 คัดลอกสคริปต์คลิปไวรัลจากสตูดิโอเรียบร้อยแล้ว!");
