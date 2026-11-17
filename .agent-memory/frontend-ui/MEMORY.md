@@ -480,4 +480,28 @@
     * Validated all 6 required string invariants: `ONLINE SHIRTS`, `vStoreVal`, `calculateStoreUnitEconomics`, `vMediaVal`, `generateEnterpriseViralScript`, `MEME STUDIO`.
     * Extracted all inline `<script>` tags and ran `node --check` with 0 syntax errors.
 
+- **Dynamic 3-Theme Viral Script Randomizer, Auto-Trade Live Positions Desk & Full-Bleed Island UI (November 2026)**:
+  - **Dynamic 3-Theme Viral Script Randomizer (`generateEnterpriseViralScript()`)**:
+    * Implemented 3 dynamic business themes:
+      1. `GOLD_FINANCE`: YouTube Longform 10:24m "เจาะลึกวิกฤตดอลลาร์ & ทิศทางราคาทองคำ XAUUSD ทะลุ $2,700+" with 2 mid-roll AdSense breaks @ 03:45 & 07:15 + 3 derivative shorts.
+      2. `THE_DAILY_FINDS`: YouTube / FB / TikTok "แกะรอยคอลเลกชันแฟชั่น & ไอเทมแต่งบ้านขายดี ป้ายยา Shopee Affiliate ค่าคอม 15-20%" with 2 mid-rolls + 3 derivative shorts.
+      3. `AI_TOWN_BEHIND_SCENES`: "เบื้องหลังเกาะ AI 11 ตัวทำงานแทนคน 24 ชม." with 2 mid-rolls + 3 derivative shorts.
+    * Interactive click on `✨ สุ่มสร้างสคริปต์ใหม่`: cycles through the 3 themes, dynamically regenerates YouTube longform 10:24m script package, 3 derivative shorts cards, 5-scene storyboard table (`#viralStoryboardTableBody` & `#memePkgSectionsTableBody`), phone preview frame, scrolls smoothly to `#viralProductionPackageCard`, and shows toast notification `✨ สุ่มสร้างชุดสคริปต์ใหม่เรียบร้อย! (ธีม: ...)`.
+  - **Auto-Trade Live Positions Desk & Closed Trades Modal (`#mt5LivePositionsModal`)**:
+    * Top header bar active badge: `🟢 AUTO-TRADE: ON (24/7 Real-Time)` + quick buttons `📈 ดูไม้เปิดอยู่ (Live Positions)` and `📜 ประวัติปิดไม้`.
+    * Floating modal `#mt5LivePositionsModal` with 4 KPI cards (Equity, Live Floating P&L, Win Rate 100%, Institutional Risk Guardrail).
+    * Tab 1: Live Positions table with ticket, symbol, type, lot, entry, SL/TP1, live P&L, and `❌ ปิดไม้นี้ทันที` button calling `closeMt5Ticket(ticket)`.
+    * Tab 2: Closed Trades table with closed time, exit price, net profit, close reason.
+    * Ticket closure shows instant notification toast: `💰 ปิดไม้ #${ticket} สำเร็จ! บันทึกกำไรเข้าพอร์ตเรียบร้อย`.
+    * 24/7 Autonomous background simulation (`startAutoTradeEngine()`): ticks price, auto-closes at TP1 with toast notifications, and opens new A+ signals when positions are low.
+    * `refreshMt5Dashboard(manual)`: pulls `/api/mt5/status`, syncs with server, and renders both tables and badges.
+  - **UI Overflow & Full-Bleed Layout Overhaul**:
+    * Top header and `.status-pills-bar`: added `flex-wrap: wrap; justify-content: flex-end;` and compact padding, preventing text overflow (`⚡ 5-HR 65% | 7-DAY 100%`) on any screen width.
+    * Island Full-bleed canvas: `.town-fullscreen-card` expanded to `calc(100vh - 110px); min-height: 640px; max-height: 900px; width: 100%; border-radius: 16px; margin-bottom: 12px;` with `#page-island` padding reduced to `8px 12px 20px 12px;` eliminating thick blue border letterboxing.
+    * 100% elimination of "ดูตารางบัญชีดิบ" throughout UI.
+  - **JavaScript Syntax & Zero-Error Proof**:
+    * Regenerated `reports/latest_dashboard.html` (1,213,029 bytes).
+    * Validated via `node --check` across all extracted inline scripts returning 0 errors.
+
+
 

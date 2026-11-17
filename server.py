@@ -161,9 +161,18 @@ def start_autonomous_learning_daemon(interval_seconds: int = 300, initial_delay_
                 # Sleep in 1-second chunks so daemon responds quickly to shutdown
                 elapsed = 0.0
                 target_interval = AUTONOMOUS_LEARNING_CONFIG.get("interval_seconds", 300)
+                sim_tick = 0
                 while elapsed < target_interval and AUTONOMOUS_LEARNING_CONFIG.get("active", True):
                     time.sleep(1.0)
                     elapsed += 1.0
+                    sim_tick += 1
+                    if sim_tick >= 10:
+                        sim_tick = 0
+                        if not xm_bridge_hub.is_connected and xm_bridge_hub.auto_trade_enabled:
+                            try:
+                                xm_bridge_hub.simulate_step()
+                            except Exception:
+                                pass
                     target_interval = AUTONOMOUS_LEARNING_CONFIG.get("interval_seconds", 300)
 
         _AUTONOMOUS_DAEMON_THREAD = threading.Thread(
@@ -264,12 +273,36 @@ class V7RequestHandler(BaseHTTPRequestHandler):
             return
 
         if self.path.startswith("/api/mt5/status"):
+            # Update simulation step if in demo mode and not connected to real EA
+            if not xm_bridge_hub.is_connected and xm_bridge_hub.auto_trade_enabled:
+                try:
+                    xm_bridge_hub.simulate_step()
+                except Exception:
+                    pass
             st = xm_bridge_hub.get_status_summary()
             st["autonomous_learning_active"] = AUTONOMOUS_LEARNING_CONFIG.get("active", True)
             st["autonomous_learning_interval_seconds"] = AUTONOMOUS_LEARNING_CONFIG.get("interval_seconds", 300)
             st["last_autonomous_cycle"] = AUTONOMOUS_LEARNING_CONFIG.get("last_cycle")
             st["auto_mode_desc"] = AUTONOMOUS_LEARNING_CONFIG.get("auto_mode_desc", "ระบบเรียนรู้ Open-Source อัตโนมัติ 24/7 ทำงานในพื้นหลังตลอดเวลาเมื่อ AI ว่าง")
             self._send_json(st)
+            return
+
+        if self.path.startswith("/api/mt5/positions"):
+            self._send_json({
+                "status": "OK",
+                "open_positions": xm_bridge_hub.get_open_positions(),
+                "count": len(xm_bridge_hub.open_positions),
+                "auto_trade_enabled": xm_bridge_hub.auto_trade_enabled
+            })
+            return
+
+        if self.path.startswith("/api/mt5/history"):
+            self._send_json({
+                "status": "OK",
+                "closed_trades": xm_bridge_hub.get_closed_trades(),
+                "count": len(xm_bridge_hub.closed_trades),
+                "total_profit": round(sum(float(t.get("profit", 0.0)) for t in xm_bridge_hub.closed_trades), 2)
+            })
             return
 
         if self.path.startswith("/api/mt5/chart_comparison"):
@@ -555,7 +588,10 @@ class V7RequestHandler(BaseHTTPRequestHandler):
             return
 
         if self.path == "/api/mt5/auto_trade":
-            enabled = bool(body.get("enabled", False))
+            if "enabled" in body:
+                enabled = bool(body["enabled"])
+            else:
+                enabled = not xm_bridge_hub.auto_trade_enabled
             current = xm_bridge_hub.set_auto_trade(enabled)
             market_session = check_xauusd_market_status()
             notice = ""
@@ -566,14 +602,21 @@ class V7RequestHandler(BaseHTTPRequestHandler):
                 "auto_trade_enabled": current,
                 "is_market_open": market_session["is_open"],
                 "market_session": market_session,
-                "notice": notice
+                "notice": notice,
+                "open_positions": xm_bridge_hub.get_open_positions(),
+                "closed_trades": xm_bridge_hub.get_closed_trades()
             })
             return
 
         if self.path == "/api/mt5/close_all":
             reason = str(body.get("reason", "Manual Close All"))
             res = xm_bridge_hub.close_all_positions(reason=reason)
-            self._send_json({"status": "QUEUED", **res})
+            self._send_json({
+                "status": "QUEUED",
+                **res,
+                "open_positions": xm_bridge_hub.get_open_positions(),
+                "closed_trades": xm_bridge_hub.get_closed_trades()
+            })
             return
 
         if self.path == "/api/mt5/close_ticket":
@@ -582,7 +625,20 @@ class V7RequestHandler(BaseHTTPRequestHandler):
                 self._send_json({"status": "ERROR", "reason": "Missing ticket number"}, status=400)
                 return
             res = xm_bridge_hub.close_ticket(int(ticket))
-            self._send_json({"status": "QUEUED", "command": res})
+            self._send_json({
+                "status": "QUEUED",
+                "command": res,
+                "ticket": int(ticket),
+                "closed_trade": res.get("closed_trade"),
+                "open_positions": xm_bridge_hub.get_open_positions(),
+                "closed_trades": xm_bridge_hub.get_closed_trades()
+            })
+            return
+
+        if self.path in ("/api/mt5/simulate_step", "/api/mt5/step"):
+            cur_p = body.get("current_price")
+            res = xm_bridge_hub.simulate_step(cur_p)
+            self._send_json({"status": "OK", **res})
             return
 
         if self.path == "/api/mt5/manual":

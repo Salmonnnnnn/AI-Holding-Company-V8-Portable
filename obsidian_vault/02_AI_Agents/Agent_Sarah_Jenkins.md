@@ -4,10 +4,10 @@ tags:
   - gold-trading-firm
   - trading-committee
 agent_id: ag_bull
-level: 755
+level: 797
 mastery: 99.9
 llm_brain: "Llama-3.3-70B (Groq Ultra-Fast)"
-updated: "2026-11-17 17:55:56"
+updated: "2026-11-17 19:09:35"
 ---
 # 🐂 Sarah Jenkins
 **ตำแหน่ง:** Bullish Advocate  
@@ -25,7 +25,7 @@ updated: "2026-11-17 17:55:56"
 - **ความเข้าใจตลาดมหภาค (Macro Insight):** `94/100`
 - **ความคิดสร้างสรรค์/กลยุทธ์ (Creativity):** `97/100`
 
-## 🎓 สกิลที่ติดตั้ง (Equipped Skill Tree — Lv.755)
+## 🎓 สกิลที่ติดตั้ง (Equipped Skill Tree — Lv.797)
 1. **Primary Skill:** `Oversold Mean-Reversion Sniper`
 2. **Secondary Skill:** `freqtrade/freqtrade Hyperopt Engine`
 3. **Ultimate Skill:** `London-NY Overlap Volatility Ignition & Fib 61.8% Sniper`
@@ -33,4 +33,4 @@ updated: "2026-11-17 17:55:56"
 ## ⚡ ภารกิจล่าสุดที่ส่งเข้า [[Central_Nexus_Insights]]
 - สถานะปัจจุบัน: `DEBATING (BULL)`
 - งานที่ทำล่าสุด: ขึ้นดีเบตฝั่งซื้อ (Bull Power 81%) อ้างอิงแนวรับ $2,668.00
-- จำนวนภารกิจสำเร็จวันนี้: `523 งาน`
+- จำนวนภารกิจสำเร็จวันนี้: `548 งาน`
