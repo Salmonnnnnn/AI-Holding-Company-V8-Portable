@@ -234,15 +234,15 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                         },
                         {
                             "time": "03:45 - 07:15",
-                            "phase": "Deep-Dive: 3 เสาหลักของการสร้างเครื่องจักรเงินสด [Mid-roll Ad #1]",
+                            "phase": "Deep-Dive: 3 เสาหลักของการสร้างเครื่องจักรเงินสด [จุดแทรกโฆษณา Ad #1 ที่ 03:45]",
                             "b_roll": "ภาพเซิร์ฟเวอร์ AI การรันโค้ด และการไหลของกระแสเงินสด",
-                            "script": "เสาหลักที่หนึ่งคือ Leverage หรือคานงัดที่ไม่ต้องใช้คน... [โฆษณาแทรกสร้างรายได้จุดที่ 1]",
+                            "script": "เสาหลักที่หนึ่งคือ Leverage หรือคานงัดที่ไม่ต้องใช้คน... [จุดแทรกโฆษณา Ad #1 ที่ 03:45 ค่าโฆษณา AdSense สูงสุด]",
                         },
                         {
                             "time": "07:15 - 09:30",
-                            "phase": "Case Study & Psychological Traps [Mid-roll Ad #2]",
+                            "phase": "Case Study & Psychological Traps [จุดแทรกโฆษณา Ad #2 ที่ 07:15]",
                             "b_roll": "บทเรียนจากวิกฤตเศรษฐกิจในอดีต และกราฟฟิกเปรียบเทียบ Before/After",
-                            "script": "จุดที่คน 99% สะดุดล้มคือกับดักทางความคิด... [โฆษณาแทรกสร้างรายได้จุดที่ 2]",
+                            "script": "จุดที่คน 99% สะดุดล้มคือกับดักทางความคิด... [จุดแทรกโฆษณา Ad #2 ที่ 07:15 เพื่อดัน Watch Time สูงสุด]",
                         },
                         {
                             "time": "09:30 - 10:24",
@@ -949,14 +949,22 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     meme_radar = meme_d.get("trending_radar_items", [])
     meme_radar_rows_html = ""
     for item in meme_radar:
+        plat_str = str(item.get('platform', ''))
+        if 'YouTube' in plat_str:
+            plat_badge = f'<span class="pill" style="background:#fee2e2;color:#dc2626;font-weight:800;border:1px solid #fca5a5">🔴 {html.escape(plat_str)}</span>'
+        elif 'TikTok' in plat_str:
+            plat_badge = f'<span class="pill" style="background:#ccfbf1;color:#0f766e;font-weight:800;border:1px solid #99f6e4">🎵 {html.escape(plat_str)}</span>'
+        else:
+            plat_badge = f'<span class="pill" style="background:#dbeafe;color:#1e40af;font-weight:800;border:1px solid #bfdbfe">📱 {html.escape(plat_str)}</span>'
+
         meme_radar_rows_html += f"""
         <tr>
-            <td><span class="pill" style="background:#fee2e2;color:#991b1b;font-weight:700">{html.escape(str(item.get('platform', '')))}</span></td>
-            <td><strong>{html.escape(str(item.get('topic', '')))}</strong></td>
+            <td>{plat_badge}</td>
+            <td><strong style="color:var(--text-main)">{html.escape(str(item.get('topic', '')))}</strong></td>
             <td class="num" style="color:#10b981;font-weight:800">{html.escape(str(item.get('views_ref', '')))}</td>
-            <td><span class="pill" style="background:#e0f2fe;color:#0369a1">{html.escape(str(item.get('hook_angle', '')))}</span></td>
-            <td>{html.escape(str(item.get('why_viral', '')))}</td>
-            <td style="color:#d97706;font-weight:700">{html.escape(str(item.get('adapted_angle', '')))}</td>
+            <td><span class="pill" style="background:#e0f2fe;color:#0369a1;font-weight:700">{html.escape(str(item.get('hook_angle', '')))}</span></td>
+            <td style="font-size:0.8rem;color:var(--text-sub)">{html.escape(str(item.get('why_viral', '')))}</td>
+            <td style="color:#d97706;font-weight:700">✨ {html.escape(str(item.get('adapted_angle', '')))}</td>
         </tr>
         """
 
@@ -968,27 +976,68 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 
     meme_sections_rows_html = ""
     for sec in meme_long.get("sections", []):
+        time_str = str(sec.get('time', ''))
+        phase_str = str(sec.get('phase', ''))
+        script_str = str(sec.get('script', ''))
+
+        ad_marker_badge = ""
+        if "03:45" in time_str or "03:45" in phase_str:
+            ad_marker_badge = '<div style="margin-top:6px"><span class="pill" style="background:#fef3c7;color:#92400e;font-weight:900;border:1px solid #f59e0b;font-size:0.75rem">💰 [จุดแทรกโฆษณา Ad #1 ที่ 03:45]</span></div>'
+        elif "07:15" in time_str or "07:15" in phase_str:
+            ad_marker_badge = '<div style="margin-top:6px"><span class="pill" style="background:#fef3c7;color:#92400e;font-weight:900;border:1px solid #f59e0b;font-size:0.75rem">💰 [จุดแทรกโฆษณา Ad #2 ที่ 07:15]</span></div>'
+
         meme_sections_rows_html += f"""
-        <tr>
-            <td class="num" style="font-weight:800;color:#f43f5e;white-space:nowrap">{html.escape(str(sec.get('time', '')))}</td>
-            <td style="font-weight:700;white-space:nowrap">{html.escape(str(sec.get('phase', '')))}</td>
-            <td style="font-size:0.75rem;color:var(--text-sub)">{html.escape(str(sec.get('b_roll', '')))}</td>
-            <td style="font-size:0.8rem;line-height:1.45">{html.escape(str(sec.get('script', '')))}</td>
+        <tr style="{'background:rgba(245,158,11,0.04);' if ad_marker_badge else ''}">
+            <td class="num" style="font-weight:800;color:#dc2626;white-space:nowrap;vertical-align:top">{html.escape(time_str)}</td>
+            <td style="font-weight:700;white-space:nowrap;vertical-align:top">
+                <span style="color:var(--text-main)">{html.escape(phase_str)}</span>
+                {ad_marker_badge}
+            </td>
+            <td style="font-size:0.78rem;color:var(--text-sub);vertical-align:top;background:var(--bg-sub);border-radius:6px;padding:8px">
+                <div style="font-weight:700;color:#0284c7;margin-bottom:2px">🎬 Visual B-Roll:</div>
+                {html.escape(str(sec.get('b_roll', '')))}
+            </td>
+            <td style="font-size:0.82rem;line-height:1.5;vertical-align:top">
+                <div style="font-weight:700;color:#10b981;margin-bottom:2px">🎙️ Voiceover Script:</div>
+                {html.escape(script_str)}
+            </td>
         </tr>
         """
 
     meme_shorts = meme_pkg.get("shorts_derivatives", [])
     meme_shorts_cards_html = ""
     for sh in meme_shorts:
+        sh_plat = str(sh.get('platform', ''))
+        sh_dur = str(sh.get('duration', ''))
+        if "YouTube" in sh_plat:
+            plat_color = "#dc2626"
+            plat_bg = "#fee2e2"
+            plat_border = "#fca5a5"
+            icon = "▶️"
+        elif "Facebook" in sh_plat or "FB" in sh_plat:
+            plat_color = "#1d4ed8"
+            plat_bg = "#dbeafe"
+            plat_border = "#93c5fd"
+            icon = "📘"
+        else:
+            plat_color = "#0f766e"
+            plat_bg = "#ccfbf1"
+            plat_border = "#99f6e4"
+            icon = "🎵"
+
         meme_shorts_cards_html += f"""
-        <div style="background:var(--bg-main);border:1px solid var(--border-col);border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between">
+        <div style="background:var(--bg-card);border:1px solid var(--border-col);border-radius:12px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(15,23,42,0.05)">
             <div>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                    <span class="pill" style="background:#f3e8ff;color:#6b21a8;font-weight:800">{html.escape(str(sh.get('platform', '')))}</span>
-                    <span style="font-size:0.75rem;color:var(--text-sub)">⏱️ {html.escape(str(sh.get('duration', '')))}</span>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <span class="pill" style="background:{plat_bg};color:{plat_color};font-weight:900;border:1px solid {plat_border}">{icon} {html.escape(sh_plat)}</span>
+                    <span style="font-size:0.75rem;font-weight:800;color:var(--text-sub);background:var(--bg-sub);padding:3px 8px;border-radius:99px">⏱️ {html.escape(sh_dur)}</span>
                 </div>
-                <div style="font-weight:800;color:#f43f5e;margin-bottom:6px;font-size:0.86rem">🎯 Hook: "{html.escape(str(sh.get('hook', '')))}"</div>
-                <div style="color:var(--text-main);font-size:0.8rem;line-height:1.45">{html.escape(str(sh.get('script', '')))}</div>
+                <div style="font-weight:800;color:#dc2626;margin-bottom:8px;font-size:0.88rem;line-height:1.4">🎯 Hook: "{html.escape(str(sh.get('hook', '')))}"</div>
+                <div style="color:var(--text-main);font-size:0.8rem;line-height:1.5;background:var(--bg-sub);padding:10px;border-radius:8px;border-left:3px solid {plat_color}">{html.escape(str(sh.get('script', '')))}</div>
+            </div>
+            <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:0.72rem;color:var(--text-sub);border-top:1px dashed var(--border-col);padding-top:8px">
+                <span>Format: <strong>9:16 Vertical Reel</strong></span>
+                <span style="color:#10b981;font-weight:700">● พร้อมเผยแพร่</span>
             </div>
         </div>
         """
@@ -996,7 +1045,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     meme_assets = meme_pkg.get("faceless_assets", {})
     meme_voiceover_tone = html.escape(str(meme_assets.get("voiceover_tone", "")))
     meme_b_roll_prompts = html.escape(str(meme_assets.get("b_roll_prompts", "")))
-    meme_seo_tags_pills = " ".join([f'<span class="pill" style="margin-right:4px">#{html.escape(str(t))}</span>' for t in meme_assets.get("youtube_seo_tags", [])])
+    meme_seo_tags_pills = " ".join([f'<span class="pill" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;margin-right:6px;margin-bottom:4px;display:inline-block;font-weight:700">#{html.escape(str(t))}</span>' for t in meme_assets.get("youtube_seo_tags", [])])
 
     html_doc = f"""<!DOCTYPE html>
 <html lang="th" data-theme="light">
@@ -2650,7 +2699,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     <div class="nav-segmented-secondary">
         <span style="font-size:0.74rem;font-weight:800;color:var(--text-sub);margin-right:4px">สลับหมวดธุรกิจ & ระบบ:</span>
         <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')" id="subtab-page-store-studio" title="THE DAILY FINDS • แปะตะกร้า Shopee & ร้านค้า">🛍️ THE DAILY FINDS (Store)</button>
-        <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')" id="tab-page-meme-studio" title="คลิปไวรัล What-If & สื่อโซเชียล">🎬 คลิปไวรัล What-If (Media)</button>
+        <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')" id="tab-page-meme-studio" title="YouTube & คลิปไวรัล (Media)">🎬 YouTube & คลิปไวรัล (Media)</button>
         <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tech-studio')" id="tab-page-tech-studio" title="บอท & เทค Micro-SaaS">💻 บอท & เทค (Tech)</button>
         <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tokens')" id="tab-page-tokens" title="ตารางจัดอันดับโทเคน 11 บอท">🪙 ตารางโทเคน 11 บอท</button>
         <button class="nav-tab nav-tab-compact" onclick="switchPage('page-profiles')" id="tab-page-profiles" title="โปรไฟล์พนักงาน AI ทั้ง 11 ตัว">🪪 โปรไฟล์ 11 บอท</button>
@@ -2727,7 +2776,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <button class="zone-pill-btn" onclick="focusTownZone('CRITIC_STUDIO')" id="btnZone_CRITIC_STUDIO">🛡️ Critic & Risk</button>
             <button class="zone-pill-btn" onclick="focusTownZone('TECH_STUDIO')" id="btnZone_TECH_STUDIO">💻 Tech Studio</button>
             <button class="zone-pill-btn" onclick="focusTownZone('ONLINE_STORE')" id="btnZone_ONLINE_STORE">🛍️ THE DAILY FINDS</button>
-            <button class="zone-pill-btn" onclick="focusTownZone('MEME_STUDIO')" id="btnZone_MEME_STUDIO">🎬 Meme Studio</button>
+            <button class="zone-pill-btn" onclick="focusTownZone('MEME_STUDIO')" id="btnZone_MEME_STUDIO">🎬 YouTube Studio</button>
             <button class="zone-pill-btn" onclick="focusTownZone('TRADING_LAB')" id="btnZone_TRADING_LAB">🔮 What-If & Quant</button>
             <button class="zone-pill-btn" onclick="focusTownZone('COURIER_DISPATCH')" id="btnZone_COURIER_DISPATCH">🌉 OpenClaw Pier</button>
         </div>
@@ -2744,7 +2793,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                     <button class="cozy-btn" onclick="openStudioDeliverablesModal('TOWN_HALL')" style="font-size:0.75rem;padding:3px 8px">🏛️ Town Hall</button>
                     <button class="cozy-btn" onclick="switchPage('page-tech-studio')" style="font-size:0.75rem;padding:3px 8px">💻 Tech Studio</button>
                     <button class="cozy-btn" onclick="switchPage('page-store-studio')" style="font-size:0.75rem;padding:3px 8px">🛍️ THE DAILY FINDS</button>
-                    <button class="cozy-btn" onclick="switchPage('page-meme-studio')" style="font-size:0.75rem;padding:3px 8px">🎬 Meme Studio</button>
+                    <button class="cozy-btn" onclick="switchPage('page-meme-studio')" style="font-size:0.75rem;padding:3px 8px">🎬 YouTube Studio</button>
                     <button class="cozy-btn" onclick="switchPage('page-mt5')" style="font-size:0.75rem;padding:3px 8px">🔮 What-If & Quant</button>
                 </div>
             </div>
@@ -3008,33 +3057,121 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         <div style="font-weight:900;font-size:0.88rem;color:var(--text-main)">🎬 หมวดธุรกิจหารายได้ (Ventures Workspace):</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')">🛍️ THE DAILY FINDS (Store)</button>
-            <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-meme-studio')">🎬 คลิปไวรัล What-If (Media)</button>
+            <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-meme-studio')">🎬 YouTube & คลิปไวรัล (Media)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tech-studio')">💻 บอท & เทค (Tech)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tokens')">🪙 ตารางโทเคน 11 บอท</button>
         </div>
     </div>
-    <div class="catchup-banner" style="border-color:#f43f5e;background:linear-gradient(90deg,rgba(244,63,94,0.12),rgba(249,115,22,0.12))">
-        <div>
-            <strong style="color:#f43f5e">🎬 YouTube & Viral Video Studio — Autonomous AdSense & Multi-Platform Engine (MEME STUDIO):</strong>
-            <span>ระบบสแกนคลิปติดเทรนด์ เจนสคริปต์คลิปยาว 8-12 นาที (กินค่าโฆษณา YouTube AdSense) พร้อมซอยตัด 3 คลิปสั้น (FB Reels & TikTok) อัตโนมัติ — ผู้บริหารมีหน้าที่เพียงตรวจและกดยืนยัน</span>
+
+    <!-- 1. Hero Banner: YouTube & Multi-Platform Viral Video Studio -->
+    <div class="catchup-banner" style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#1e293b 100%);border:1px solid rgba(239,68,68,0.45);border-radius:16px;padding:22px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:18px;box-shadow:0 8px 30px rgba(239,68,68,0.15)">
+        <div style="max-width:760px">
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.5);border-radius:99px;padding:3px 10px;color:#fca5a5;font-size:0.75rem;font-weight:800;margin-bottom:8px">
+                ▶️ YOUTUBE PARTNER PROGRAM & VIRAL SYNDICATION • MEME STUDIO
+            </div>
+            <h1 style="font-size:1.55rem;font-weight:900;color:#ffffff;margin:0 0 6px 0;letter-spacing:-0.5px">
+                🎬 YouTube & Multi-Platform Viral Video Studio
+            </h1>
+            <div style="font-size:0.92rem;font-weight:700;color:#fde047;margin-bottom:8px">
+                YouTube Longform 8-12m AdSense + FB Reels + TikTok โดย Maya Lin & Sarah Jenkins (MEME STUDIO)
+            </div>
+            <p style="font-size:0.83rem;color:#cbd5e1;margin:0 0 12px 0;line-height:1.5">
+                ระบบ Autonomous Content Engine สแกนคลิปติดเทรนด์โลก แกะสูตรจิตวิทยาไวรัล แล้วเจนสตอรี่บอร์ดคลิปยาว 8-12 นาทีเพื่อรับส่วนแบ่งค่าโฆษณา YouTube AdSense อัตโนมัติ พร้อมซอยตัด 3 คลิปสั้น (FB Reels, TikTok, YouTube Shorts) ดึงทราฟฟิกเข้าสู่ช่อง — ผู้บริหารมีหน้าที่เพียงตรวจและกดยืนยัน
+            </p>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;font-size:0.75rem">
+                <span class="pill" style="background:rgba(239,68,68,0.25);color:#fca5a5;border:1px solid rgba(239,68,68,0.45)">🔴 YouTube Longform 8-12m (AdSense Mid-roll)</span>
+                <span class="pill" style="background:rgba(14,165,233,0.25);color:#7dd3fc;border:1px solid rgba(14,165,233,0.45)">📱 3 Derivative Shorts (FB Reels / TikTok)</span>
+                <span class="pill" style="background:rgba(168,85,247,0.25);color:#d8b4fe;border:1px solid rgba(168,85,247,0.45)">🎙️ Maya Lin & Sarah Jenkins</span>
+                <span class="pill" style="background:rgba(16,185,129,0.25);color:#86efac;border:1px solid rgba(16,185,129,0.45)">✨ Faceless AI Production</span>
+            </div>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="cozy-btn gold" onclick="generateEnterpriseViralScript()">✨ สุ่มสร้างสคริปต์ใหม่</button>
-            <button class="cozy-btn green btn-approve-viral-pkg" id="pageBtnApproveViralPkg" onclick="approveViralPackage()">✅ ตรวจสอบแล้ว อนุมัติลงช่อง (Approve to Publish)</button>
-            <button class="cozy-btn" style="background:#f43f5e;color:#ffffff" onclick="submitQuickStoreOrder('MEME_STUDIO', 'YouTube AdSense & Multi-Platform Ad Revenue', 35.0)">🧪 บันทึกรายได้ AdSense เข้าบัญชีเทส (+$35.00)</button>
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+            <button class="cozy-btn gold" onclick="generateEnterpriseViralScript()" style="font-weight:800;font-size:0.84rem;padding:8px 16px">✨ สุ่มสร้างสคริปต์ใหม่</button>
+            <button class="cozy-btn" style="background:#dc2626;color:#ffffff;border:none;font-weight:800;font-size:0.82rem;padding:8px 16px;box-shadow:0 4px 12px rgba(220,38,38,0.3)" onclick="submitQuickStoreOrder('MEME_STUDIO', 'YouTube AdSense & Multi-Platform Ad Revenue', 35.0)">🧪 บันทึกรายได้ AdSense เข้าบัญชีเทส (+$35.00)</button>
         </div>
     </div>
 
-    <!-- Unit Economics & Attribution KPIs -->
+    <!-- 2. YouTube AdSense & Monetization Milestone Strip -->
+    <div class="white-card" style="background:#0f172a;border:1px solid rgba(239,68,68,0.35);border-radius:14px;padding:18px 22px;margin-bottom:16px;color:#f8fafc;box-shadow:0 8px 24px rgba(15,23,42,0.2)">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px">
+            <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-size:1.3rem;background:#dc2626;color:#ffffff;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(220,38,38,0.5)">▶</span>
+                <div>
+                    <strong style="color:#ffffff;font-size:1.05rem">🎯 YouTube AdSense & Monetization Milestone Strip</strong>
+                    <div style="font-size:0.78rem;color:#94a3b8">เกณฑ์ YouTube Partner Program (YPP): 1,000 Subscribers + 4,000 Watch Hours เพื่อรับส่วนแบ่งค่าโฆษณา AdSense ในคลิป 8-12 นาที</div>
+                </div>
+            </div>
+            <span class="pill" style="background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);font-weight:800;font-size:0.82rem">สถานะช่อง: ปลดล็อคแล้ว {meme_prog_pct}%</span>
+        </div>
+
+        <!-- Dual Milestone Progress Bars -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:16px">
+            <!-- 1,000 Subscribers Progress Bar -->
+            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.82rem;font-weight:700;color:#cbd5e1">👥 1,000 Subscribers Progress Bar</span>
+                    <span style="font-size:0.88rem;font-weight:900;color:#ef4444">{meme_subs:,} / {meme_subs_target:,} • {meme_subs/meme_subs_target*100:.1f}%</span>
+                </div>
+                <div style="background:rgba(0,0,0,0.4);border-radius:99px;height:10px;overflow:hidden;margin-bottom:6px">
+                    <div style="background:linear-gradient(90deg, #ef4444, #f59e0b);height:100%;width:{meme_subs/meme_subs_target*100:.1f}%;border-radius:99px"></div>
+                </div>
+                <div style="font-size:0.73rem;color:#94a3b8;display:flex;justify-content:space-between">
+                    <span>ขาดอีกเพียง {meme_subs_target - meme_subs:,} คน</span>
+                    <span style="color:#10b981;font-weight:700">{meme_subs/meme_subs_target*100:.1f}% ผ่านเกณฑ์</span>
+                </div>
+            </div>
+
+            <!-- 4,000 Watch Hours Progress Bar -->
+            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.82rem;font-weight:700;color:#cbd5e1">⏱️ 4,000 Watch Hours Progress Bar</span>
+                    <span style="font-size:0.88rem;font-weight:900;color:#f59e0b">{meme_hours:,} / {meme_hours_target:,} hrs • {meme_hours/meme_hours_target*100:.1f}%</span>
+                </div>
+                <div style="background:rgba(0,0,0,0.4);border-radius:99px;height:10px;overflow:hidden;margin-bottom:6px">
+                    <div style="background:linear-gradient(90deg, #dc2626, #fbbf24);height:100%;width:{meme_hours/meme_hours_target*100:.1f}%;border-radius:99px"></div>
+                </div>
+                <div style="font-size:0.73rem;color:#94a3b8;display:flex;justify-content:space-between">
+                    <span>ขาดอีก {meme_hours_target - meme_hours:,} ชม. (~3-4 คลิปยาว 10 นาที)</span>
+                    <span style="color:#f59e0b;font-weight:700">{meme_hours/meme_hours_target*100:.1f}% ผ่านเกณฑ์</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 Metric Cards Strip -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+            <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:10px 14px">
+                <div style="font-size:0.75rem;color:#fca5a5;font-weight:700">👥 1,000 Subscribers Progress</div>
+                <div style="font-size:1.2rem;font-weight:900;color:#ffffff;margin-top:2px">{meme_subs:,} / {meme_subs_target:,} • 78.0%</div>
+                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px">อัตราเติบโต +42 คน/สัปดาห์</div>
+            </div>
+            <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:10px 14px">
+                <div style="font-size:0.75rem;color:#fde68a;font-weight:700">⏱️ 4,000 Watch Hours Progress</div>
+                <div style="font-size:1.2rem;font-weight:900;color:#ffffff;margin-top:2px">{meme_hours:,} / {meme_hours_target:,} hrs • 73.5%</div>
+                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px">เฉลี่ย retention 58.2% ต่อคลิป</div>
+            </div>
+            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:10px 14px">
+                <div style="font-size:0.75rem;color:#86efac;font-weight:700">💵 Est. RPM (อัตราสร้างรายได้ต่อพันวิว)</div>
+                <div style="font-size:1.2rem;font-weight:900;color:#34d399;margin-top:2px">${meme_rpm_usd:.2f} USD <span style="font-size:0.8rem;color:#86efac">(~฿{meme_rpm_thb:.0f} THB)</span></div>
+                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px">คลิปยาว 8-12m (Mid-roll Ads x2)</div>
+            </div>
+            <div style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);border-radius:10px;padding:10px 14px">
+                <div style="font-size:0.75rem;color:#d8b4fe;font-weight:700">💰 Total Projected AdSense Earnings</div>
+                <div style="font-size:1.2rem;font-weight:900;color:#c084fc;margin-top:2px">$450 - $1,350 <span style="font-size:0.8rem;color:#d8b4fe">USD/เดือน</span></div>
+                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px">~฿15,500 - ฿46,500 THB/เดือน (ประเมิน 100k-300k วิว)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Unit Economics & Attribution KPIs -->
     <div class="grid-4" style="margin-bottom:16px">
         <div class="stat-metric-box" style="border-left:4px solid #10b981">
             <div class="lbl">🟢 รายได้สื่อบัญชีจริง (Live Media Revenue)</div>
             <div class="val" style="color:#10b981">$0.00</div>
             <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">🧪 บัญชีเทสจำลองแคมเปญ: <strong style="color:#f59e0b" id="memePageTestRevVal">${{v_media:+,.2f}}</strong></div>
         </div>
-        <div class="stat-metric-box" style="border-left:4px solid #f43f5e">
+        <div class="stat-metric-box" style="border-left:4px solid #ef4444">
             <div class="lbl">🎯 YouTube Partner Progress (AdSense)</div>
-            <div class="val" style="color:#f43f5e">{meme_prog_pct}% ของเป้าหมาย</div>
+            <div class="val" style="color:#ef4444">{meme_prog_pct}% ของเป้าหมาย</div>
             <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">{meme_subs:,}/{meme_subs_target:,} Subs • {meme_hours:,}/{meme_hours_target:,} ชม. • RPM ${meme_rpm_usd:.2f} (฿{meme_rpm_thb:.0f})</div>
         </div>
         <div class="stat-metric-box" style="border-left:4px solid #0ea5e9">
@@ -3044,40 +3181,24 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         </div>
         <div class="stat-metric-box" style="border-left:4px solid #8b5cf6">
             <div class="lbl">🤖 Autonomous Pipeline Status</div>
-            <div class="val" style="color:#8b5cf6">READY FOR REVIEW</div>
+            <div class="val" style="color:#8b5cf6" id="kpiPipelineStatusText">READY FOR REVIEW</div>
             <div style="font-size:0.75rem;color:#10b981;margin-top:4px">สแกนเทรนด์ YT/TikTok ➔ คิดบท ➔ รอคลิกอนุมัติ 1 ปุ่ม</div>
         </div>
     </div>
 
-    <!-- YouTube Monetization Milestone Card -->
-    <div class="white-card" style="border:1px solid rgba(244,63,94,0.3);margin-bottom:16px;background:linear-gradient(135deg,rgba(244,63,94,0.04),rgba(249,115,22,0.04))">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px">
-            <div>
-                <strong style="color:#f43f5e;font-size:0.95rem">🎯 เส้นทางสู่ YouTube Partner Program (เปิดรับส่วนแบ่งค่าโฆษณา AdSense):</strong>
-                <div style="font-size:0.78rem;color:var(--text-sub)">เป้าหมาย: ผู้ติดตาม 1,000 คน + เวลาดู 4,000 ชั่วโมง เพื่อเปิดสร้างรายได้จากโฆษณาคั่นคลิป (Mid-roll Ads) ในวิดีโอ 8-12 นาที</div>
-            </div>
-            <span style="font-size:1.1rem;font-weight:900;color:#f43f5e">{meme_prog_pct}% สำเร็จแล้ว</span>
-        </div>
-        <div style="background:rgba(0,0,0,0.08);border-radius:99px;height:12px;overflow:hidden;margin-bottom:12px">
-            <div style="background:linear-gradient(90deg,#f43f5e,#f59e0b);height:100%;width:{meme_prog_pct}%;border-radius:99px"></div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:0.8rem">
-            <div style="background:var(--bg-main);border:1px solid var(--border-col);border-radius:8px;padding:8px 12px">👥 ผู้ติดตามปัจจุบัน: <strong>{meme_subs:,}</strong> / {meme_subs_target:,} คน ({meme_subs/meme_subs_target*100:.1f}%)</div>
-            <div style="background:var(--bg-main);border:1px solid var(--border-col);border-radius:8px;padding:8px 12px">⏱️ ชั่วโมงรับชมสะสม: <strong>{meme_hours:,}</strong> / {meme_hours_target:,} ชม. ({meme_hours/meme_hours_target*100:.1f}%)</div>
-            <div style="background:var(--bg-main);border:1px solid var(--border-col);border-radius:8px;padding:8px 12px">💵 ประมาณการรายได้ต่อพันวิว (RPM): <strong>${meme_rpm_usd:.2f} (~฿{meme_rpm_thb:.0f})</strong></div>
-        </div>
-    </div>
-
-    <!-- AI Trend Radar Card (Option A2) -->
-    <div class="white-card" style="margin-bottom:16px">
+    <!-- 4. AI Viral Trend Radar Card -->
+    <div class="white-card" style="margin-bottom:16px;border:1px solid rgba(239,68,68,0.25)">
         <div class="section-head">
             <div>
-                <h2>📡 เรดาร์จับคลิปติดเทรนด์ & ถอดรหัสจิตวิทยาไวรัล (AI Trend Radar — YouTube, TikTok, Facebook)</h2>
-                <p style="font-size:0.82rem;color:var(--text-sub);margin-top:3px">
-                    AI สแกนคลิปที่กำลังเป็นกระแสใน YouTube Trending, TikTok Viral และ FB Reels เพื่อแกะรหัส Hook และจิตวิทยาความอยากรู้ แล้วนำมาประยุกต์เป็นคอนเทนต์ของช่องทันที
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:1.3rem">📡</span>
+                    <h2 style="margin:0">AI สแกนและวิเคราะห์คลิปติดเทรนด์ของคนอื่นมาปรับใช้ (YouTube Trending, TikTok Viral, FB Reels)</h2>
+                </div>
+                <p style="font-size:0.83rem;color:var(--text-sub);margin-top:4px">
+                    AI สแกนและวิเคราะห์คลิปติดเทรนด์ของคนอื่นมาปรับใช้ (YouTube Trending, TikTok Viral, FB Reels) โดยถอดรหัสจิตวิทยา Hook และเหตุผลที่ไวรัล แล้วดัดแปลงเป็นมุมมองใหม่ที่เป็นเอกลักษณ์ของช่องเรา
                 </p>
             </div>
-            <span class="pill" style="background:#fee2e2;color:#991b1b;font-weight:800">Auto Trend Scanner</span>
+            <span class="pill" style="background:#fee2e2;color:#991b1b;font-weight:800;border:1px solid #fca5a5">🔴 Live Trend Scanner</span>
         </div>
         <div class="table-wrap">
             <table>
@@ -3088,7 +3209,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                         <th>ยอดวิวอ้างอิง</th>
                         <th>มุมจิตวิทยา (Winning Hook)</th>
                         <th>ทำไมถึงไวรัล?</th>
-                        <th>ไอเดียปรับใช้กับช่องเรา (Adapted Original Angle)</th>
+                        <th>ไอเดียปรับใช้กับช่องเรา (Adapted Angle)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -3098,39 +3219,48 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         </div>
     </div>
 
-    <!-- Autonomous Production Package Card (Option A1 + A3) -->
-    <div class="white-card" style="border:2px solid #f43f5e;margin-bottom:16px">
-        <div class="section-head">
-            <div>
-                <div style="display:flex;align-items:center;gap:8px">
-                    <h2>📦 แพ็กเกจวิดีโอยาว 10:24 นาที + 3 คลิปสั้น (Autonomous Production Package — Human in the Loop)</h2>
-                    <span id="viralPkgStatusBadge" class="pill viral-status-badge" style="background:#fef3c7;color:#92400e;font-weight:800;font-size:0.85rem">⏳ READY FOR REVIEW</span>
+    <!-- 5. Autonomous Production Package Card (ยาว + สั้น + Human-in-the-Loop) -->
+    <div class="white-card" style="border:2px solid #ef4444;margin-bottom:16px;box-shadow:0 6px 24px rgba(239,68,68,0.1)">
+        <!-- Human-in-the-Loop Approval Station -->
+        <div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border:2px solid #ef4444;border-radius:12px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;box-shadow:0 6px 20px rgba(239,68,68,0.25);margin-bottom:16px">
+            <div style="display:flex;align-items:center;gap:12px">
+                <div style="font-size:2rem;background:rgba(239,68,68,0.2);padding:8px 12px;border-radius:10px;border:1px solid rgba(239,68,68,0.4)">📌</div>
+                <div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+                        <strong style="color:#ffffff;font-size:1.05rem">📌 ผู้บริหารมีหน้าที่เพียง: ตรวจและกดยืนยันการลงช่อง</strong>
+                        <span id="viralPkgStatusBadge" class="pill viral-status-badge" style="background:#dcfce7;color:#166534;font-weight:900;font-size:0.82rem;padding:4px 10px;border-radius:99px">🟢 พร้อมตรวจ (READY_FOR_REVIEW)</span>
+                    </div>
+                    <div style="font-size:0.79rem;color:#cbd5e1">Maya Lin & Sarah Jenkins สร้างสคริปต์คลิปยาว 10:24m พร้อมตัด 3 คลิปสั้น และมาร์กจุดคั่นโฆษณา AdSense เรียบร้อยแล้ว</div>
                 </div>
-                <p style="font-size:0.83rem;color:var(--text-sub);margin-top:3px">
-                    AI คิดหัวข้อ วางโครงสร้างสคริปต์ 10:24m กำหนดจุดคั่นโฆษณา Mid-roll และซอยตัด 3 Shorts/Reels/TikTok พร้อม Prompt วิดีโอ 4K และเสียงพากย์ — ผู้บริหารมีหน้าที่เพียงตรวจและกดยืนยัน
-                </p>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <button class="cozy-btn green btn-approve-viral-pkg" id="btnApproveViralPkg" onclick="approveViralPackage()" style="font-weight:800">✅ ผู้บริหารกดอนุมัติลงช่อง (Approve to Publish)</button>
-                <button class="cozy-btn gold" onclick="copyLongformScript()">📋 คัดลอกสคริปต์คลิปยาว (10:24m)</button>
-                <button class="cozy-btn purple" onclick="copyShortsScripts()">📱 คัดลอก 3 คลิปสั้น (Shorts/Reels)</button>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <button class="cozy-btn btn-approve-viral-pkg" id="btnApproveViralPkg" onclick="approveViralPackage()" style="background:linear-gradient(135deg,#10b981,#059669);color:#ffffff;font-size:0.92rem;font-weight:900;padding:10px 22px;border-radius:10px;box-shadow:0 4px 15px rgba(16,185,129,0.35);border:none;cursor:pointer">
+                    ✅ ตรวจสอบแล้ว อนุมัติลงช่อง (Approve to Publish)
+                </button>
+                <button class="cozy-btn gold" onclick="copyLongformScript()" style="font-size:0.82rem;padding:9px 14px">📋 คัดลอกสคริปต์คลิปยาว (10:24m)</button>
+                <button class="cozy-btn purple" onclick="copyShortsScripts()" style="font-size:0.82rem;padding:9px 14px">📱 คัดลอก 3 คลิปสั้น</button>
             </div>
         </div>
 
         <!-- Video Header Info -->
-        <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-radius:12px;padding:14px;margin-bottom:16px">
-            <h3 style="font-size:1.05rem;color:#f43f5e;font-weight:900;margin:0 0 6px 0">{meme_pkg_title}</h3>
+        <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-radius:12px;padding:16px;margin-bottom:16px">
+            <h3 style="font-size:1.15rem;color:#dc2626;font-weight:900;margin:0 0 8px 0">{meme_pkg_title}</h3>
             <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:0.78rem">
-                <span class="pill" style="background:#fee2e2;color:#991b1b">🔴 YouTube หลัก: <strong>{meme_pkg_duration}</strong></span>
-                <span class="pill" style="background:#fef3c7;color:#92400e">💰 จุดคั่นโฆษณา AdSense Mid-rolls: <strong>{meme_midrolls}</strong></span>
-                <span class="pill" style="background:#e0f2fe;color:#075985">✂️ คลิปสั้นดึงดูดคน: <strong>3 แพลตฟอร์ม (YT Shorts, FB Reels, TikTok)</strong></span>
-                <span class="pill" style="background:#f3e8ff;color:#6b21a8">🎙️ โมเดลช่อง: <strong>Faceless AI Authority</strong></span>
+                <span class="pill" style="background:#fee2e2;color:#991b1b;font-weight:800;border:1px solid #fca5a5">🔴 YouTube หลัก: <strong>{meme_pkg_duration}</strong></span>
+                <span class="pill" style="background:#fef3c7;color:#92400e;font-weight:800;border:1px solid #fde68a">💰 จุดคั่นโฆษณา AdSense Mid-rolls: <strong>[จุดแทรกโฆษณา Ad #1 ที่ 03:45] และ [จุดแทรกโฆษณา Ad #2 ที่ 07:15]</strong></span>
+                <span class="pill" style="background:#e0f2fe;color:#075985;font-weight:800;border:1px solid #bae6fd">✂️ 3 Derivative Shorts: <strong>YT Shorts (58s), FB Reels (45s), TikTok (50s)</strong></span>
+                <span class="pill" style="background:#f3e8ff;color:#6b21a8;font-weight:800;border:1px solid #e9d5ff">🎙️ โมเดลช่อง: <strong>Faceless AI Authority (Maya Lin & Sarah Jenkins)</strong></span>
             </div>
         </div>
 
-        <!-- 10:24m Storyboard Table -->
+        <!-- 10:24m YouTube Longform Storyboard Table -->
         <div style="margin-bottom:16px">
-            <strong style="font-size:0.86rem;color:#f59e0b;display:block;margin-bottom:8px">🎬 สตอรี่บอร์ดคลิปยาว 10:24 นาที (YouTube Long-form Production & Mid-roll Slots):</strong>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <strong style="font-size:0.9rem;color:#d97706;display:flex;align-items:center;gap:6px">
+                    <span>🎬</span> YouTube Longform (10:24m): 5 scenes พร้อม Timecode, Visual B-Roll Prompts, Voiceover Script และ Mid-roll Ad Markers:
+                </strong>
+                <span class="pill" style="background:#fef3c7;color:#92400e;font-size:0.75rem;font-weight:800">Optimal Mid-roll Ad Density (2 Ads)</span>
+            </div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -3150,18 +3280,34 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 
         <!-- 3 Derivative Shorts Cards -->
         <div style="margin-bottom:16px">
-            <strong style="font-size:0.86rem;color:#8b5cf6;display:block;margin-bottom:8px">✂️ 3 คลิปสั้นซอยตัดเชื่อมคนดูเข้าช่องหลัก (Derivative Shorts / Reels / TikTok):</strong>
+            <strong style="font-size:0.9rem;color:#7c3aed;display:flex;align-items:center;gap:6px;margin-bottom:8px">
+                <span>✂️</span> 3 Derivative Shorts: YouTube Shorts (58s), FB Reels (45s), TikTok (50s) ดึงคนดูเข้าช่องหลัก:
+            </strong>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">
                 {meme_shorts_cards_html}
             </div>
         </div>
 
         <!-- Faceless Production Assets -->
-        <div style="background:var(--bg-sub);border:1px solid var(--border-col);border-radius:12px;padding:14px;font-size:0.8rem">
-            <div style="font-weight:800;color:#10b981;margin-bottom:6px">🎙️ ข้อมูลประกอบการผลิตแบบ Faceless (ไม่ต้องออกหน้ากล้อง):</div>
-            <div style="margin-bottom:4px"><strong>โทนเสียงพากย์:</strong> {meme_voiceover_tone}</div>
-            <div style="margin-bottom:4px"><strong>Cinematic B-Roll Prompts:</strong> <code>{meme_b_roll_prompts}</code></div>
-            <div><strong>YouTube SEO Tags:</strong> {meme_seo_tags_pills}</div>
+        <div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:16px;color:#f8fafc;font-size:0.82rem">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                <span style="font-size:1.2rem">🎙️</span>
+                <strong style="color:#34d399;font-size:0.92rem">Faceless Production Assets (ข้อมูลประกอบการผลิตแบบไม่ต้องออกหน้ากล้อง):</strong>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:10px">
+                <div style="background:rgba(255,255,255,0.05);padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.08)">
+                    <div style="color:#94a3b8;font-size:0.75rem;font-weight:700;margin-bottom:2px">🎙️ สไตล์เสียงพากย์ (Voiceover Tone):</div>
+                    <div style="color:#ffffff">{meme_voiceover_tone}</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.05);padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.08)">
+                    <div style="color:#94a3b8;font-size:0.75rem;font-weight:700;margin-bottom:2px">🎬 Cinematic 4K B-Roll Prompts:</div>
+                    <code style="color:#38bdf8;background:transparent;padding:0">{meme_b_roll_prompts}</code>
+                </div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="color:#94a3b8;font-size:0.75rem;font-weight:700;margin-bottom:4px">🏷️ YouTube SEO Tags:</div>
+                <div>{meme_seo_tags_pills}</div>
+            </div>
         </div>
     </div>
 
@@ -3331,7 +3477,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         <div style="font-weight:900;font-size:0.88rem;color:#2d2825">🎬 หมวดธุรกิจหารายได้ (Ventures Workspace):</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
             <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-store-studio')" style="background:#8c7a6b;color:#ffffff">🛍️ THE DAILY FINDS (Store)</button>
-            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')">🎬 คลิปไวรัล What-If (Media)</button>
+            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')">🎬 YouTube & คลิปไวรัล (Media)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tech-studio')">💻 บอท & เทค (Tech)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tokens')">🪙 ตารางโทเคน 11 บอท</button>
         </div>
@@ -3833,7 +3979,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         <div style="font-weight:900;font-size:0.88rem;color:var(--text-main)">🎬 หมวดธุรกิจหารายได้ (Ventures Workspace):</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')">🛍️ THE DAILY FINDS (Store)</button>
-            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')">🎬 คลิปไวรัล What-If (Media)</button>
+            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')">🎬 YouTube & คลิปไวรัล (Media)</button>
             <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-tech-studio')">💻 บอท & เทค (Tech)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tokens')">🪙 ตารางโทเคน 11 บอท</button>
         </div>
@@ -3971,7 +4117,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         <div style="font-weight:900;font-size:0.88rem;color:var(--text-main)">🎬 หมวดธุรกิจหารายได้ & คลังสมอง AI (Ventures & Token Leaderboard):</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')">🛍️ THE DAILY FINDS (Store)</button>
-            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')">🎬 คลิปไวรัล What-If (Media)</button>
+            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')">🎬 YouTube & คลิปไวรัล (Media)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tech-studio')">💻 บอท & เทค (Tech)</button>
             <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-tokens')">🪙 ตารางโทเคน 11 บอท</button>
         </div>
@@ -5774,7 +5920,7 @@ const ISO_ROOMS = [
     {{ id: "COURIER_DISPATCH", name: "🌉 ท่าเรือ OpenClaw (OpenClaw Pier)", sub: "ซิงค์ API & ลิควิดิตี้", gx: 3, gy: 1, x: 1260, y: 220, badgeX: 1260, badgeY: 145, floorCol: "#f3e8ff", floorAlt: "#e9d5ff", wallCol: "#7c3aed", wallTop: "#faf5ff", badgeDot: "#10b981", propType: "COURIER_DISPATCH", districtTag: "OpenClaw Pier" }},
     {{ id: "TRADING_LAB", name: "🔮 วอร์รูม & ควอนต์ (What-If & Quant)", sub: "เทรดทองคำ XAUUSD", gx: 0, gy: 1, x: 1180, y: 420, badgeX: 1180, badgeY: 275, floorCol: "#e0f2fe", floorAlt: "#bae6fd", wallCol: "#2563eb", wallTop: "#eff6ff", badgeDot: "#10b981", propType: "TRADING_LAB", districtTag: "WHAT IF STUDIO" }},
     {{ id: "ONLINE_STORE", name: "🛍️ THE DAILY FINDS", sub: "ONLINE SHIRTS • Shopee Affiliate & Dropship", gx: 3, gy: 0, x: 440, y: 610, badgeX: 440, badgeY: 485, floorCol: "#fbf9f5", floorAlt: "#f5f0e8", wallCol: "#8c7a6b", wallTop: "#fbf9f5", badgeDot: "#8c7a6b", propType: "ONLINE_STORE", districtTag: "ONLINE SHIRTS" }},
-    {{ id: "MEME_STUDIO", name: "🎬 มีมสตูดิโอ (Meme Studio)", sub: "คลิปไวรัล Reels/TikTok", gx: 2, gy: 0, x: 1000, y: 610, badgeX: 1000, badgeY: 485, floorCol: "#ffe4e6", floorAlt: "#fecdd3", wallCol: "#f43f5e", wallTop: "#fff1f2", badgeDot: "#f43f5e", propType: "MEME_STUDIO", districtTag: "MEME STUDIO" }},
+    {{ id: "MEME_STUDIO", name: "🎬 YouTube & Viral Studio", sub: "YouTube AdSense & คลิปไวรัล", gx: 2, gy: 0, x: 1000, y: 610, badgeX: 1000, badgeY: 485, floorCol: "#ffe4e6", floorAlt: "#fecdd3", wallCol: "#f43f5e", wallTop: "#fff1f2", badgeDot: "#f43f5e", propType: "MEME_STUDIO", districtTag: "MEME STUDIO" }},
     {{ id: "GROWTH_STUDIO", name: "⚡ สตูดิโอยิงการตลาด (Growth)", sub: "แคมเปญไวรัล & ชุมชน", gx: 2, gy: 1, x: 980, y: 310, badgeX: 980, badgeY: 205, floorCol: "#ffedd5", floorAlt: "#fed7aa", wallCol: "#ea580c", wallTop: "#fff7ed", badgeDot: "#10b981", propType: "GROWTH_STUDIO", districtTag: "GROWTH STUDIO" }},
     {{ id: "TECH_STUDIO", name: "💻 สตูดิโอโค้ดดิ้ง (Tech Studio </ >)", sub: "Micro-SaaS & Bot", gx: 1, gy: 0, x: 300, y: 420, badgeX: 300, badgeY: 280, floorCol: "#0f172a", floorAlt: "#1e293b", wallCol: "#0284c7", wallTop: "#38bdf8", badgeDot: "#38bdf8", propType: "TECH_STUDIO", districtTag: "TECH STUDIO" }}
 ];
@@ -8621,7 +8767,7 @@ function approveViralPackage() {{
     if (pkg) pkg.status = "APPROVED";
     const badges = document.querySelectorAll('.viral-status-badge, #viralPkgStatusBadge, #modalViralPkgStatusBadge');
     badges.forEach(b => {{
-        b.innerHTML = "✅ APPROVED TO PUBLISH";
+        b.innerHTML = "🎉 อนุมัติแล้ว (APPROVED)";
         b.style.background = "#dcfce7";
         b.style.color = "#166534";
     }});
@@ -8633,7 +8779,7 @@ function approveViralPackage() {{
     }});
     const kpiStatus = document.getElementById('kpiPipelineStatusText');
     if (kpiStatus) {{
-        kpiStatus.textContent = "APPROVED TO PUBLISH";
+        kpiStatus.textContent = "🎉 อนุมัติแล้ว (APPROVED)";
         kpiStatus.style.color = "#10b981";
     }}
     // Call server API
@@ -8813,7 +8959,7 @@ function switchDeliverableStudio(studioId) {{
                             <span style="font-size:1.2rem">📦</span>
                             <strong style="font-size:0.92rem;color:var(--text-main)">แพ็กเกจผลิตคลิปอัตโนมัติล่าสุด (Autonomous Script Package — Option A3):</strong>
                             <span id="modalViralPkgStatusBadge" class="pill viral-status-badge" style="background:${{isApproved ? '#dcfce7' : '#fef3c7'}};color:${{isApproved ? '#166534' : '#92400e'}};font-weight:800">
-                                ${{isApproved ? '✅ APPROVED TO PUBLISH' : '⏳ READY FOR REVIEW'}}
+                                ${{isApproved ? '🎉 อนุมัติแล้ว (APPROVED)' : '🟢 พร้อมตรวจ (READY_FOR_REVIEW)'}}
                             </span>
                         </div>
                         <h4 style="font-size:1rem;color:#f43f5e;margin:6px 0 2px 0;font-weight:900">${{pkg.title || ''}}</h4>

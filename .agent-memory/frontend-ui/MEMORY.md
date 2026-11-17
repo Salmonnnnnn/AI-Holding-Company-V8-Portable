@@ -415,3 +415,30 @@
     * Preserved `assert "vStoreVal" in html_text` and `assert "calculateStoreUnitEconomics" in html_text`.
     * Preserved `assert "VIP Gold Signal Bot" in html_text` and `page-store-studio`.
 
+- **YouTube & Multi-Platform Viral Video Studio (#page-meme-studio) Frontend Modernization (November 2026)**:
+  - **YouTube Red / Dark Aesthetic & Visual Hierarchy**:
+    * Sleek dark obsidian gradient cards (`#0f172a` to `#1e1b4b` / `#1e293b`) with YouTube Red (`#ef4444`, `#dc2626`) accents and gold (`#f59e0b`, `#fde047`) highlights.
+    * Hero Banner: "YouTube & Multi-Platform Viral Video Studio" (YouTube Longform 8-12m AdSense + FB Reels + TikTok โดย Maya Lin & Sarah Jenkins).
+  - **YouTube AdSense & Monetization Milestone Strip**:
+    * Dual progress bars: 1,000 Subscribers Progress Bar (780/1,000 • 78.0%) and 4,000 Watch Hours Progress Bar (2,940/4,000 hrs • 73.5%).
+    * Est. RPM: $4.50 USD (~฿155.00 THB ต่อพันวิว) for 8-12m longform videos with 2 mid-roll ads.
+    * Total Projected AdSense Earnings: $450 - $1,350 USD/เดือน (~฿15,500 - ฿46,500 THB/เดือน) at 100k-300k monthly views.
+  - **AI Viral Trend Radar Card**:
+    * "AI สแกนและวิเคราะห์คลิปติดเทรนด์ของคนอื่นมาปรับใช้ (YouTube Trending, TikTok Viral, FB Reels)" with platform badges, benchmark views, winning hook angles, viral psychology breakdown, and adapted channel angles.
+  - **Autonomous Production Package (ยาว + สั้น)**:
+    * YouTube Longform (10:24m): 5 scenes with Timecode, Visual B-Roll Prompts, Voiceover Script, and Mid-roll Ad Markers (`[จุดแทรกโฆษณา Ad #1 ที่ 03:45]` and `[จุดแทรกโฆษณา Ad #2 ที่ 07:15]`).
+    * 3 Derivative Shorts: YouTube Shorts (58s), FB Reels (45s), TikTok (50s) with hook quotes, scripts, and format chips.
+    * Faceless Production Assets (Voiceover Tone, Cinematic 4K B-Roll Prompts, YouTube SEO tags).
+  - **Human-in-the-Loop Approval Station**:
+    * Prominently styled box: "📌 ผู้บริหารมีหน้าที่เพียง: ตรวจและกดยืนยันการลงช่อง".
+    * Action button: `✅ ตรวจสอบแล้ว อนุมัติลงช่อง (Approve to Publish)` (triggers `approveViralPackage()`).
+    * Status badge: transitions smoothly from `🟢 พร้อมตรวจ (READY_FOR_REVIEW)` ➔ `🎉 อนุมัติแล้ว (APPROVED)`.
+  - **Venture Subnav Bars & Island HUD Unified Naming**:
+    * Updated media tab button text across all 4 venture subnav bars (`#page-store-studio`, `#page-meme-studio`, `#page-tech-studio`, `#page-tokens`) and main secondary nav to `🎬 YouTube & คลิปไวรัล (Media)`.
+    * Bottom quick zone switcher pill button `#btnZone_MEME_STUDIO` updated to `🎬 YouTube Studio`.
+    * 3D Island building label / zone in `ISO_ROOMS` displays `🎬 YouTube & Viral Studio`.
+  - **Backward Compatibility Invariants Preserved**:
+    * `assert "MEME STUDIO" in html_text` preserved in `ISO_ROOMS.districtTag`, hero banner, and deliverables modal.
+    * `assert "vMediaVal" in html_text` preserved on `#vMediaVal` and `#memePageTestRevVal`.
+    * `assert "generateEnterpriseViralScript" in html_text` preserved in interactive script generator card and JS handlers.
+
