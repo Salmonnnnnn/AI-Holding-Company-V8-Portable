@@ -706,6 +706,155 @@ class V7RequestHandler(BaseHTTPRequestHandler):
             self._send_json({"status": "ok", "package_status": new_status, "message": "อนุมัติสคริปต์ลงช่องสำเร็จ"})
             return
 
+        if self.path == "/api/viral_studio/connect_business_email":
+            biz_email = str(body.get("business_email", "")).strip()
+            yt_handle = str(body.get("youtube_handle", "@TheDailyFindsMedia")).strip()
+            tt_handle = str(body.get("tiktok_handle", "@thedailyfinds.media")).strip()
+            fb_handle = str(body.get("facebook_handle", "The Daily Finds Official")).strip()
+            conn_status = str(body.get("status", "CONNECTED" if biz_email else "PENDING_SETUP"))
+
+            if isinstance(LATEST_REPORT, dict):
+                if "studio_deliverables" not in LATEST_REPORT:
+                    LATEST_REPORT["studio_deliverables"] = {}
+                if "MEME_STUDIO" not in LATEST_REPORT["studio_deliverables"]:
+                    LATEST_REPORT["studio_deliverables"]["MEME_STUDIO"] = {}
+                meme_st = LATEST_REPORT["studio_deliverables"]["MEME_STUDIO"]
+                meme_st["business_email"] = biz_email
+                meme_st["business_email_status"] = conn_status
+                meme_st["youtube_handle"] = yt_handle
+                meme_st["tiktok_handle"] = tt_handle
+                meme_st["facebook_handle"] = fb_handle
+                if "youtube_progress" in meme_st and conn_status == "CONNECTED":
+                    meme_st["youtube_progress"]["status"] = "CONNECTED"
+                if "tiktok_metrics" in meme_st and conn_status == "CONNECTED":
+                    meme_st["tiktok_metrics"]["status"] = "CONNECTED"
+                if "facebook_metrics" in meme_st and conn_status == "CONNECTED":
+                    meme_st["facebook_metrics"]["status"] = "CONNECTED"
+
+            with room.db._get_conn() as conn:
+                cur = conn.cursor()
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                cur.execute("""
+                    INSERT INTO office_activity_log (timestamp, agent_name, department, action_type, summary)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (now, "The Boss", "YouTube & Viral Studio", "CONNECT_BUSINESS_EMAIL",
+                      f"เชื่อมโยงอีเมลธุรกิจ '{biz_email or 'media.dailyfinds@gmail.com'}' (สถานะ: {conn_status}) เข้ากับ YouTube ({yt_handle}), TikTok ({tt_handle}), Facebook ({fb_handle})"))
+                conn.commit()
+
+            os.makedirs("reports", exist_ok=True)
+            generate_html_dashboard(LATEST_REPORT, "reports/latest_dashboard.html")
+            self._send_json({
+                "status": "ok",
+                "message": "บันทึกและเชื่อมโยงอีเมลธุรกิจกับช่องโซเชียลมีเดียเรียบร้อยแล้ว",
+                "business_email": biz_email,
+                "business_email_status": conn_status,
+                "youtube_handle": yt_handle,
+                "tiktok_handle": tt_handle,
+                "facebook_handle": fb_handle,
+            })
+            return
+
+        if self.path == "/api/viral_studio/adapt_trend_feed":
+            trend_idx = int(body.get("trend_index", 0))
+            topic = str(body.get("topic", "")).strip()
+            platform = str(body.get("platform", "Multi-Platform Trending")).strip()
+
+            if not topic:
+                topic = "กลยุทธ์สร้างเครื่องจักรเงินสดอัตโนมัติในยุค AI"
+
+            adapted_package = {
+                "status": "READY_FOR_REVIEW",
+                "title": f"แกะรอย {topic}: ความลับที่เปลี่ยนระบบการสร้างรายได้ (ดัดแปลงจาก {platform})",
+                "adapted_from": {"topic": topic, "platform": platform, "trend_index": trend_idx},
+                "youtube_longform": {
+                    "duration": "10:15 นาที",
+                    "midroll_breaks": ["03:45", "07:15"],
+                    "sections": [
+                        {
+                            "time": "00:00 - 00:45",
+                            "phase": f"Hook & Pattern Interrupt ({platform} Insight)",
+                            "b_roll": f"พาดหัวข่าวด่วน คลิปกระแสไวรัลเกี่ยวกับ {topic} และสถิติที่น่าตกใจ",
+                            "script": f"คุณรู้ไหมว่าทำไมประเด็น {topic} ถึงกลายเป็นกระแสที่มีคนดูหลายล้านวิว? แต่สิ่งที่ไม่มีใครยอมบอกคุณคือเบื้องหลังกลไกที่แท้จริง...",
+                        },
+                        {
+                            "time": "00:45 - 03:45",
+                            "phase": "The Core Shift: ปัญหาที่ 99% มองข้าม",
+                            "b_roll": "กราฟิกเปรียบเทียบข้อมูล flow chart แผนภาพโมเดลระบบอัตโนมัติ",
+                            "script": f"คนส่วนใหญ่เห็นเพียงยอดภูเขาน้ำแข็ง แต่โครงสร้างที่ขับเคลื่อน {topic} คือคานงัดที่เราสามารถนำมาปรับใช้ได้ทันที...",
+                        },
+                        {
+                            "time": "03:45 - 07:15",
+                            "phase": "Actionable Framework [จุดแทรกโฆษณา Ad #1 ที่ 03:45]",
+                            "b_roll": "ภาพสตรีมมิ่งเซิร์ฟเวอร์ หน้าต่างการเทรด และการจัดการกระแสเงินสด",
+                            "script": f"ขั้นตอนที่หนึ่งในการต่อยอดเรื่องนี้... [จุดแทรกโฆษณา Ad #1 ที่ 03:45 ค่าโฆษณา AdSense สูงสุด] ให้สร้างระบบทำงานแทนแรงกาย...",
+                        },
+                        {
+                            "time": "07:15 - 09:15",
+                            "phase": "Case Study & Reality Check [จุดแทรกโฆษณา Ad #2 ที่ 07:15]",
+                            "b_roll": "ตารางตัวเลข Before/After และหลักฐานเชิงประจักษ์",
+                            "script": f"มาดูตัวอย่างจริงเมื่อเราใช้สูตรนี้... [จุดแทรกโฆษณา Ad #2 ที่ 07:15 เพื่อดัน Watch Time สูงสุด] ผลลัพธ์ที่ได้จะทบต้นอย่างก้าวกระโดด...",
+                        },
+                        {
+                            "time": "09:15 - 10:15",
+                            "phase": "High-Retention Outro & CTA",
+                            "b_roll": "ปุ่มกด Subscribe โลโก้ @TheDailyFindsMedia และคลิปแนะนำถัดไป",
+                            "script": "กดติดตาม @TheDailyFindsMedia เพื่อไม่พลาดการวิเคราะห์เทรนด์และกลยุทธ์ธุรกิจ AI ก่อนใคร...",
+                        },
+                    ],
+                },
+                "shorts_derivatives": [
+                    {
+                        "platform": "YouTube Shorts (9:16)",
+                        "duration": "55s",
+                        "hook": f"ความจริง 1 นาทีเกี่ยวกับ {topic}!",
+                        "script": f"หยุดเลื่อนผ่าน! ถ้าคุณกำลังตามเรื่อง {topic} นี่คือ 3 สิ่งที่คุณต้องรู้ก่อนเริ่ม...",
+                    },
+                    {
+                        "platform": "Facebook Reels (9:16)",
+                        "duration": "48s",
+                        "hook": f"3 เรื่องจริงของ {topic} ที่คนส่วนใหญ่ไม่รู้",
+                        "script": f"แชร์คลิปนี้เก็บไว้เลย! สรุปใจความสำคัญของ {topic} ใน 48 วินาที...",
+                    },
+                    {
+                        "platform": "TikTok (9:16)",
+                        "duration": "50s",
+                        "hook": f"ทำไม {topic} ถึงกำลังเปลี่ยนทุกสิ่งในปี 2026?",
+                        "script": f"อย่าเพิ่งเชื่อจนกว่าคุณจะได้ดูคลิปนี้... นี่คือเหตุผลที่ {topic} สำคัญกับคุณ...",
+                    },
+                ],
+                "faceless_assets": {
+                    "voiceover_tone": "เสียงสุขุม คมชัด น่าเชื่อถือ เว้นจังหวะ 0.5s ทุกจุดเน้น (Narrative Authority)",
+                    "b_roll_prompts": f"Cinematic 4K, dark moody tech aesthetic, financial data animation for {topic}, high retention cuts",
+                    "youtube_seo_tags": ["TheDailyFinds", "วิเคราะห์เทรนด์", "AdSense", "AI2026", "passive income", "สารคดีธุรกิจ"],
+                },
+            }
+
+            if isinstance(LATEST_REPORT, dict):
+                if "studio_deliverables" not in LATEST_REPORT:
+                    LATEST_REPORT["studio_deliverables"] = {}
+                if "MEME_STUDIO" not in LATEST_REPORT["studio_deliverables"]:
+                    LATEST_REPORT["studio_deliverables"]["MEME_STUDIO"] = {}
+                LATEST_REPORT["studio_deliverables"]["MEME_STUDIO"]["current_script_package"] = adapted_package
+
+            with room.db._get_conn() as conn:
+                cur = conn.cursor()
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                cur.execute("""
+                    INSERT INTO office_activity_log (timestamp, agent_name, department, action_type, summary)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (now, "Maya Lin", "YouTube & Viral Studio", "ADAPT_TREND_FEED",
+                      f"ดึงเทรนด์ '{topic}' ({platform}) มาดัดแปลงเป็นสคริปต์คลิปยาว 10:15m พร้อม 3 Shorts ประจำช่องสำเร็จ"))
+                conn.commit()
+
+            os.makedirs("reports", exist_ok=True)
+            generate_html_dashboard(LATEST_REPORT, "reports/latest_dashboard.html")
+            self._send_json({
+                "status": "ok",
+                "message": f"ดัดแปลงเทรนด์ '{topic}' เป็นแพ็กเกจสคริปต์เรียบร้อยแล้ว",
+                "current_script_package": adapted_package,
+            })
+            return
+
         self._send_json({"error": "Unknown endpoint"}, status=404)
 
     def log_message(self, format, *args):

@@ -287,3 +287,23 @@
   - `server.py`:
     - Added `POST /api/viral_studio/approve` endpoint updating `current_script_package["status"] = "APPROVED"`, recording executive activity in SQLite `office_activity_log`, and regenerating HTML dashboard.
     - Cleaned up top-level `global LATEST_REPORT` scope in `do_POST`.
+- Upgraded Viral Video & Multi-Platform Studio to Real Brand-New Channel Baseline (0 Starting Metrics) with Business Email & Trend Adaptation:
+  - `engine/dashboard_generator.py`:
+    - Updated `studio_deliverables["MEME_STUDIO"]` data dictionary to real starting baseline:
+      * YouTube Progress: `subscribers: 0 / 1,000`, `watch_hours: 0 / 4,000`, `progress_pct: 0.0%`, `status: "NEW_CHANNEL_UNCONNECTED"`, `est_rpm_usd: $4.50`, `est_rpm_thb: 155.0 THB`.
+      * TikTok Metrics: `followers: 0`, `likes: 0`, `status: "NEW_ACCOUNT_UNCONNECTED"`.
+      * Facebook Metrics: `followers: 0`, `page_likes: 0`, `status: "NEW_PAGE_UNCONNECTED"`.
+      * Business Email & Handles: `business_email: ""`, `business_email_status: "PENDING_SETUP"`, `youtube_handle: "@TheDailyFindsMedia"`, `tiktok_handle: "@thedailyfinds.media"`, `facebook_handle: "The Daily Finds Official"`.
+      * Channel identity: `channel_name: "The Daily Finds Media (Official Channel)"`, `account: "@TheDailyFindsMedia"`, real starting counters `views: "0"`, `likes: "0"`, `comments: "0"`, `shares: "0"`, `retention: "0.0%"`, `avg_watch: "0s"`.
+      * Deep merge support for `report.get("studio_deliverables")` so dynamic updates from backend APIs persist across dashboard generations.
+      * Fully maintained backward-compatibility invariants: `vMediaVal` (`#vMediaVal`), `generateEnterpriseViralScript` (`#viralScriptGeneratorCard`), `MEME STUDIO`, `studio_key="MEME_STUDIO"`, and `#aurumisle`.
+    - Upgraded UI in `#page-meme-studio` and Deliverables Modal (`switchDeliverableStudio('MEME_STUDIO')`):
+      * Added Real Multi-Channel Status Cards (YouTube, TikTok, Facebook).
+      * Added Business Email & Social Handle Setup Form with `connectBusinessEmail()` trigger.
+      * Added 1-click `⚡ ดัดแปลงลงช่อง (Adapt Trend)` buttons in both table views.
+    - Added JavaScript client controllers:
+      * `connectBusinessEmail()`: calls `POST /api/viral_studio/connect_business_email` and updates UI DOM badges and input fields.
+      * `adaptTrendFeed(trendIndex, topic, platform)`: calls `POST /api/viral_studio/adapt_trend_feed`, updates `current_script_package`, and re-renders storyboards.
+  - `server.py`:
+    - Added `POST /api/viral_studio/connect_business_email`: saves business email and handles to `studio_deliverables["MEME_STUDIO"]`, logs to SQLite `office_activity_log` under department `YouTube & Viral Studio`, and updates `latest_dashboard.html`.
+    - Added `POST /api/viral_studio/adapt_trend_feed`: accepts `{ trend_index, topic, platform }`, generates adapted 10:15m longform script + 3 vertical shorts (YT Shorts, FB Reels, TikTok) + faceless production assets, updates `current_script_package`, logs to SQLite `office_activity_log`, and updates `latest_dashboard.html`.

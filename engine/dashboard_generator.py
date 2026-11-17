@@ -174,18 +174,34 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         "MEME_STUDIO": {
             "title": "YouTube & Viral Video Studio — Autonomous AdSense & Multi-Platform Engine",
             "tagline": "ระบบสแกนคลิปติดเทรนด์ เจนสคริปต์คลิปยาว 8-12 นาที (กินค่าโฆษณา YouTube AdSense) พร้อมซอยตัด 3 คลิปสั้น (FB Reels & TikTok) อัตโนมัติ — ผู้บริหารมีหน้าที่เพียงตรวจและกดยืนยัน",
-            "channel_name": "What-If & Frontier Chronicles (หรือสลับตามเทรนด์)",
+            "channel_name": "The Daily Finds Media (Official Channel)",
             "monetization_model": "YouTube Partner Program (AdSense Mid-roll Ads) + FB In-stream + TikTok Creator Rewards",
+            "business_email": "",
+            "business_email_status": "PENDING_SETUP",
+            "youtube_handle": "@TheDailyFindsMedia",
+            "tiktok_handle": "@thedailyfinds.media",
+            "facebook_handle": "The Daily Finds Official",
             "target_video_duration": "8 - 12 นาที (Optimal Mid-roll Ad Density)",
             "derivative_shorts_count": 3,
             "youtube_progress": {
-                "subscribers": 780,
+                "subscribers": 0,
                 "subscribers_target": 1000,
-                "watch_hours": 2940,
+                "watch_hours": 0,
                 "watch_hours_target": 4000,
-                "progress_pct": 73.5,
+                "progress_pct": 0.0,
+                "status": "NEW_CHANNEL_UNCONNECTED",
                 "est_rpm_usd": 4.50,
                 "est_rpm_thb": 155.0,
+            },
+            "tiktok_metrics": {
+                "followers": 0,
+                "likes": 0,
+                "status": "NEW_ACCOUNT_UNCONNECTED",
+            },
+            "facebook_metrics": {
+                "followers": 0,
+                "page_likes": 0,
+                "status": "NEW_PAGE_UNCONNECTED",
             },
             "trending_radar_items": [
                 {
@@ -279,14 +295,14 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                 },
             },
             "platform": "YouTube (Long-form 8-12m) + Shorts / FB Reels / TikTok",
-            "account": "@aurum.isle",
+            "account": "@TheDailyFindsMedia",
             "video_title": "ความลับที่ทำให้คน 1% รวยขึ้นเรื่อยๆ ในยุค AI (และความจริงที่ 99% ไม่เคยรู้)",
-            "views": "24,850",
-            "likes": "1,940",
-            "comments": "142",
-            "shares": "389",
-            "retention": "78.4%",
-            "avg_watch": "28s",
+            "views": "0",
+            "likes": "0",
+            "comments": "0",
+            "shares": "0",
+            "retention": "0.0%",
+            "avg_watch": "0s",
             "hashtags": "#ai #money #trading #aurumisle #gold #algorithmictrading #passiveincome #adsense",
             "hook_script": (
                 "[00:00 - 00:03] Hook: คุณเคยคิดมั้ยว่าถ้าปล่อยบอท AI 11 ตัวไปอยู่บนเกาะร้าง แล้วสั่งให้หาเงิน $1,000 ใน 30 วัน จะเกิดอะไรขึ้น?\n"
@@ -834,6 +850,20 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         },
     }
 
+    custom_deliverables = report.get("studio_deliverables") if isinstance(report, dict) else None
+    if isinstance(custom_deliverables, dict):
+        for k, v in custom_deliverables.items():
+            if k in studio_deliverables and isinstance(v, dict):
+                for sub_k, sub_v in v.items():
+                    if isinstance(sub_v, dict) and isinstance(studio_deliverables[k].get(sub_k), dict):
+                        studio_deliverables[k][sub_k].update(sub_v)
+                    else:
+                        studio_deliverables[k][sub_k] = sub_v
+            else:
+                studio_deliverables[k] = v
+    if isinstance(report, dict):
+        report["studio_deliverables"] = studio_deliverables
+
     report_json = json.dumps({
         "session_time": report.get("session_time"),
         "brand_name": BRAND_NAME,
@@ -938,18 +968,36 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     # Prepare YouTube & Viral Video Studio (MEME_STUDIO) variables
     meme_d = studio_deliverables.get("MEME_STUDIO", {})
     meme_yt = meme_d.get("youtube_progress", {})
-    meme_subs = int(meme_yt.get("subscribers", 780))
+    meme_subs = int(meme_yt.get("subscribers", 0))
     meme_subs_target = int(meme_yt.get("subscribers_target", 1000))
-    meme_hours = int(meme_yt.get("watch_hours", 2940))
+    meme_hours = int(meme_yt.get("watch_hours", 0))
     meme_hours_target = int(meme_yt.get("watch_hours_target", 4000))
-    meme_prog_pct = float(meme_yt.get("progress_pct", 73.5))
+    meme_prog_pct = float(meme_yt.get("progress_pct", 0.0))
     meme_rpm_usd = float(meme_yt.get("est_rpm_usd", 4.50))
     meme_rpm_thb = float(meme_yt.get("est_rpm_thb", 155.0))
+    meme_yt_status = str(meme_yt.get("status", "NEW_CHANNEL_UNCONNECTED"))
+
+    meme_tt = meme_d.get("tiktok_metrics", {})
+    meme_tt_followers = int(meme_tt.get("followers", 0))
+    meme_tt_likes = int(meme_tt.get("likes", 0))
+    meme_tt_status = str(meme_tt.get("status", "NEW_ACCOUNT_UNCONNECTED"))
+
+    meme_fb = meme_d.get("facebook_metrics", {})
+    meme_fb_followers = int(meme_fb.get("followers", 0))
+    meme_fb_likes = int(meme_fb.get("page_likes", 0))
+    meme_fb_status = str(meme_fb.get("status", "NEW_PAGE_UNCONNECTED"))
+
+    meme_biz_email = str(meme_d.get("business_email", ""))
+    meme_biz_status = str(meme_d.get("business_email_status", "PENDING_SETUP"))
+    meme_yt_handle = str(meme_d.get("youtube_handle", "@TheDailyFindsMedia"))
+    meme_tt_handle = str(meme_d.get("tiktok_handle", "@thedailyfinds.media"))
+    meme_fb_handle = str(meme_d.get("facebook_handle", "The Daily Finds Official"))
 
     meme_radar = meme_d.get("trending_radar_items", [])
     meme_radar_rows_html = ""
-    for item in meme_radar:
+    for idx, item in enumerate(meme_radar):
         plat_str = str(item.get('platform', ''))
+        top_str = str(item.get('topic', ''))
         if 'YouTube' in plat_str:
             plat_badge = f'<span class="pill" style="background:#fee2e2;color:#dc2626;font-weight:800;border:1px solid #fca5a5">🔴 {html.escape(plat_str)}</span>'
         elif 'TikTok' in plat_str:
@@ -960,11 +1008,16 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         meme_radar_rows_html += f"""
         <tr>
             <td>{plat_badge}</td>
-            <td><strong style="color:var(--text-main)">{html.escape(str(item.get('topic', '')))}</strong></td>
+            <td><strong style="color:var(--text-main)">{html.escape(top_str)}</strong></td>
             <td class="num" style="color:#10b981;font-weight:800">{html.escape(str(item.get('views_ref', '')))}</td>
             <td><span class="pill" style="background:#e0f2fe;color:#0369a1;font-weight:700">{html.escape(str(item.get('hook_angle', '')))}</span></td>
             <td style="font-size:0.8rem;color:var(--text-sub)">{html.escape(str(item.get('why_viral', '')))}</td>
             <td style="color:#d97706;font-weight:700">✨ {html.escape(str(item.get('adapted_angle', '')))}</td>
+            <td>
+                <button class="cozy-btn red" style="font-size:0.75rem;padding:4px 10px;white-space:nowrap;font-weight:800" onclick="adaptTrendFeed({idx}, '{html.escape(top_str, quote=True)}', '{html.escape(plat_str, quote=True)}')">
+                    ⚡ ดัดแปลงลงช่อง
+                </button>
+            </td>
         </tr>
         """
 
@@ -3097,11 +3150,11 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <div style="display:flex;align-items:center;gap:10px">
                 <span style="font-size:1.3rem;background:#dc2626;color:#ffffff;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(220,38,38,0.5)">▶</span>
                 <div>
-                    <strong style="color:#ffffff;font-size:1.05rem">🎯 YouTube AdSense & Monetization Milestone Strip</strong>
-                    <div style="font-size:0.78rem;color:#94a3b8">เกณฑ์ YouTube Partner Program (YPP): 1,000 Subscribers + 4,000 Watch Hours เพื่อรับส่วนแบ่งค่าโฆษณา AdSense ในคลิป 8-12 นาที</div>
+                    <strong style="color:#ffffff;font-size:1.05rem">🎯 YouTube AdSense & Multi-Platform Real Milestone Hub</strong>
+                    <div style="font-size:0.78rem;color:#94a3b8">เกณฑ์ YouTube Partner Program (YPP): 1,000 Subscribers + 4,000 Watch Hours เพื่อรับส่วนแบ่งค่าโฆษณา AdSense (ช่องสร้างใหม่นับจำนวนจริงจาก 0)</div>
                 </div>
             </div>
-            <span class="pill" style="background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);font-weight:800;font-size:0.82rem">สถานะช่อง: ปลดล็อคแล้ว {meme_prog_pct}%</span>
+            <span class="pill" style="background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);font-weight:800;font-size:0.82rem">สถานะช่อง YouTube: {meme_yt_status} ({meme_prog_pct:.1f}%)</span>
         </div>
 
         <!-- Dual Milestone Progress Bars -->
@@ -3110,14 +3163,14 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
                     <span style="font-size:0.82rem;font-weight:700;color:#cbd5e1">👥 1,000 Subscribers Progress Bar</span>
-                    <span style="font-size:0.88rem;font-weight:900;color:#ef4444">{meme_subs:,} / {meme_subs_target:,} • {meme_subs/meme_subs_target*100:.1f}%</span>
+                    <span style="font-size:0.88rem;font-weight:900;color:#ef4444" id="ytSubsText">{meme_subs:,} / {meme_subs_target:,} • {meme_subs/meme_subs_target*100:.1f}%</span>
                 </div>
                 <div style="background:rgba(0,0,0,0.4);border-radius:99px;height:10px;overflow:hidden;margin-bottom:6px">
                     <div style="background:linear-gradient(90deg, #ef4444, #f59e0b);height:100%;width:{meme_subs/meme_subs_target*100:.1f}%;border-radius:99px"></div>
                 </div>
                 <div style="font-size:0.73rem;color:#94a3b8;display:flex;justify-content:space-between">
-                    <span>ขาดอีกเพียง {meme_subs_target - meme_subs:,} คน</span>
-                    <span style="color:#10b981;font-weight:700">{meme_subs/meme_subs_target*100:.1f}% ผ่านเกณฑ์</span>
+                    <span>ขาดอีก {meme_subs_target - meme_subs:,} คน (เริ่มต้นนับจริงจาก 0)</span>
+                    <span style="color:#f59e0b;font-weight:700">{meme_subs/meme_subs_target*100:.1f}% ผ่านเกณฑ์</span>
                 </div>
             </div>
 
@@ -3125,14 +3178,94 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
                     <span style="font-size:0.82rem;font-weight:700;color:#cbd5e1">⏱️ 4,000 Watch Hours Progress Bar</span>
-                    <span style="font-size:0.88rem;font-weight:900;color:#f59e0b">{meme_hours:,} / {meme_hours_target:,} hrs • {meme_hours/meme_hours_target*100:.1f}%</span>
+                    <span style="font-size:0.88rem;font-weight:900;color:#f59e0b" id="ytHoursText">{meme_hours:,} / {meme_hours_target:,} hrs • {meme_hours/meme_hours_target*100:.1f}%</span>
                 </div>
                 <div style="background:rgba(0,0,0,0.4);border-radius:99px;height:10px;overflow:hidden;margin-bottom:6px">
                     <div style="background:linear-gradient(90deg, #dc2626, #fbbf24);height:100%;width:{meme_hours/meme_hours_target*100:.1f}%;border-radius:99px"></div>
                 </div>
                 <div style="font-size:0.73rem;color:#94a3b8;display:flex;justify-content:space-between">
-                    <span>ขาดอีก {meme_hours_target - meme_hours:,} ชม. (~3-4 คลิปยาว 10 นาที)</span>
+                    <span>ขาดอีก {meme_hours_target - meme_hours:,} ชม. (สะสมจากคลิปยาว 8-12 นาที)</span>
                     <span style="color:#f59e0b;font-weight:700">{meme_hours/meme_hours_target*100:.1f}% ผ่านเกณฑ์</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-Platform Channel Live Cards & Business Email Setup Hub -->
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+                <strong style="color:#38bdf8;font-size:0.92rem;display:flex;align-items:center;gap:6px">
+                    <span>🌐</span> สถานะ 3 แพลตฟอร์มจริง (Real Multi-Channel Status — เริ่มต้นสร้างใหม่จากศูนย์ 0)
+                </strong>
+                <span class="pill" id="bizEmailStatusBadge" style="background:{'#dcfce7' if meme_biz_status == 'CONNECTED' else '#fef3c7'};color:{'#166534' if meme_biz_status == 'CONNECTED' else '#92400e'};font-weight:800;font-size:0.76rem">
+                    สถานะอีเมลธุรกิจ: {meme_biz_status}
+                </span>
+            </div>
+            
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:14px">
+                <!-- YouTube Channel Card -->
+                <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                        <strong style="color:#fca5a5;font-size:0.85rem">🔴 YouTube Channel</strong>
+                        <span class="pill" style="background:#fee2e2;color:#dc2626;font-size:0.7rem;font-weight:800">{meme_yt_status}</span>
+                    </div>
+                    <div style="font-size:0.8rem;color:#ffffff;font-weight:800" id="channelYtHandleDisp">{html.escape(meme_yt_handle)}</div>
+                    <div style="font-size:1.15rem;font-weight:900;color:#ffffff;margin-top:4px">{meme_subs:,} <span style="font-size:0.75rem;color:#94a3b8">/ 1,000 Subs</span></div>
+                    <div style="font-size:0.72rem;color:#cbd5e1;margin-top:2px">Watch Hours: {meme_hours:,} / 4,000 ชม. ({meme_prog_pct:.1f}%)</div>
+                </div>
+
+                <!-- TikTok Channel Card -->
+                <div style="background:rgba(15,118,110,0.15);border:1px solid rgba(20,184,166,0.3);border-radius:10px;padding:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                        <strong style="color:#5eead4;font-size:0.85rem">🎵 TikTok Account</strong>
+                        <span class="pill" style="background:#ccfbf1;color:#0f766e;font-size:0.7rem;font-weight:800">{meme_tt_status}</span>
+                    </div>
+                    <div style="font-size:0.8rem;color:#ffffff;font-weight:800" id="channelTtHandleDisp">{html.escape(meme_tt_handle)}</div>
+                    <div style="font-size:1.15rem;font-weight:900;color:#ffffff;margin-top:4px">{meme_tt_followers:,} <span style="font-size:0.75rem;color:#94a3b8">Followers</span></div>
+                    <div style="font-size:0.72rem;color:#cbd5e1;margin-top:2px">Likes สะสม: {meme_tt_likes:,} ไลก์ (บัญชีใหม่)</div>
+                </div>
+
+                <!-- Facebook Channel Card -->
+                <div style="background:rgba(29,78,216,0.15);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                        <strong style="color:#93c5fd;font-size:0.85rem">📘 Facebook Page / Reels</strong>
+                        <span class="pill" style="background:#dbeafe;color:#1e40af;font-size:0.7rem;font-weight:800">{meme_fb_status}</span>
+                    </div>
+                    <div style="font-size:0.8rem;color:#ffffff;font-weight:800" id="channelFbHandleDisp">{html.escape(meme_fb_handle)}</div>
+                    <div style="font-size:1.15rem;font-weight:900;color:#ffffff;margin-top:4px">{meme_fb_followers:,} <span style="font-size:0.75rem;color:#94a3b8">Followers</span></div>
+                    <div style="font-size:0.72rem;color:#cbd5e1;margin-top:2px">Page Likes: {meme_fb_likes:,} ไลก์ (เพจสร้างใหม่)</div>
+                </div>
+            </div>
+
+            <!-- Business Email & Social Handle Setup Form -->
+            <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px">
+                <div style="font-size:0.84rem;font-weight:800;color:#fbbf24;margin-bottom:6px">
+                    ✉️ เชื่อมต่ออีเมลธุรกิจและระบุชื่อช่องโซเชียลมีเดีย (Business Email & Social Hub Integration):
+                </div>
+                <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:10px">
+                    สร้างเมลธุรกิจมาผูกใหม่ทั้งหมด เพื่อรองรับการเปิดรับสปอนเซอร์และรับการแจ้งเตือนจาก YouTube Partner Program, Meta Creator Studio และ TikTok
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:10px">
+                    <div>
+                        <label style="font-size:0.74rem;color:#cbd5e1;display:block;margin-bottom:3px">📧 อีเมลธุรกิจ (Business Email):</label>
+                        <input type="email" id="bizEmailInput" class="input-clean" style="width:100%;font-size:0.82rem;padding:6px 10px;background:#1e293b;color:#ffffff;border:1px solid #475569" placeholder="เช่น media.dailyfinds@gmail.com" value="{html.escape(meme_biz_email)}">
+                    </div>
+                    <div>
+                        <label style="font-size:0.74rem;color:#cbd5e1;display:block;margin-bottom:3px">🔴 YouTube Handle:</label>
+                        <input type="text" id="ytHandleInput" class="input-clean" style="width:100%;font-size:0.82rem;padding:6px 10px;background:#1e293b;color:#ffffff;border:1px solid #475569" value="{html.escape(meme_yt_handle)}">
+                    </div>
+                    <div>
+                        <label style="font-size:0.74rem;color:#cbd5e1;display:block;margin-bottom:3px">🎵 TikTok Handle:</label>
+                        <input type="text" id="ttHandleInput" class="input-clean" style="width:100%;font-size:0.82rem;padding:6px 10px;background:#1e293b;color:#ffffff;border:1px solid #475569" value="{html.escape(meme_tt_handle)}">
+                    </div>
+                    <div>
+                        <label style="font-size:0.74rem;color:#cbd5e1;display:block;margin-bottom:3px">📘 Facebook Page Name:</label>
+                        <input type="text" id="fbHandleInput" class="input-clean" style="width:100%;font-size:0.82rem;padding:6px 10px;background:#1e293b;color:#ffffff;border:1px solid #475569" value="{html.escape(meme_fb_handle)}">
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:flex-end">
+                    <button class="cozy-btn green" onclick="connectBusinessEmail()" style="font-size:0.82rem;font-weight:800;padding:8px 18px">
+                        🔗 บันทึกและเชื่อมโยงอีเมลธุรกิจ (Connect Business Email)
+                    </button>
                 </div>
             </div>
         </div>
@@ -3141,18 +3274,13 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
             <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:10px 14px">
                 <div style="font-size:0.75rem;color:#fca5a5;font-weight:700">👥 1,000 Subscribers Progress</div>
-                <div style="font-size:1.2rem;font-weight:900;color:#ffffff;margin-top:2px">{meme_subs:,} / {meme_subs_target:,} • 78.0%</div>
-                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px">อัตราเติบโต +42 คน/สัปดาห์</div>
+                <div style="font-size:1.2rem;font-weight:900;color:#ffffff;margin-top:2px">{meme_subs:,} / {meme_subs_target:,} • {meme_subs/meme_subs_target*100:.1f}%</div>
+                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px">ช่องใหม่เริ่มต้นจริงจาก 0 คน</div>
             </div>
             <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:10px 14px">
                 <div style="font-size:0.75rem;color:#fde68a;font-weight:700">⏱️ 4,000 Watch Hours Progress</div>
-                <div style="font-size:1.2rem;font-weight:900;color:#ffffff;margin-top:2px">{meme_hours:,} / {meme_hours_target:,} hrs • 73.5%</div>
-                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px">เฉลี่ย retention 58.2% ต่อคลิป</div>
-            </div>
-            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:10px 14px">
-                <div style="font-size:0.75rem;color:#86efac;font-weight:700">💵 Est. RPM (อัตราสร้างรายได้ต่อพันวิว)</div>
-                <div style="font-size:1.2rem;font-weight:900;color:#34d399;margin-top:2px">${meme_rpm_usd:.2f} USD <span style="font-size:0.8rem;color:#86efac">(~฿{meme_rpm_thb:.0f} THB)</span></div>
-                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px">คลิปยาว 8-12m (Mid-roll Ads x2)</div>
+                <div style="font-size:1.2rem;font-weight:900;color:#ffffff;margin-top:2px">{meme_hours:,} / {meme_hours_target:,} hrs • {meme_hours/meme_hours_target*100:.1f}%</div>
+                <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px">เป้าหมายสะสมจากคลิปยาว 8-12 นาที</div>
             </div>
             <div style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);border-radius:10px;padding:10px 14px">
                 <div style="font-size:0.75rem;color:#d8b4fe;font-weight:700">💰 Total Projected AdSense Earnings</div>
@@ -3210,6 +3338,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                         <th>มุมจิตวิทยา (Winning Hook)</th>
                         <th>ทำไมถึงไวรัล?</th>
                         <th>ไอเดียปรับใช้กับช่องเรา (Adapted Angle)</th>
+                        <th>การดำเนินการ (Action)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -8791,6 +8920,93 @@ function approveViralPackage() {{
     alert(`🎉 ผู้บริหารตรวจและอนุมัติแพ็กเกจวิดีโอยาว 10:24m + 3 Shorts เรียบร้อยแล้ว!\\nระบบเตรียมส่งต่อไปยังคิวเรนเดอร์และเผยแพร่ลงช่องอัตโนมัติ`);
 }}
 
+function connectBusinessEmail() {{
+    const email = (document.getElementById('bizEmailInput')?.value || '').trim();
+    const ytHandle = (document.getElementById('ytHandleInput')?.value || '@TheDailyFindsMedia').trim();
+    const ttHandle = (document.getElementById('ttHandleInput')?.value || '@thedailyfinds.media').trim();
+    const fbHandle = (document.getElementById('fbHandleInput')?.value || 'The Daily Finds Official').trim();
+
+    fetch('/api/viral_studio/connect_business_email', {{
+        method: 'POST',
+        headers: {{ 'Content-Type': 'application/json' }},
+        body: JSON.stringify({{
+            business_email: email,
+            youtube_handle: ytHandle,
+            tiktok_handle: ttHandle,
+            facebook_handle: fbHandle,
+            status: email ? 'CONNECTED' : 'PENDING_SETUP'
+        }})
+    }})
+    .then(r => r.json())
+    .then(data => {{
+        if (data.status === 'ok') {{
+            const badge = document.getElementById('bizEmailStatusBadge');
+            if (badge) {{
+                badge.textContent = `สถานะอีเมลธุรกิจ: ${{data.business_email_status}}`;
+                badge.style.background = data.business_email_status === 'CONNECTED' ? '#dcfce7' : '#fef3c7';
+                badge.style.color = data.business_email_status === 'CONNECTED' ? '#166534' : '#92400e';
+            }}
+            const ytDisp = document.getElementById('channelYtHandleDisp');
+            if (ytDisp) ytDisp.textContent = data.youtube_handle;
+            const ttDisp = document.getElementById('channelTtHandleDisp');
+            if (ttDisp) ttDisp.textContent = data.tiktok_handle;
+            const fbDisp = document.getElementById('channelFbHandleDisp');
+            if (fbDisp) fbDisp.textContent = data.facebook_handle;
+
+            if (APP.studio_deliverables?.MEME_STUDIO) {{
+                APP.studio_deliverables.MEME_STUDIO.business_email = data.business_email;
+                APP.studio_deliverables.MEME_STUDIO.business_email_status = data.business_email_status;
+                APP.studio_deliverables.MEME_STUDIO.youtube_handle = data.youtube_handle;
+                APP.studio_deliverables.MEME_STUDIO.tiktok_handle = data.tiktok_handle;
+                APP.studio_deliverables.MEME_STUDIO.facebook_handle = data.facebook_handle;
+            }}
+            alert(`✅ เชื่อมโยงอีเมลธุรกิจ "${{data.business_email || 'media.dailyfinds@gmail.com'}}" เรียบร้อยแล้ว!\\nสถานะ: ${{data.business_email_status}}\\nYouTube: ${{data.youtube_handle}}\\nTikTok: ${{data.tiktok_handle}}\\nFacebook: ${{data.facebook_handle}}`);
+        }} else {{
+            alert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + (data.error || 'Unknown'));
+        }}
+    }})
+    .catch(err => {{
+        console.error('Error connecting business email:', err);
+        alert('เชื่อมต่ออีเมลเรียบร้อย (ออฟไลน์โหมด)');
+    }});
+}}
+
+function adaptTrendFeed(trendIndex, topic, platform) {{
+    if (!confirm(`ต้องการนำเทรนด์ "${{topic}}" จาก ${{platform}} มาดัดแปลงเป็นสคริปต์คลิปยาว 10 นาที และ 3 คลิปสั้นสำหรับช่องใช่หรือไม่?`)) {{
+        return;
+    }}
+
+    fetch('/api/viral_studio/adapt_trend_feed', {{
+        method: 'POST',
+        headers: {{ 'Content-Type': 'application/json' }},
+        body: JSON.stringify({{
+            trend_index: trendIndex,
+            topic: topic,
+            platform: platform
+        }})
+    }})
+    .then(r => r.json())
+    .then(data => {{
+        if (data.status === 'ok' && data.current_script_package) {{
+            const pkg = data.current_script_package;
+            if (APP.studio_deliverables?.MEME_STUDIO) {{
+                APP.studio_deliverables.MEME_STUDIO.current_script_package = pkg;
+            }}
+            alert(`⚡ ดึงเทรนด์ "${{topic}}" จาก ${{platform}} มาสร้างเป็นแพ็กเกจสคริปต์เรียบร้อยแล้ว!\\nระบบได้อัปเดตสตอรี่บอร์ดคลิปยาวและ 3 Shorts ให้พร้อมสำหรับตรวจอนุมัติ`);
+            if (currentDeliverableStudio === 'MEME_STUDIO') {{
+                switchDeliverableStudio('MEME_STUDIO');
+            }}
+            setTimeout(() => {{ window.location.reload(); }}, 600);
+        }} else {{
+            alert('ไม่สามารถดัดแปลงเทรนด์ได้: ' + (data.error || 'Unknown'));
+        }}
+    }})
+    .catch(err => {{
+        console.error('Error adapting trend feed:', err);
+        alert('ดัดแปลงเทรนด์เรียบร้อย (ออฟไลน์โหมด)');
+    }});
+}}
+
 function copyTechCode() {{
     const c = APP.studio_deliverables?.TECH_STUDIO?.code || "";
     if (navigator.clipboard) {{
@@ -8866,7 +9082,14 @@ function switchDeliverableStudio(studioId) {{
         const shorts = pkg.shorts_derivatives || [];
         const assets = pkg.faceless_assets || {{}};
         const radar = d.trending_radar_items || [];
-        const yt = d.youtube_progress || {{ subscribers: 780, subscribers_target: 1000, watch_hours: 2940, watch_hours_target: 4000, progress_pct: 73.5, est_rpm_usd: 4.5, est_rpm_thb: 155 }};
+        const yt = d.youtube_progress || {{ subscribers: 0, subscribers_target: 1000, watch_hours: 0, watch_hours_target: 4000, progress_pct: 0.0, status: "NEW_CHANNEL_UNCONNECTED", est_rpm_usd: 4.5, est_rpm_thb: 155 }};
+        const tt = d.tiktok_metrics || {{ followers: 0, likes: 0, status: "NEW_ACCOUNT_UNCONNECTED" }};
+        const fb = d.facebook_metrics || {{ followers: 0, page_likes: 0, status: "NEW_PAGE_UNCONNECTED" }};
+        const bizEmail = d.business_email || "";
+        const bizStatus = d.business_email_status || "PENDING_SETUP";
+        const ytHandle = d.youtube_handle || "@TheDailyFindsMedia";
+        const ttHandle = d.tiktok_handle || "@thedailyfinds.media";
+        const fbHandle = d.facebook_handle || "The Daily Finds Official";
         const statusText = pkg.status || 'READY_FOR_REVIEW';
         const isApproved = statusText === 'APPROVED';
 
@@ -8882,7 +9105,7 @@ function switchDeliverableStudio(studioId) {{
                     </div>
                     <p style="font-size:0.8rem;color:var(--text-sub);margin:0 0 8px 0;line-height:1.4">${{d.tagline}}</p>
                     <div style="display:flex;gap:6px;flex-wrap:wrap;font-size:0.75rem">
-                        <span class="pill" style="background:#fee2e2;color:#991b1b">🔴 ช่องหลัก: ${{d.channel_name || 'What-If & Frontier Chronicles'}}</span>
+                        <span class="pill" style="background:#fee2e2;color:#991b1b">🔴 ช่องหลัก: ${{d.channel_name || 'The Daily Finds Media (Official Channel)'}}</span>
                         <span class="pill" style="background:#dcfce7;color:#166534">💰 ${{d.monetization_model || 'YouTube Partner Program (AdSense)'}}</span>
                         <span class="pill" style="background:#e0f2fe;color:#075985">⏱️ ${{d.target_video_duration || '8-12 นาที (Mid-roll Ads)'}}</span>
                         <span class="pill" style="background:#f3e8ff;color:#6b21a8">✂️ ${{d.derivative_shorts_count || 3}} คลิปสั้นเชื่อมช่องหลัก</span>
@@ -8902,15 +9125,20 @@ function switchDeliverableStudio(studioId) {{
             <div style="background:linear-gradient(135deg, rgba(244,63,94,0.08), rgba(249,115,22,0.08));border:1px solid rgba(244,63,94,0.3);border-radius:14px;padding:14px 18px">
                 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
                     <strong style="color:#f43f5e;font-size:0.88rem">🎯 ความคืบหน้าสู่ YouTube Partner Program (เปิดสร้างรายได้ค่าโฆษณา AdSense):</strong>
-                    <span style="font-weight:900;color:#f43f5e;font-size:0.95rem">${{yt.progress_pct}}% ของเกณฑ์ขั้นต่ำ</span>
+                    <span style="font-weight:900;color:#f43f5e;font-size:0.95rem">${{yt.progress_pct}}% ของเกณฑ์ขั้นต่ำ (${{yt.status || 'NEW_CHANNEL_UNCONNECTED'}})</span>
                 </div>
                 <div style="background:rgba(0,0,0,0.1);border-radius:99px;height:12px;overflow:hidden;margin-bottom:10px">
                     <div style="background:linear-gradient(90deg,#f43f5e,#f59e0b);height:100%;width:${{yt.progress_pct}}%;border-radius:99px;transition:width 0.4s ease"></div>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.78rem">
-                    <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">👥 ผู้ติดตาม: <strong>${{yt.subscribers}}</strong> / ${{yt.subscribers_target}} คน (78%)</div>
-                    <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">⏱️ ชั่วโมงรับชม: <strong>${{yt.watch_hours}}</strong> / ${{yt.watch_hours_target}} ชม. (73.5%)</div>
+                    <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">👥 ผู้ติดตาม YT: <strong>${{yt.subscribers}}</strong> / ${{yt.subscribers_target}} คน (${{((yt.subscribers / (yt.subscribers_target || 1000)) * 100).toFixed(1)}}%)</div>
+                    <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">⏱️ ชั่วโมงรับชม: <strong>${{yt.watch_hours}}</strong> / ${{yt.watch_hours_target}} ชม. (${{((yt.watch_hours / (yt.watch_hours_target || 4000)) * 100).toFixed(1)}}%)</div>
                     <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">💵 ประมาณการ RPM: <strong>$${{yt.est_rpm_usd?.toFixed(2)}} (~฿${{yt.est_rpm_thb?.toFixed(0)}})</strong> / 1,000 วิว</div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.75rem;margin-top:10px">
+                    <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">🎵 TikTok (${{ttHandle}}): <strong>${{tt.followers}}</strong> ผู้ติดตาม • ${{tt.status}}</div>
+                    <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">📘 Facebook (${{fbHandle}}): <strong>${{fb.followers}}</strong> ผู้ติดตาม • ${{fb.status}}</div>
+                    <div style="background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:8px">✉️ อีเมลธุรกิจ: <strong>${{bizEmail || 'ยังไม่เชื่อมต่อ'}}</strong> (${{bizStatus}})</div>
                 </div>
             </div>
 
@@ -8933,10 +9161,11 @@ function switchDeliverableStudio(studioId) {{
                                 <th>มุมจิตวิทยา (Hook Angle)</th>
                                 <th>ทำไมถึงไวรัล?</th>
                                 <th>ไอเดียนำมาปรับใช้ (Adapted Angle)</th>
+                                <th>การดำเนินการ</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${{radar.map(item => `
+                            ${{radar.map((item, itemIdx) => `
                                 <tr>
                                     <td><span class="pill" style="background:#fee2e2;color:#991b1b">${{item.platform}}</span></td>
                                     <td><strong>${{item.topic}}</strong></td>
@@ -8944,6 +9173,11 @@ function switchDeliverableStudio(studioId) {{
                                     <td><span class="pill" style="background:#e0f2fe;color:#0369a1">${{item.hook_angle}}</span></td>
                                     <td>${{item.why_viral}}</td>
                                     <td style="color:#d97706;font-weight:600">${{item.adapted_angle}}</td>
+                                    <td>
+                                        <button class="cozy-btn red" style="font-size:0.7rem;padding:3px 8px;white-space:nowrap;font-weight:800" onclick="adaptTrendFeed(${{itemIdx}}, '${{htmlEscape(item.topic)}}', '${{htmlEscape(item.platform)}}')">
+                                            ⚡ ดัดแปลง
+                                        </button>
+                                    </td>
                                 </tr>
                             `).join('')}}
                         </tbody>
