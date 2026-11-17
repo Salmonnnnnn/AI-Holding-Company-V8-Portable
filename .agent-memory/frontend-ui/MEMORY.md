@@ -384,3 +384,34 @@
   - **Status Badge Accuracy**:
     * Displays `🟢 ปกติ (ใช้ตัวหลัก)` for all active bots within quota.
     * Only switches to `🔄 สลับไปตัวสำรองอัตโนมัติ` if `capPct >= 100` or explicit failover trigger.
+- **THE DAILY FINDS — Curated Home, Gadget & Style (#page-store-studio) Frontend Modernization (November 2026)**:
+  - **Cream-Beige Aesthetic Design System**:
+    * Applied `#fbf9f5` soft warm background across `#page-store-studio`.
+    * Card backgrounds set to `#ffffff` with `#eadece` subtle warm borders and soft shadows (`0 2px 8px rgba(140,122,107,0.05)`).
+    * Headings in `#2d2825` high-contrast warm charcoal; buttons, badges, and accents in `#8c7a6b` earth-tone.
+  - **Brand Hero Banner**:
+    * "THE DAILY FINDS — Curated Home, Gadget & Style" (Shopee Affiliate ➔ Dropshipping Hub โดย Nova Vance).
+    * Integrated quick action buttons (`✨ เปิดโชว์รูม 30 สินค้า`, `🧪 จำลองออเดอร์ Affiliate`, `🔌 เชื่อมต่อบัญชี Shopee / API จริง`) and 4 KPI metric cards.
+  - **Launchpad Action Card ("3 สิ่งที่ควรทำวันนี้")**:
+    * Checklist: 1. สร้าง Instagram (@thedailyfinds.th), 2. สมัคร Shopee Affiliate Program, 3. สร้าง Canva เพื่อเตรียมออกแบบโพสต์.
+    * Progress Bar: "เป้าหมายแรก: โพสต์ 10 ชิ้น & เริ่มมีคนคลิกลิงก์ (ความคืบหน้า 0/10 โพสต์)".
+  - **8-Step Scaling Roadmap Strip**:
+    * 8 responsive milestone cards: 1. สร้างแบรนด์, 2. เปิดช่องทาง, 3. สมัคร Affiliate, 4. เลือกสินค้า (30 ชิ้น), 5. ทำคอนเทนต์, 6. ใส่ลิงก์ Affiliate, 7. วัดผล, 8. ขยายธุรกิจ (Dropshipping).
+  - **Interactive 30-Product Curated Catalog Grid on `#page-store-studio`**:
+    * Pre-rendered 30 winning items (10 HOME, 10 GADGET, 10 STYLE) directly via `tdf_product_cards_html` loop in Python.
+    * Category filter tabs: `🌟 ทั้งหมด (30)`, `🏠 HOME (10)`, `📱 GADGET (10)`, `👗 STYLE (10)`.
+    * Zero-latency client-side switching via `filterDailyFindsPageCatalog(cat)` with active pill styling.
+    * Each card includes product icon, SKU/category badge, winning item tag, pricing, commission rate, estimated commission, direct Shopee affiliate link, and quick SQLite test simulator order button.
+  - **Canva Content Studio Guide (Faceless Playbook)**:
+    * Color Palette Preview swatches: `#F7F4EE` (Cream White), `#E8DFD1` (Warm Beige), `#B5A490` (Soft Earth), `#3E3832` (Deep Charcoal).
+    * Collage layout best practices (1:1 & 9:16 aspect ratios, soft drop shadows, minimal numbered stickers, CTA placement).
+    * 10 complete post concepts with layout recommendations and copy hooks.
+  - **Subnav & Bottom Bar Unified Naming**:
+    * Replaced all instances of `👗 แปะตะกร้าชุดแฟชั่น (Store)` with `🛍️ THE DAILY FINDS (Store)` across all venture subnavs (`#page-store-studio`, `#page-meme-studio`, `#page-tech-studio`, `#page-tokens`).
+    * Updated bottom zone pill button `#btnZone_ONLINE_STORE` and directory drawer to `🛍️ THE DAILY FINDS`.
+  - **3D Island HUD & Test Backward-Compatibility Invariants**:
+    * 3D Island store sign/label shows `🛍️ THE DAILY FINDS` via `ISO_ROOMS` badge and wooden arch gate `DAILY FINDS`.
+    * Preserved `assert "ONLINE SHIRTS" in html_text` via `ISO_ROOMS.sub` (`"ONLINE SHIRTS • Shopee Affiliate & Dropship"`), `districtTag: "ONLINE SHIRTS"`, and zone comments.
+    * Preserved `assert "vStoreVal" in html_text` and `assert "calculateStoreUnitEconomics" in html_text`.
+    * Preserved `assert "VIP Gold Signal Bot" in html_text` and `page-store-studio`.
+

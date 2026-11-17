@@ -773,6 +773,64 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         </tr>
         """
 
+    # Build 30-product curated catalog cards for #page-store-studio (THE DAILY FINDS)
+    tdf_products = studio_deliverables.get("ONLINE_STORE", {}).get("products", [])
+    tdf_product_cards_html = ""
+    for p in tdf_products:
+        p_sku = html.escape(str(p.get("sku", "")))
+        p_name = html.escape(str(p.get("name", "")))
+        p_cat = html.escape(str(p.get("category", "")))
+        p_price = html.escape(str(p.get("price", "")))
+        p_comm_rate = html.escape(str(p.get("commission_rate", "")))
+        p_est_comm = html.escape(str(p.get("est_commission", "")))
+        p_desc = html.escape(str(p.get("desc", "")))
+        p_badge = html.escape(str(p.get("badge", "")))
+        p_link = html.escape(str(p.get("affiliate_link", "https://shope.ee/thedailyfinds")))
+        p_sales = html.escape(str(p.get("sales", "พร้อมโปรโมต")))
+        p_icon = p.get("name", "").split()[0] if p.get("name") else "📦"
+        safe_p_name = p.get("name", "").replace("'", "\\'")
+
+        tdf_product_cards_html += f"""
+        <div class="tdf-page-prod-card" data-cat="{p_cat}" style="background:#ffffff;border:1px solid #eadece;border-radius:14px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 6px rgba(140,122,107,0.05);transition:transform 0.15s ease,box-shadow 0.15s ease">
+            <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px">
+                    <span style="font-size:0.72rem;font-weight:800;color:#8c7a6b;background:#f5f0e8;padding:2px 8px;border-radius:6px;border:1px solid #eadece">{p_sku} • {p_cat}</span>
+                    <span style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-size:0.7rem;padding:2px 6px;border-radius:6px;font-weight:800">{p_badge}</span>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px">
+                    <div style="width:44px;height:44px;border-radius:10px;background:#f5f0e8;border:1px solid #eadece;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0">{p_icon}</div>
+                    <div style="flex:1;min-width:0">
+                        <strong style="font-size:0.9rem;color:#2d2825;display:block;line-height:1.35;word-break:break-word">{p_name}</strong>
+                        <div style="font-size:0.74rem;color:#8c7a6b;margin-top:2px">{p_sales}</div>
+                    </div>
+                </div>
+                <p style="font-size:0.78rem;color:#6b5d52;margin-bottom:12px;line-height:1.45">{p_desc}</p>
+            </div>
+            <div>
+                <div style="background:#fbf9f5;border:1px dashed #eadece;border-radius:10px;padding:8px 12px;margin-bottom:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:#8c7a6b">
+                        <span>ส่วนแบ่งคอมมิชชัน:</span>
+                        <strong style="color:#d97706;font-size:0.82rem">{p_comm_rate}</strong>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:#8c7a6b;margin-top:4px">
+                        <span>ประมาณการคอมมิชชัน / ชิ้น:</span>
+                        <strong style="color:#10b981;font-size:0.82rem">{p_est_comm}</strong>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid #f5f0e8;gap:8px">
+                    <div>
+                        <div style="font-size:1.15rem;font-weight:900;color:#2d2825">{p_price}</div>
+                        <div style="font-size:0.7rem;color:#8c7a6b">ราคาขาย Shopee</div>
+                    </div>
+                    <div style="display:flex;gap:6px">
+                        <a href="{p_link}" target="_blank" class="cozy-btn" style="background:#8c7a6b;color:#ffffff;font-size:0.76rem;padding:6px 12px;text-decoration:none;border-radius:8px;font-weight:700;display:inline-flex;align-items:center;gap:4px">🔗 ลิงก์ Shopee ตะกร้า</a>
+                        <button class="cozy-btn" onclick="submitQuickStoreOrder('ONLINE_STORE', '{safe_p_name}', 25.0)" style="background:#ffffff;border:1px solid #eadece;color:#8c7a6b;font-size:0.74rem;padding:5px 8px;border-radius:8px" title="จำลองคำสั่งซื้อ Affiliate เข้าสู่ระบบบัญชี">🧪</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+
     html_doc = f"""<!DOCTYPE html>
 <html lang="th" data-theme="light">
 <head>
@@ -1910,6 +1968,11 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             background: rgba(16, 185, 129, 0.18);
             color: #10b981;
         }}
+        .tdf-page-prod-card:hover {{
+            transform: translateY(-2px);
+            border-color: #8c7a6b !important;
+            box-shadow: 0 6px 20px rgba(140, 122, 107, 0.16) !important;
+        }}
 
         /* Signal & Scorecard Box */
         .signal-grid {{
@@ -2513,7 +2576,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                 <div style="display:flex;gap:6px;flex-wrap:wrap">
                     <button class="cozy-btn" onclick="openStudioDeliverablesModal('TOWN_HALL')" style="font-size:0.75rem;padding:3px 8px">🏛️ Town Hall</button>
                     <button class="cozy-btn" onclick="switchPage('page-tech-studio')" style="font-size:0.75rem;padding:3px 8px">💻 Tech Studio</button>
-                    <button class="cozy-btn" onclick="switchPage('page-store-studio')" style="font-size:0.75rem;padding:3px 8px">🏪 Online Store</button>
+                    <button class="cozy-btn" onclick="switchPage('page-store-studio')" style="font-size:0.75rem;padding:3px 8px">🛍️ THE DAILY FINDS</button>
                     <button class="cozy-btn" onclick="switchPage('page-meme-studio')" style="font-size:0.75rem;padding:3px 8px">🎬 Meme Studio</button>
                     <button class="cozy-btn" onclick="switchPage('page-mt5')" style="font-size:0.75rem;padding:3px 8px">🔮 What-If & Quant</button>
                 </div>
@@ -2777,7 +2840,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     <div class="ventures-subnav-bar">
         <div style="font-weight:900;font-size:0.88rem;color:var(--text-main)">🎬 หมวดธุรกิจหารายได้ (Ventures Workspace):</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')">👗 แปะตะกร้าชุดแฟชั่น (Store)</button>
+            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')">🛍️ THE DAILY FINDS (Store)</button>
             <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-meme-studio')">🎬 คลิปไวรัล What-If (Media)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tech-studio')">💻 บอท & เทค (Tech)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tokens')">🪙 ตารางโทเคน 11 บอท</button>
@@ -2977,125 +3040,450 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 </div>
 
 <!-- ====================================================================== -->
-<!-- PAGE 3: ONLINE STORE & DIGITAL E-COMMERCE OS (#page-store-studio)      -->
+<!-- PAGE 3: THE DAILY FINDS — STORE & AFFILIATE OS (#page-store-studio)    -->
 <!-- ====================================================================== -->
-<div class="page-view" id="page-store-studio">
-    <div class="ventures-subnav-bar">
-        <div style="font-weight:900;font-size:0.88rem;color:var(--text-main)">🎬 หมวดธุรกิจหารายได้ (Ventures Workspace):</div>
+<div class="page-view" id="page-store-studio" style="background:#fbf9f5;border-radius:16px;padding:20px;border:1px solid #eadece">
+    <div class="ventures-subnav-bar" style="background:#ffffff;border:1px solid #eadece;border-radius:12px;padding:8px 14px;margin-bottom:16px">
+        <div style="font-weight:900;font-size:0.88rem;color:#2d2825">🎬 หมวดธุรกิจหารายได้ (Ventures Workspace):</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-store-studio')">🛍️ THE DAILY FINDS (Store)</button>
+            <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-store-studio')" style="background:#8c7a6b;color:#ffffff">🛍️ THE DAILY FINDS (Store)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')">🎬 คลิปไวรัล What-If (Media)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tech-studio')">💻 บอท & เทค (Tech)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tokens')">🪙 ตารางโทเคน 11 บอท</button>
         </div>
     </div>
-    <div class="catchup-banner" style="border-color:#8c7a6b;background:linear-gradient(90deg,rgba(251,249,245,0.95),rgba(245,240,232,0.95));color:#3d352e">
-        <div>
-            <strong style="color:#8c7a6b">🛍️ THE DAILY FINDS — Curated Home, Gadget & Style (Nova Vance):</strong>
-            <span style="color:#6b5d52">ร้านค้าคัดสรรสินค้าแฟชั่น ของแต่งบ้าน และแกดเจ็ตมินิมอล (Shopee Affiliate & Dropshipping Scaling Hub) เชื่อมต่อสมุดบัญชี SQLite</span>
+
+    <!-- 1. Brand Hero Banner -->
+    <div class="tdf-hero-banner" style="background:linear-gradient(135deg,#ffffff 0%,#fbf9f5 100%);border:1px solid #eadece;border-radius:16px;padding:24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:18px;box-shadow:0 2px 10px rgba(140,122,107,0.06)">
+        <div style="max-width:700px">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+                <span style="font-size:2rem;line-height:1">🛍️</span>
+                <div>
+                    <h1 style="font-size:1.45rem;font-weight:900;color:#2d2825;margin:0;letter-spacing:-0.4px">THE DAILY FINDS — Curated Home, Gadget & Style</h1>
+                    <div style="font-size:0.84rem;font-weight:800;color:#8c7a6b;margin-top:2px">Shopee Affiliate ➔ Dropshipping Hub โดย Nova Vance</div>
+                </div>
+            </div>
+            <p style="font-size:0.88rem;color:#6b5d52;margin:10px 0 16px 0;line-height:1.55">
+                ร้านค้าคัดสรรสินค้าแฟชั่น ของแต่งบ้าน และแกดเจ็ตมินิมอลเกาหลี-ญี่ปุ่น คุมโทนอุ่น คอนเทนต์ภาพคอลลาจและคลิปสั้น ไม่ต้องออกหน้ากล้อง แปะตะกร้า Shopee Affiliate รับค่าคอมมิชชั่น 10–15% ต่อชิ้น เมื่อเจอ Winning Items ต่อยอดสู่ Dropshipping เต็มรูปแบบ เชื่อมต่อระบบบัญชี SQLite อัตโนมัติ
+            </p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="cozy-btn" onclick="openStudioDeliverablesModal('ONLINE_STORE')" style="background:#8c7a6b;color:#ffffff;font-size:0.8rem;padding:7px 15px;border-radius:10px;font-weight:800;box-shadow:0 2px 6px rgba(140,122,107,0.25)">✨ เปิดโชว์รูม 30 สินค้าคัดสรร & แผนงานด่วน</button>
+                <button class="cozy-btn" onclick="submitQuickStoreOrder('ONLINE_STORE', 'THE DAILY FINDS Curated Order (TDF-HOME-01)', 27.86)" style="background:#ffffff;border:1px solid #8c7a6b;color:#8c7a6b;font-size:0.8rem;padding:7px 15px;border-radius:10px;font-weight:800">🧪 จำลองออเดอร์ Affiliate เข้าบัญชีเทส (+$27.86)</button>
+                <button class="cozy-btn" onclick="openLiveIntegrationsModal()" style="background:#f5f0e8;border:1px solid #eadece;color:#2d2825;font-size:0.8rem;padding:7px 15px;border-radius:10px;font-weight:700">🔌 ตั้งค่าเชื่อม Payment / API จริง</button>
+            </div>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="cozy-btn gold" onclick="openStudioDeliverablesModal('ONLINE_STORE')">✨ เปิดโชว์รูม 30 สินค้าคัดสรร & แผนงานด่วน</button>
-            <button class="cozy-btn green" onclick="submitQuickStoreOrder('ONLINE_STORE', 'THE DAILY FINDS Curated Order (TDF-HOME-01)', 27.86)">🧪 จำลองออเดอร์ Affiliate เข้าบัญชีเทส (+$27.86)</button>
-            <button class="cozy-btn" onclick="openLiveIntegrationsModal()">🔌 ตั้งค่าเชื่อม Payment / API จริง</button>
+        <div style="display:flex;flex-direction:column;gap:8px;min-width:250px">
+            <div style="background:#ffffff;border:1px solid #eadece;border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+                <span style="font-size:0.78rem;color:#8c7a6b;font-weight:700">💵 ยอดขายสะสม (Test Store):</span>
+                <strong style="color:#2d2825;font-size:1.1rem" id="storePageTestRevVal">${v_store:+,.2f}</strong>
+            </div>
+            <div style="background:#ffffff;border:1px solid #eadece;border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+                <span style="font-size:0.78rem;color:#8c7a6b;font-weight:700">📈 ค่าคอมมิชชั่นเฉลี่ย:</span>
+                <strong style="color:#d97706;font-size:0.95rem">10% – 15% / ชิ้น</strong>
+            </div>
+            <div style="background:#ffffff;border:1px solid #eadece;border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+                <span style="font-size:0.78rem;color:#8c7a6b;font-weight:700">📦 คลังสินค้าคัดสรร:</span>
+                <strong style="color:#8c7a6b;font-size:0.95rem">30 Winning Items</strong>
+            </div>
+            <div style="background:#ffffff;border:1px solid #eadece;border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+                <span style="font-size:0.78rem;color:#8c7a6b;font-weight:700">💎 อัตรากำไรขั้นต้น (Margin):</span>
+                <strong style="color:#10b981;font-size:0.95rem">94.8% (Lean Model)</strong>
+            </div>
         </div>
     </div>
 
-    <!-- Store Unit Economics Strip -->
-    <div class="grid-4" style="margin-bottom:16px">
-        <div class="stat-metric-box" style="border-left:4px solid #10b981">
-            <div class="lbl">🟢 ยอดขายบัญชีจริง (Live Store Revenue)</div>
+    <!-- 2. Action Card "3 สิ่งที่ควรทำวันนี้ (Launchpad Action Card)" -->
+    <div class="tdf-card" style="background:#ffffff;border:1px solid #eadece;border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(140,122,107,0.05)">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-size:1.3rem">📋</span>
+                <h3 style="font-size:1.1rem;font-weight:900;color:#2d2825;margin:0">3 สิ่งที่ควรทำวันนี้ (Launchpad Action Card)</h3>
+            </div>
+            <span style="background:#f5f0e8;color:#8c7a6b;font-size:0.76rem;font-weight:800;padding:4px 12px;border-radius:99px;border:1px solid #eadece">Daily Priority Checklist</span>
+        </div>
+
+        <!-- Progress Bar -->
+        <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px 16px;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;color:#2d2825;font-weight:800;margin-bottom:6px">
+                <span>🎯 เป้าหมายแรก: โพสต์ 10 ชิ้น & เริ่มมีคนคลิกลิงก์ (ความคืบหน้า 0/10 โพสต์)</span>
+                <span style="color:#8c7a6b;font-size:0.78rem">0% (พร้อมลุยโพสต์แรก)</span>
+            </div>
+            <div style="background:#eadece;height:10px;border-radius:99px;overflow:hidden">
+                <div style="background:linear-gradient(90deg,#8c7a6b,#2d2825);width:0%;height:100%;border-radius:99px"></div>
+            </div>
+        </div>
+
+        <!-- 3 Tasks Grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px;display:flex;align-items:flex-start;gap:12px">
+                <input type="checkbox" id="tdfCheck1" style="margin-top:3px;accent-color:#8c7a6b;width:18px;height:18px;cursor:pointer">
+                <div>
+                    <label for="tdfCheck1" style="font-size:0.9rem;font-weight:900;color:#2d2825;cursor:pointer">1. สร้าง Instagram (@thedailyfinds.th)</label>
+                    <div style="font-size:0.78rem;color:#6b5d52;margin-top:3px;line-height:1.4">ตั้งชื่อ Bio สไตล์มินิมอล คุมโทนครีมเบจ วางลิงก์รวมพิกัดสินค้า (Linktree หรือ Milkshake)</div>
+                </div>
+            </div>
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px;display:flex;align-items:flex-start;gap:12px">
+                <input type="checkbox" id="tdfCheck2" style="margin-top:3px;accent-color:#8c7a6b;width:18px;height:18px;cursor:pointer">
+                <div>
+                    <label for="tdfCheck2" style="font-size:0.9rem;font-weight:900;color:#2d2825;cursor:pointer">2. สมัคร Shopee Affiliate Program</label>
+                    <div style="font-size:0.78rem;color:#6b5d52;margin-top:3px;line-height:1.4">เปิดบัญชี Affiliate เพื่อสร้าง Sub-ID สำหรับแทร็กยอดคลิกและรับค่าคอมมิชชั่นเข้าบัญชีธนาคาร</div>
+                </div>
+            </div>
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px;display:flex;align-items:flex-start;gap:12px">
+                <input type="checkbox" id="tdfCheck3" style="margin-top:3px;accent-color:#8c7a6b;width:18px;height:18px;cursor:pointer">
+                <div>
+                    <label for="tdfCheck3" style="font-size:0.9rem;font-weight:900;color:#2d2825;cursor:pointer">3. สร้าง Canva เพื่อเตรียมออกแบบโพสต์</label>
+                    <div style="font-size:0.78rem;color:#6b5d52;margin-top:3px;line-height:1.4">ตั้งค่า Template โทนสีครีมเบจ คอลลาจสินค้า ไม่ต้องออกหน้ากล้อง ขนาด 1:1 และ 9:16</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 8-Step Scaling Roadmap Strip -->
+    <div class="tdf-card" style="background:#ffffff;border:1px solid #eadece;border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(140,122,107,0.05)">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <div>
+                <h3 style="font-size:1.1rem;font-weight:900;color:#2d2825;margin:0">🗺️ 8-Step Scaling Roadmap (โรดแมปการเติบโต 8 ขั้น)</h3>
+                <p style="font-size:0.8rem;color:#6b5d52;margin:3px 0 0 0">แนวทางการขยายธุรกิจจาก Affiliate ไม่ต้องสต็อก สู่ Dropshipping และขยายกำไรอย่างยั่งยืน</p>
+            </div>
+            <span style="font-size:0.76rem;color:#8c7a6b;background:#fbf9f5;padding:4px 10px;border-radius:8px;border:1px solid #eadece;font-weight:700">8 Strategic Milestones</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:12px 10px;text-align:center">
+                <div style="display:inline-block;background:#8c7a6b;color:#ffffff;font-size:0.74rem;font-weight:900;width:24px;height:24px;line-height:24px;border-radius:50%;margin-bottom:6px">1</div>
+                <div style="font-size:0.84rem;font-weight:900;color:#2d2825">สร้างแบรนด์</div>
+                <div style="font-size:0.72rem;color:#6b5d52;margin-top:4px">THE DAILY FINDS โทนสีครีมเบจ</div>
+            </div>
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:12px 10px;text-align:center">
+                <div style="display:inline-block;background:#8c7a6b;color:#ffffff;font-size:0.74rem;font-weight:900;width:24px;height:24px;line-height:24px;border-radius:50%;margin-bottom:6px">2</div>
+                <div style="font-size:0.84rem;font-weight:900;color:#2d2825">เปิดช่องทาง</div>
+                <div style="font-size:0.72rem;color:#6b5d52;margin-top:4px">IG, Facebook, Pinterest</div>
+            </div>
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:12px 10px;text-align:center">
+                <div style="display:inline-block;background:#8c7a6b;color:#ffffff;font-size:0.74rem;font-weight:900;width:24px;height:24px;line-height:24px;border-radius:50%;margin-bottom:6px">3</div>
+                <div style="font-size:0.84rem;font-weight:900;color:#2d2825">สมัคร Affiliate</div>
+                <div style="font-size:0.72rem;color:#6b5d52;margin-top:4px">Shopee Affiliate</div>
+            </div>
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:12px 10px;text-align:center">
+                <div style="display:inline-block;background:#8c7a6b;color:#ffffff;font-size:0.74rem;font-weight:900;width:24px;height:24px;line-height:24px;border-radius:50%;margin-bottom:6px">4</div>
+                <div style="font-size:0.84rem;font-weight:900;color:#2d2825">เลือกสินค้า</div>
+                <div style="font-size:0.72rem;color:#6b5d52;margin-top:4px">HOME, GADGET, STYLE รวม 30 ชิ้น</div>
+            </div>
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:12px 10px;text-align:center">
+                <div style="display:inline-block;background:#8c7a6b;color:#ffffff;font-size:0.74rem;font-weight:900;width:24px;height:24px;line-height:24px;border-radius:50%;margin-bottom:6px">5</div>
+                <div style="font-size:0.84rem;font-weight:900;color:#2d2825">ทำคอนเทนต์</div>
+                <div style="font-size:0.72rem;color:#6b5d52;margin-top:4px">Canva คอลลาจสินค้า ไม่ต้องออกหน้า</div>
+            </div>
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:12px 10px;text-align:center">
+                <div style="display:inline-block;background:#8c7a6b;color:#ffffff;font-size:0.74rem;font-weight:900;width:24px;height:24px;line-height:24px;border-radius:50%;margin-bottom:6px">6</div>
+                <div style="font-size:0.84rem;font-weight:900;color:#2d2825">ใส่ลิงก์ Affiliate</div>
+                <div style="font-size:0.72rem;color:#6b5d52;margin-top:4px">แปะตะกร้า & ลิงก์โปรไฟล์</div>
+            </div>
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:12px 10px;text-align:center">
+                <div style="display:inline-block;background:#8c7a6b;color:#ffffff;font-size:0.74rem;font-weight:900;width:24px;height:24px;line-height:24px;border-radius:50%;margin-bottom:6px">7</div>
+                <div style="font-size:0.84rem;font-weight:900;color:#2d2825">วัดผล</div>
+                <div style="font-size:0.72rem;color:#6b5d52;margin-top:4px">ยอดคลิก, ยอดซื้อ, ค่าคอมมิชชัน</div>
+            </div>
+            <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:12px 10px;text-align:center">
+                <div style="display:inline-block;background:#2d2825;color:#ffffff;font-size:0.74rem;font-weight:900;width:24px;height:24px;line-height:24px;border-radius:50%;margin-bottom:6px">8</div>
+                <div style="font-size:0.84rem;font-weight:900;color:#2d2825">ขยายธุรกิจ</div>
+                <div style="font-size:0.72rem;color:#6b5d52;margin-top:4px">เมื่อเจอ Winning Items ต่อยอด Dropshipping</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Interactive 30-Product Curated Catalog Grid -->
+    <div class="tdf-card" style="background:#ffffff;border:1px solid #eadece;border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(140,122,107,0.05)">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #eadece">
+            <div>
+                <div style="display:flex;align-items:center;gap:10px">
+                    <span style="font-size:1.3rem">📦</span>
+                    <h3 style="font-size:1.15rem;font-weight:900;color:#2d2825;margin:0">แคตตาล็อกสินค้าคัดสรร 30 รายการ (30 Winning Curated Items)</h3>
+                </div>
+                <p style="font-size:0.8rem;color:#6b5d52;margin:3px 0 0 0">คัดเฉพาะสินค้าสไตล์มินิมอล ยอดขายปัง และค่าคอมมิชชันสูง 10%–15% พร้อมปุ่มลิงก์ Shopee ตะกร้า</p>
+            </div>
+            <!-- Category Filter Tabs -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap" id="tdfPageCategoryFilterBar">
+                <button class="cozy-btn active" onclick="filterDailyFindsPageCatalog('ALL')" id="tdfPageBtn_ALL" style="font-size:0.76rem;padding:6px 14px;background:#8c7a6b;color:#ffffff;border-radius:10px;font-weight:800">🌟 ทั้งหมด (30)</button>
+                <button class="cozy-btn" onclick="filterDailyFindsPageCatalog('HOME')" id="tdfPageBtn_HOME" style="font-size:0.76rem;padding:6px 14px;background:#f5f0e8;color:#2d2825;border-radius:10px;font-weight:700">🏠 HOME (10)</button>
+                <button class="cozy-btn" onclick="filterDailyFindsPageCatalog('GADGET')" id="tdfPageBtn_GADGET" style="font-size:0.76rem;padding:6px 14px;background:#f5f0e8;color:#2d2825;border-radius:10px;font-weight:700">📱 GADGET (10)</button>
+                <button class="cozy-btn" onclick="filterDailyFindsPageCatalog('STYLE')" id="tdfPageBtn_STYLE" style="font-size:0.76rem;padding:6px 14px;background:#f5f0e8;color:#2d2825;border-radius:10px;font-weight:700">👗 STYLE (10)</button>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:14px" id="tdfPageCatalogGrid">
+            {tdf_product_cards_html}
+        </div>
+    </div>
+
+    <!-- 5. Canva Content Studio Guide (ภาพคอลลาจสินค้า ไม่ต้องออกหน้า) -->
+    <div class="tdf-card" style="background:#ffffff;border:1px solid #eadece;border-radius:16px;padding:22px;margin-bottom:20px;box-shadow:0 2px 8px rgba(140,122,107,0.05)">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #eadece">
+            <div>
+                <div style="display:flex;align-items:center;gap:10px">
+                    <span style="font-size:1.3rem">🎨</span>
+                    <h3 style="font-size:1.15rem;font-weight:900;color:#2d2825;margin:0">Canva Content Studio Guide (ภาพคอลลาจสินค้า ไม่ต้องออกหน้ากล้อง)</h3>
+                </div>
+                <p style="font-size:0.8rem;color:#6b5d52;margin:3px 0 0 0">คู่มือและเทมเพลตออกแบบสื่อ Shopee Affiliate สไตล์มินิมอลเกาหลี คุมโทนอุ่น ดึงดูดสายตา เพิ่ม Conversion</p>
+            </div>
+            <span style="background:#f5f0e8;color:#8c7a6b;font-size:0.76rem;font-weight:800;padding:4px 12px;border-radius:99px;border:1px solid #eadece">Faceless Content Playbook</span>
+        </div>
+
+        <!-- Color Palette Preview -->
+        <div style="margin-bottom:20px">
+            <div style="font-size:0.88rem;font-weight:900;color:#2d2825;margin-bottom:10px">🎨 Brand Color Palette Preview (ชุดสีหลักคุมโทนครีมเบจ):</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+                <div style="border:1px solid #eadece;border-radius:12px;overflow:hidden;background:#ffffff">
+                    <div style="height:60px;background:#F7F4EE;border-bottom:1px solid #eadece"></div>
+                    <div style="padding:10px 12px">
+                        <strong style="color:#2d2825;font-size:0.88rem;display:block">Cream White</strong>
+                        <div style="font-size:0.76rem;font-weight:800;color:#8c7a6b;font-family:monospace">#F7F4EE</div>
+                        <div style="font-size:0.74rem;color:#6b5d52;margin-top:2px">พื้นหลังหลักภาพโพสต์ & Canvas ละมุนตา</div>
+                    </div>
+                </div>
+                <div style="border:1px solid #eadece;border-radius:12px;overflow:hidden;background:#ffffff">
+                    <div style="height:60px;background:#E8DFD1;border-bottom:1px solid #eadece"></div>
+                    <div style="padding:10px 12px">
+                        <strong style="color:#2d2825;font-size:0.88rem;display:block">Warm Beige</strong>
+                        <div style="font-size:0.76rem;font-weight:800;color:#8c7a6b;font-family:monospace">#E8DFD1</div>
+                        <div style="font-size:0.74rem;color:#6b5d52;margin-top:2px">กรอบการ์ด พื้นหลังรอง และเส้นแบ่งเลเอาต์</div>
+                    </div>
+                </div>
+                <div style="border:1px solid #eadece;border-radius:12px;overflow:hidden;background:#ffffff">
+                    <div style="height:60px;background:#B5A490;border-bottom:1px solid #eadece"></div>
+                    <div style="padding:10px 12px">
+                        <strong style="color:#2d2825;font-size:0.88rem;display:block">Soft Earth</strong>
+                        <div style="font-size:0.76rem;font-weight:800;color:#8c7a6b;font-family:monospace">#B5A490</div>
+                        <div style="font-size:0.74rem;color:#6b5d52;margin-top:2px">ปุ่ม Call-to-Action ป้ายแท็ก และไฮไลต์สำคัญ</div>
+                    </div>
+                </div>
+                <div style="border:1px solid #eadece;border-radius:12px;overflow:hidden;background:#ffffff">
+                    <div style="height:60px;background:#3E3832;border-bottom:1px solid #eadece"></div>
+                    <div style="padding:10px 12px">
+                        <strong style="color:#2d2825;font-size:0.88rem;display:block">Deep Charcoal</strong>
+                        <div style="font-size:0.76rem;font-weight:800;color:#8c7a6b;font-family:monospace">#3E3832</div>
+                        <div style="font-size:0.74rem;color:#6b5d52;margin-top:2px">ตัวหนังสือหัวข้อหลัก ฟอนต์คมชัด อ่านง่าย ทรงพลัง</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collage Layout Recommendations -->
+        <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:16px;margin-bottom:20px">
+            <div style="font-size:0.88rem;font-weight:900;color:#2d2825;margin-bottom:10px">📐 Collage Layout & Production Recommendations (ข้อแนะนำการจัดเลเอาต์ภาพคอลลาจ):</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;font-size:0.8rem;color:#6b5d52">
+                <div style="display:flex;align-items:flex-start;gap:8px">
+                    <span>🖼️</span>
+                    <div><strong>สัดส่วนที่แนะนำ:</strong> 1:1 (1080x1080px สำหรับ IG/FB Feed & Carousel) และ 9:16 (1080x1920px สำหรับ IG Reels, TikTok, Shorts)</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:8px">
+                    <span>✂️</span>
+                    <div><strong>ไดคัทสินค้า (Remove BG):</strong> ลบพื้นหลังให้เหลือเฉพาะสินค้า แล้วใส่ Soft Drop Shadow (เบลอ 12px, โปร่งแสง 15%) ให้ดูลอยมีมิติ</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:8px">
+                    <span>🔢</span>
+                    <div><strong>ใส่ตัวเลขกำกับ:</strong> ใส่ตัวเลขมินิมอล "01 | 02 | 03" ในวงกลมสี Warm Beige เพื่อชี้ชัดไอเทม ให้คนดูจำได้ง่าย</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:8px">
+                    <span>🔗</span>
+                    <div><strong>Call to Action ชัดเจน:</strong> ใส่ข้อความ "พิกัดจิ้มลิงก์หน้าโปรไฟล์ / ตะกร้า Shopee" ที่มุมล่างเสมอ เพื่อสร้าง Conversion ทันที</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10 Post Concepts -->
+        <div>
+            <div style="font-size:0.88rem;font-weight:900;color:#2d2825;margin-bottom:12px">💡 10 Post Concepts (10 ไอเดียโพสต์พร้อมรูปแบบคอลลาจและแคปชั่นป้ายยา):</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:12px">
+                <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <strong style="color:#2d2825;font-size:0.86rem">01 • 3 ชิ้นแต่งโต๊ะทำงานให้ดูแพงงบไม่เกิน 500</strong>
+                        <span style="font-size:0.68rem;background:#f5f0e8;color:#8c7a6b;padding:2px 6px;border-radius:4px;font-weight:800">HOME</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#8c7a6b;margin-bottom:4px">📐 เลเอาต์: Mood board 3 ช่อง (โคมไฟเห็ด + ถาดไม้ + แผ่นรองหนัง)</div>
+                    <div style="font-size:0.76rem;color:#6b5d52;line-height:1.4">"เปลี่ยนโต๊ะทำงานรกๆ เป็นมุมมินิมอลฟีลเกาหลี รวม 3 ไอเทมงบหลักร้อย สบายตา นั่งทำงานได้ทั้งวัน พิกัดชิ้น 1-3 จิ้มลิงก์หน้าโปรไฟล์เลย!"</div>
+                </div>
+
+                <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <strong style="color:#2d2825;font-size:0.86rem">02 • Unboxing ห้องนอนสไตล์เกาหลี</strong>
+                        <span style="font-size:0.68rem;background:#f5f0e8;color:#8c7a6b;padding:2px 6px;border-radius:4px;font-weight:800">HOME</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#8c7a6b;margin-bottom:4px">📐 เลเอาต์: ภาพประกอบ 4 ช่อง (กระจก + แจกันวาบิซาบิ + นาฬิกาไม้ + ผ้าห่มวาฟเฟิล)</div>
+                    <div style="font-size:0.76rem;color:#6b5d52;line-height:1.4">"แต่งห้องนอนใหม่ด้วยโทนสีครีมเบจละมุนตา ตื่นมาแฮปปี้ทุกวัน คัดมาแล้วทุกชิ้น คุณภาพเกินราคา แปะตะกร้าไว้ให้ครบแล้วนะค้าบ"</div>
+                </div>
+
+                <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <strong style="color:#2d2825;font-size:0.86rem">03 • Desk Setup สบายตา นั่งทำงานทั้งวันไม่เบื่อ</strong>
+                        <span style="font-size:0.68rem;background:#f5f0e8;color:#8c7a6b;padding:2px 6px;border-radius:4px;font-weight:800">GADGET</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#8c7a6b;margin-bottom:4px">📐 เลเอาต์: Flat lay ด้านบน (ถาดไม้วอลนัท + แก้วมัคคราฟต์ + แท่นวางมือถือ)</div>
+                    <div style="font-size:0.76rem;color:#6b5d52;line-height:1.4">"ใครกำลังมองหาไอเดียจัดโต๊ะคอมให้ดูโล่ง โปร่งตา ลองหยิบไอเทมไม้และเซรามิกโทนอุ่นมาแมตช์ดูครับ เพิ่มไฟสร้างสมาธิได้ดีมาก"</div>
+                </div>
+
+                <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <strong style="color:#2d2825;font-size:0.86rem">04 • ไอเทมลับเด็กหอ/คอนโด ที่ต้องมีติดห้อง</strong>
+                        <span style="font-size:0.68rem;background:#f5f0e8;color:#8c7a6b;padding:2px 6px;border-radius:4px;font-weight:800">HOME</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#8c7a6b;margin-bottom:4px">📐 เลเอาต์: คอลลาจ 1:1 รูปทรงกลมตัดขอบนุ่ม (ตะกร้าผ้าลินิน + กล่องทิชชู่ + ก้านไม้หอม)</div>
+                    <div style="font-size:0.76rem;color:#6b5d52;line-height:1.4">"พื้นที่จำกัดแต่ก็มีห้องสวยน่าอยู่ได้ รวมของใช้จัดระเบียบห้องมินิมอล จัดเก็บง่าย ประหยัดพื้นที่ ตะกร้า Shopee พร้อมส่งทุกชิ้น"</div>
+                </div>
+
+                <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <strong style="color:#2d2825;font-size:0.86rem">05 • OOTD กระเป๋าแคนวาสแมตช์ชุดไปคาเฟ่</strong>
+                        <span style="font-size:0.68rem;background:#f5f0e8;color:#8c7a6b;padding:2px 6px;border-radius:4px;font-weight:800">STYLE</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#8c7a6b;margin-bottom:4px">📐 เลเอาต์: Collage แฟชั่น 3 ชิ้น (กระเป๋าแคนวาส + หมวกแก๊ปมินิมอล + แว่นกันแดด)</div>
+                    <div style="font-size:0.76rem;color:#6b5d52;line-height:1.4">"ลุคไปคาเฟ่วันหยุดแบบ effortless คุมโทนเอิร์ธโทน แมตช์ง่าย ถ่ายรูปมุมไหนก็ปัง ชี้เป้าไอเทมราคาเบาๆ ในลิงก์หน้าโปรไฟล์"</div>
+                </div>
+
+                <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <strong style="color:#2d2825;font-size:0.86rem">06 • แกดเจ็ตมินิมอลที่ช่วยให้ชีวิตง่ายขึ้น 10 เท่า</strong>
+                        <span style="font-size:0.68rem;background:#f5f0e8;color:#8c7a6b;padding:2px 6px;border-radius:4px;font-weight:800">GADGET</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#8c7a6b;margin-bottom:4px">📐 เลเอาต์: Grid 2x2 พร้อมไอคอนฟังก์ชัน (แท่นชาร์จ 3-in-1 + เมาส์ไร้สาย + สายรัดหนัง)</div>
+                    <div style="font-size:0.76rem;color:#6b5d52;line-height:1.4">"หมดปัญหาสายไฟพันกันบนโต๊ะ แกดเจ็ตช่วยชีวิตวัยทำงาน ดีไซน์เรียบหรูโทนครีมขาว พิกัดสินค้าใน Shopee ลดราคาอยู่นะครับ"</div>
+                </div>
+
+                <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <strong style="color:#2d2825;font-size:0.86rem">07 • เปลี่ยนมุมเดิมๆ ให้เป็นโฮมคาเฟ่ใน 5 นาที</strong>
+                        <span style="font-size:0.68rem;background:#f5f0e8;color:#8c7a6b;padding:2px 6px;border-radius:4px;font-weight:800">HOME</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#8c7a6b;margin-bottom:4px">📐 เลเอาต์: ภาพคู่ Before/After จำลองมุมจิบกาแฟ (แจกันดินเผา + ก้านไม้หอม + ช้อนไม้)</div>
+                    <div style="font-size:0.76rem;color:#6b5d52;line-height:1.4">"ไม่ต้องออกไปเบียดใครที่คาเฟ่ แค่มีมุมนี้อยู่ที่บ้าน กาแฟแก้วโปรด + บรรยากาศอุ่นใจ ชี้พิกัดพร็อพถ่ายรูปครบเซ็ต จิ้มตะกร้าได้เลย"</div>
+                </div>
+
+                <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <strong style="color:#2d2825;font-size:0.86rem">08 • 5 ของขวัญมินิมอลให้เพื่อนแล้วเพื่อนกรี๊ด</strong>
+                        <span style="font-size:0.68rem;background:#f5f0e8;color:#8c7a6b;padding:2px 6px;border-radius:4px;font-weight:800">STYLE / HOME</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#8c7a6b;margin-bottom:4px">📐 เลเอาต์: สไตล์นิตยสาร Kinfolk พร้อมวงกลมราคา (สร้อย 18K + เทียนหอม + แก้วมัค)</div>
+                    <div style="font-size:0.76rem;color:#6b5d52;line-height:1.4">"หาของขวัญวันเกิดหรือเทศกาลอยู่ใช่มั้ย? เซฟโพสต์นี้ไว้เลย รวมไอเทมมินิมอลที่ใครได้รับก็ต้องประทับใจ ราคาจับต้องได้ สั่งผ่านลิงก์ได้เลย"</div>
+                </div>
+
+                <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <strong style="color:#2d2825;font-size:0.86rem">09 • ป้ายยาไอเทม Lifestyle ที่ใช้จริงแล้วชอบมาก</strong>
+                        <span style="font-size:0.68rem;background:#f5f0e8;color:#8c7a6b;padding:2px 6px;border-radius:4px;font-weight:800">GADGET / STYLE</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#8c7a6b;margin-bottom:4px">📐 เลเอาต์: รีวิว 3 ชิ้นพร้อมดาว ⭐⭐⭐⭐⭐ (พาวเวอร์แบงก์แม่เหล็ก + ร่มพับ + แท็กหนัง)</div>
+                    <div style="font-size:0.76rem;color:#6b5d52;line-height:1.4">"คัดมาให้จากของที่พกติดกระเป๋าทุกวัน ใช้ดีจนต้องมาบอกต่อ น้ำหนักเบา ทนทาน คุมโทนสวยงาม แปะพิกัดไว้ให้ในตะกร้าแล้วครับ"</div>
+                </div>
+
+                <div style="background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <strong style="color:#2d2825;font-size:0.86rem">10 • Weekend Reset: พักผ่อนกับมุมโปรดที่บ้าน</strong>
+                        <span style="font-size:0.68rem;background:#f5f0e8;color:#8c7a6b;padding:2px 6px;border-radius:4px;font-weight:800">HOME / STYLE</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#8c7a6b;margin-bottom:4px">📐 เลเอาต์: Mood board แนวอบอุ่น แสงธรรมชาติ (เบาะรองนั่งลินิน + หมอนอิง + โคมไฟ)</div>
+                    <div style="font-size:0.76rem;color:#6b5d52;line-height:1.4">"ชาร์จพลังวันหยุดในมุมที่อบอุ่นที่สุดของบ้าน สร้างบรรยากาศผ่อนคลายง่ายๆ ด้วยไอเทมที่เลือกสรรมาแล้ว แวะชมพิกัดในลิงก์หน้าโปรไฟล์ได้เลยนะ"</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. Store Unit Economics Strip (Preserved) -->
+    <div class="grid-4" style="margin-bottom:20px">
+        <div class="stat-metric-box" style="background:#ffffff;border:1px solid #eadece;border-left:4px solid #10b981;border-radius:12px;padding:14px">
+            <div class="lbl" style="color:#6b5d52">🟢 ยอดขายบัญชีจริง (Live Store Revenue)</div>
             <div class="val" style="color:#10b981">$0.00</div>
-            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">⚪ รอเชื่อม Stripe / Gumroad / PromptPay จริง</div>
+            <div style="font-size:0.75rem;color:#8c7a6b;margin-top:4px">⚪ รอเชื่อม Stripe / Gumroad / PromptPay จริง</div>
         </div>
-        <div class="stat-metric-box" style="border-left:4px solid #f59e0b">
-            <div class="lbl">🧪 ยอดขายสะสมบัญชีเทส (Test Store Revenue)</div>
-            <div class="val" style="color:#f59e0b" id="storePageTestRevVal">${v_store:+,.2f}</div>
-            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">บันทึกใน SQLite <code>venture_revenue_ledger</code></div>
+        <div class="stat-metric-box" style="background:#ffffff;border:1px solid #eadece;border-left:4px solid #f59e0b;border-radius:12px;padding:14px">
+            <div class="lbl" style="color:#6b5d52">🧪 ยอดขายสะสมบัญชีเทส (Test Store Revenue)</div>
+            <div class="val" style="color:#f59e0b" id="storePageTestRevVal2">${v_store:+,.2f}</div>
+            <div style="font-size:0.75rem;color:#8c7a6b;margin-top:4px">บันทึกใน SQLite <code>venture_revenue_ledger</code></div>
         </div>
-        <div class="stat-metric-box" style="border-left:4px solid #0ea5e9">
-            <div class="lbl">📈 อัตรากำไรขั้นต้นหลังหัก Gateway (Gross Margin)</div>
+        <div class="stat-metric-box" style="background:#ffffff;border:1px solid #eadece;border-left:4px solid #0ea5e9;border-radius:12px;padding:14px">
+            <div class="lbl" style="color:#6b5d52">📈 อัตรากำไรขั้นต้นหลังหัก Gateway (Gross Margin)</div>
             <div class="val" style="color:#0ea5e9">94.8%</div>
-            <div style="font-size:0.75rem;color:var(--text-sub);margin-top:4px">หักค่าธรรมเนียม Stripe 2.9% + $0.30 ต่อรายการ</div>
+            <div style="font-size:0.75rem;color:#8c7a6b;margin-top:4px">หักค่าธรรมเนียม Stripe 2.9% + $0.30 ต่อรายการ</div>
         </div>
-        <div class="stat-metric-box" style="border-left:4px solid #8b5cf6">
-            <div class="lbl">💎 มูลค่าลูกค้าตลอดอายุ (LTV : CAC Ratio)</div>
+        <div class="stat-metric-box" style="background:#ffffff;border:1px solid #eadece;border-left:4px solid #8b5cf6;border-radius:12px;padding:14px">
+            <div class="lbl" style="color:#6b5d52">💎 มูลค่าลูกค้าตลอดอายุ (LTV : CAC Ratio)</div>
             <div class="val" style="color:#8b5cf6">6.4x (LTV $116)</div>
             <div style="font-size:0.75rem;color:#10b981;margin-top:4px">ต้นทุนหาลูกค้าเฉลี่ย CAC $18.00 / คน</div>
         </div>
     </div>
 
-    <!-- Interactive Commercial Pricing & Profit Margin Simulator -->
-    <div class="white-card" id="storePricingCalculatorCard" style="border:2px solid #10b981">
-        <div class="section-head">
+    <!-- 7. Interactive Commercial Pricing & Profit Margin Simulator (Preserved calculateStoreUnitEconomics) -->
+    <div class="white-card" id="storePricingCalculatorCard" style="background:#ffffff;border:1px solid #eadece;border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(140,122,107,0.05)">
+        <div class="section-head" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
             <div>
-                <h2>🧮 เครื่องคำนวณโครงสร้างราคา กำไรสุทธิ & จุดคุ้มทุนโฆษณา (Commercial Unit Economics & Pricing Simulator)</h2>
-                <p style="font-size:0.83rem;color:var(--text-sub);margin-top:3px">
+                <h2 style="font-size:1.1rem;font-weight:900;color:#2d2825;margin:0">🧮 เครื่องคำนวณโครงสร้างราคา กำไรสุทธิ & จุดคุ้มทุนโฆษณา (Commercial Unit Economics & Pricing Simulator)</h2>
+                <p style="font-size:0.8rem;color:#6b5d52;margin-top:3px">
                     จำลองการตั้งราคาสินค้าของคุณ คำนวณค่าธรรมเนียมระบบชำระเงิน ต้นทุนต่อชิ้น ค่าโฆษณา (CAC) และจุดคุ้มทุนก่อนวางขายจริง
                 </p>
             </div>
-            <button class="cozy-btn green" onclick="calculateStoreUnitEconomics()">🔄 คำนวณกำไรสุทธิใหม่</button>
+            <button class="cozy-btn" onclick="calculateStoreUnitEconomics()" style="background:#8c7a6b;color:#ffffff;font-size:0.8rem;padding:6px 14px;border-radius:8px;font-weight:700">🔄 คำนวณกำไรสุทธิใหม่</button>
         </div>
 
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:10px;background:var(--bg-sub);border:1px solid var(--border-col);border-radius:12px;padding:14px;margin-bottom:14px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:10px;background:#fbf9f5;border:1px solid #eadece;border-radius:12px;padding:14px;margin-bottom:14px">
             <div>
-                <label style="font-size:0.76rem;font-weight:800">🏷️ ราคาขายสินค้าต่อชิ้น ($ USD):</label>
+                <label style="font-size:0.76rem;font-weight:800;color:#2d2825">🏷️ ราคาขายสินค้าต่อชิ้น ($ USD):</label>
                 <input type="number" id="calcProdPrice" class="input-clean" style="width:100%;margin-top:4px" value="29.00" step="1.00" oninput="calculateStoreUnitEconomics()">
             </div>
             <div>
-                <label style="font-size:0.76rem;font-weight:800">📦 ต้นทุนสินค้า/API ต่อชิ้น ($ COGS):</label>
+                <label style="font-size:0.76rem;font-weight:800;color:#2d2825">📦 ต้นทุนสินค้า/API ต่อชิ้น ($ COGS):</label>
                 <input type="number" id="calcCogsUnit" class="input-clean" style="width:100%;margin-top:4px" value="0.50" step="0.10" oninput="calculateStoreUnitEconomics()">
             </div>
             <div>
-                <label style="font-size:0.76rem;font-weight:800">💳 ค่าธรรมเนียม Gateway (% + $0.30):</label>
+                <label style="font-size:0.76rem;font-weight:800;color:#2d2825">💳 ค่าธรรมเนียม Gateway (% + $0.30):</label>
                 <input type="number" id="calcGatewayPct" class="input-clean" style="width:100%;margin-top:4px" value="2.9" step="0.1" oninput="calculateStoreUnitEconomics()">
             </div>
             <div>
-                <label style="font-size:0.76rem;font-weight:800">📢 ค่าแอดต่อลูกค้า 1 คน ($ CAC):</label>
+                <label style="font-size:0.76rem;font-weight:800;color:#2d2825">📢 ค่าแอดต่อลูกค้า 1 คน ($ CAC):</label>
                 <input type="number" id="calcCacUsd" class="input-clean" style="width:100%;margin-top:4px" value="6.50" step="0.50" oninput="calculateStoreUnitEconomics()">
             </div>
             <div>
-                <label style="font-size:0.76rem;font-weight:800">🎯 เป้าหมายจำนวนออเดอร์ / เดือน:</label>
+                <label style="font-size:0.76rem;font-weight:800;color:#2d2825">🎯 เป้าหมายจำนวนออเดอร์ / เดือน:</label>
                 <input type="number" id="calcTargetOrders" class="input-clean" style="width:100%;margin-top:4px" value="40" step="5" oninput="calculateStoreUnitEconomics()">
             </div>
         </div>
 
         <div class="grid-4">
-            <div class="stat-metric-box">
-                <div class="lbl">💵 กำไรขั้นต้นต่อชิ้น (หลังหัก Gateway & COGS)</div>
+            <div class="stat-metric-box" style="background:#fbf9f5;border:1px solid #eadece;border-radius:10px;padding:12px">
+                <div class="lbl" style="color:#6b5d52">💵 กำไรขั้นต้นต่อชิ้น (หลังหัก Gateway & COGS)</div>
                 <div class="val" style="color:#10b981;font-size:1.18rem" id="calcNetMarginPerUnitVal">$27.36 (94.3%)</div>
-                <div style="font-size:0.74rem;color:var(--text-sub)" id="calcGatewayFeeSub">ค่าธรรมเนียม Gateway: $1.14 / ชิ้น</div>
+                <div style="font-size:0.74rem;color:#8c7a6b" id="calcGatewayFeeSub">ค่าธรรมเนียม Gateway: $1.14 / ชิ้น</div>
             </div>
-            <div class="stat-metric-box">
-                <div class="lbl">💰 รายได้ยอดขายรวมต่อเดือน (Gross Revenue)</div>
-                <div class="val" style="color:#38bdf8;font-size:1.18rem" id="calcGrossMonthlyRevVal">$1,160.00 / เดือน</div>
-                <div style="font-size:0.74rem;color:var(--text-sub)" id="calcAdSpendSub">งบโฆษณารวม: $260.00 / เดือน</div>
+            <div class="stat-metric-box" style="background:#fbf9f5;border:1px solid #eadece;border-radius:10px;padding:12px">
+                <div class="lbl" style="color:#6b5d52">💰 รายได้ยอดขายรวมต่อเดือน (Gross Revenue)</div>
+                <div class="val" style="color:#0284c7;font-size:1.18rem" id="calcGrossMonthlyRevVal">$1,160.00 / เดือน</div>
+                <div style="font-size:0.74rem;color:#8c7a6b" id="calcAdSpendSub">งบโฆษณารวม: $260.00 / เดือน</div>
             </div>
-            <div class="stat-metric-box">
-                <div class="lbl">🏆 กำไรสุทธิเข้าบริษัท (Net Operating Profit)</div>
-                <div class="val" style="color:#f59e0b;font-size:1.18rem" id="calcNetOperatingProfitVal">+$834.36 / เดือน</div>
+            <div class="stat-metric-box" style="background:#fbf9f5;border:1px solid #eadece;border-radius:10px;padding:12px">
+                <div class="lbl" style="color:#6b5d52">🏆 กำไรสุทธิเข้าบริษัท (Net Operating Profit)</div>
+                <div class="val" style="color:#d97706;font-size:1.18rem" id="calcNetOperatingProfitVal">+$834.36 / เดือน</div>
                 <div style="font-size:0.74rem;color:#10b981;font-weight:700" id="calcNetProfitPerOrderSub">กำไรสุทธิหลังค่าแอด: $20.86 / ออเดอร์</div>
             </div>
-            <div class="stat-metric-box">
-                <div class="lbl">⚖️ Break-Even ROAS ขั้นต่ำที่ต้องทำได้</div>
+            <div class="stat-metric-box" style="background:#fbf9f5;border:1px solid #eadece;border-radius:10px;padding:12px">
+                <div class="lbl" style="color:#6b5d52">⚖️ Break-Even ROAS ขั้นต่ำที่ต้องทำได้</div>
                 <div class="val" style="color:#8b5cf6;font-size:1.18rem" id="calcBreakEvenRoasVal">1.06x (ROAS จริง 4.46x)</div>
-                <div style="font-size:0.74rem;color:var(--text-sub)">ยิงแอด $1 ต้องได้ยอดขายอย่างน้อย $1.06 จึงไม่ขาดทุน</div>
+                <div style="font-size:0.74rem;color:#8c7a6b">ยิงแอด $1 ต้องได้ยอดขายอย่างน้อย $1.06 จึงไม่ขาดทุน</div>
             </div>
         </div>
     </div>
 
-    <!-- Digital Product Catalog & Order Fulfillment Table -->
-    <div class="white-card">
-        <div class="section-head">
+    <!-- 8. Digital Product Catalog & Order Fulfillment Table (Preserved VIP Gold Signal Bot Access) -->
+    <div class="white-card" style="background:#ffffff;border:1px solid #eadece;border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(140,122,107,0.05)">
+        <div class="section-head" style="margin-bottom:14px">
             <div>
-                <h2>📦 แคตตาล็อกสินค้าดิจิทัล & ระบบจัดส่งอัตโนมัติ (Commercial SKU Catalog & Fulfillment)</h2>
-                <p style="font-size:0.82rem;color:var(--text-sub);margin-top:3px">โครงสร้างราคาจริง หักค่าธรรมเนียมตัวกลางแล้ว พร้อมปุ่มจำลองคำสั่งซื้อเพื่อทดสอบระบบบัญชีของบริษัท</p>
+                <h2 style="font-size:1.1rem;font-weight:900;color:#2d2825;margin:0">📦 แคตตาล็อกสินค้าดิจิทัล & ระบบจัดส่งอัตโนมัติ (Commercial SKU Catalog & Fulfillment)</h2>
+                <p style="font-size:0.8rem;color:#6b5d52;margin-top:3px">โครงสร้างราคาจริง หักค่าธรรมเนียมตัวกลางแล้ว พร้อมปุ่มจำลองคำสั่งซื้อเพื่อทดสอบระบบบัญชีของบริษัท</p>
             </div>
         </div>
         <div class="table-wrap">
             <table>
                 <thead>
-                    <tr>
+                    <tr style="background:#fbf9f5;color:#2d2825">
                         <th>รหัสสินค้า (SKU)</th>
                         <th>ชื่อสินค้า / บริการดิจิทัล</th>
                         <th>รูปแบบรายได้</th>
@@ -3109,8 +3497,8 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                 <tbody>
                     <tr>
                         <td class="num"><code>SKU-VIP-01</code></td>
-                        <td><strong>🥇 VIP Gold Signal Bot Access</strong><div style="font-size:0.74rem;color:var(--text-sub)">สัญญาณเทรดทองคำ XAUUSD พร้อม Entry/SL/TP ส่งตรงเข้า Telegram</div></td>
-                        <td class="num"><span class="pill">Subscription รายเดือน</span></td>
+                        <td><strong>🥇 VIP Gold Signal Bot Access</strong><div style="font-size:0.74rem;color:#8c7a6b">สัญญาณเทรดทองคำ XAUUSD พร้อม Entry/SL/TP ส่งตรงเข้า Telegram</div></td>
+                        <td class="num"><span class="pill" style="background:#f5f0e8;color:#2d2825">Subscription รายเดือน</span></td>
                         <td class="num"><strong>$29.00</strong></td>
                         <td class="num" style="color:#ef4444">-$1.14</td>
                         <td class="num" style="color:#10b981;font-weight:800">+$27.86 (96.1%)</td>
@@ -3119,8 +3507,8 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                     </tr>
                     <tr>
                         <td class="num"><code>SKU-RAG-02</code></td>
-                        <td><strong>⚡ Graph-RAG Token Saver Engine</strong><div style="font-size:0.74rem;color:var(--text-sub)">ซอร์สโค้ดระบบตัด Context Window ประหยัดค่าไฟ API 70-86%</div></td>
-                        <td class="num"><span class="pill">One-Time License</span></td>
+                        <td><strong>⚡ Graph-RAG Token Saver Engine</strong><div style="font-size:0.74rem;color:#8c7a6b">ซอร์สโค้ดระบบตัด Context Window ประหยัดค่าไฟ API 70-86%</div></td>
+                        <td class="num"><span class="pill" style="background:#f5f0e8;color:#2d2825">One-Time License</span></td>
                         <td class="num"><strong>$49.00</strong></td>
                         <td class="num" style="color:#ef4444">-$1.72</td>
                         <td class="num" style="color:#10b981;font-weight:800">+$47.28 (96.5%)</td>
@@ -3129,8 +3517,8 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                     </tr>
                     <tr>
                         <td class="num"><code>SKU-PRM-03</code></td>
-                        <td><strong>📦 Autonomous AI Prompt & Workflow Pack</strong><div style="font-size:0.74rem;color:var(--text-sub)">ชุดคู่มือ Prompt โค้ช AI 11 ตำแหน่งและเทมเพลต Obsidian Vault</div></td>
-                        <td class="num"><span class="pill">Digital Download</span></td>
+                        <td><strong>📦 Autonomous AI Prompt & Workflow Pack</strong><div style="font-size:0.74rem;color:#8c7a6b">ชุดคู่มือ Prompt โค้ช AI 11 ตำแหน่งและเทมเพลต Obsidian Vault</div></td>
+                        <td class="num"><span class="pill" style="background:#f5f0e8;color:#2d2825">Digital Download</span></td>
                         <td class="num"><strong>$19.00</strong></td>
                         <td class="num" style="color:#ef4444">-$0.85</td>
                         <td class="num" style="color:#10b981;font-weight:800">+$18.15 (95.5%)</td>
@@ -3139,8 +3527,8 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                     </tr>
                     <tr>
                         <td class="num"><code>SKU-IND-04</code></td>
-                        <td><strong>🎯 Institutional Gold ATR Sniper Indicator</strong><div style="font-size:0.74rem;color:var(--text-sub)">อินดิเคเตอร์บอกโซน Liquidity Sweep & Killzone สำหรับ MT5 / TradingView</div></td>
-                        <td class="num"><span class="pill">One-Time License</span></td>
+                        <td><strong>🎯 Institutional Gold ATR Sniper Indicator</strong><div style="font-size:0.74rem;color:#8c7a6b">อินดิเคเตอร์บอกโซน Liquidity Sweep & Killzone สำหรับ MT5 / TradingView</div></td>
+                        <td class="num"><span class="pill" style="background:#f5f0e8;color:#2d2825">One-Time License</span></td>
                         <td class="num"><strong>$39.00</strong></td>
                         <td class="num" style="color:#ef4444">-$1.43</td>
                         <td class="num" style="color:#10b981;font-weight:800">+$37.57 (96.3%)</td>
@@ -3160,7 +3548,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     <div class="ventures-subnav-bar">
         <div style="font-weight:900;font-size:0.88rem;color:var(--text-main)">🎬 หมวดธุรกิจหารายได้ (Ventures Workspace):</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')">👗 แปะตะกร้าชุดแฟชั่น (Store)</button>
+            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')">🛍️ THE DAILY FINDS (Store)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')">🎬 คลิปไวรัล What-If (Media)</button>
             <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-tech-studio')">💻 บอท & เทค (Tech)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tokens')">🪙 ตารางโทเคน 11 บอท</button>
@@ -3298,7 +3686,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     <div class="ventures-subnav-bar">
         <div style="font-weight:900;font-size:0.88rem;color:var(--text-main)">🎬 หมวดธุรกิจหารายได้ & คลังสมอง AI (Ventures & Token Leaderboard):</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')">👗 แปะตะกร้าชุดแฟชั่น (Store)</button>
+            <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')">🛍️ THE DAILY FINDS (Store)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')">🎬 คลิปไวรัล What-If (Media)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tech-studio')">💻 บอท & เทค (Tech)</button>
             <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-tokens')">🪙 ตารางโทเคน 11 บอท</button>
@@ -5101,7 +5489,7 @@ const ISO_ROOMS = [
     {{ id: "CRITIC_STUDIO", name: "🛡️ สตูดิโอตรวจงาน (Critic & Risk)", sub: "Audit คุณภาพ 100%", gx: 1, gy: 1, x: 450, y: 275, badgeX: 450, badgeY: 185, floorCol: "#fce7f3", floorAlt: "#fbcfe8", wallCol: "#db2777", wallTop: "#fdf2f8", badgeDot: "#10b981", propType: "CRITIC_STUDIO", districtTag: "CRITIC & RISK" }},
     {{ id: "COURIER_DISPATCH", name: "🌉 ท่าเรือ OpenClaw (OpenClaw Pier)", sub: "ซิงค์ API & ลิควิดิตี้", gx: 3, gy: 1, x: 1260, y: 220, badgeX: 1260, badgeY: 145, floorCol: "#f3e8ff", floorAlt: "#e9d5ff", wallCol: "#7c3aed", wallTop: "#faf5ff", badgeDot: "#10b981", propType: "COURIER_DISPATCH", districtTag: "OpenClaw Pier" }},
     {{ id: "TRADING_LAB", name: "🔮 วอร์รูม & ควอนต์ (What-If & Quant)", sub: "เทรดทองคำ XAUUSD", gx: 0, gy: 1, x: 1180, y: 420, badgeX: 1180, badgeY: 275, floorCol: "#e0f2fe", floorAlt: "#bae6fd", wallCol: "#2563eb", wallTop: "#eff6ff", badgeDot: "#10b981", propType: "TRADING_LAB", districtTag: "WHAT IF STUDIO" }},
-    {{ id: "ONLINE_STORE", name: "🛍️ THE DAILY FINDS (Online Store)", sub: "Shopee Affiliate & Dropship", gx: 3, gy: 0, x: 440, y: 610, badgeX: 440, badgeY: 485, floorCol: "#fbf9f5", floorAlt: "#f5f0e8", wallCol: "#8c7a6b", wallTop: "#fbf9f5", badgeDot: "#8c7a6b", propType: "ONLINE_STORE", districtTag: "ONLINE SHIRTS" }},
+    {{ id: "ONLINE_STORE", name: "🛍️ THE DAILY FINDS", sub: "ONLINE SHIRTS • Shopee Affiliate & Dropship", gx: 3, gy: 0, x: 440, y: 610, badgeX: 440, badgeY: 485, floorCol: "#fbf9f5", floorAlt: "#f5f0e8", wallCol: "#8c7a6b", wallTop: "#fbf9f5", badgeDot: "#8c7a6b", propType: "ONLINE_STORE", districtTag: "ONLINE SHIRTS" }},
     {{ id: "MEME_STUDIO", name: "🎬 มีมสตูดิโอ (Meme Studio)", sub: "คลิปไวรัล Reels/TikTok", gx: 2, gy: 0, x: 1000, y: 610, badgeX: 1000, badgeY: 485, floorCol: "#ffe4e6", floorAlt: "#fecdd3", wallCol: "#f43f5e", wallTop: "#fff1f2", badgeDot: "#f43f5e", propType: "MEME_STUDIO", districtTag: "MEME STUDIO" }},
     {{ id: "GROWTH_STUDIO", name: "⚡ สตูดิโอยิงการตลาด (Growth)", sub: "แคมเปญไวรัล & ชุมชน", gx: 2, gy: 1, x: 980, y: 310, badgeX: 980, badgeY: 205, floorCol: "#ffedd5", floorAlt: "#fed7aa", wallCol: "#ea580c", wallTop: "#fff7ed", badgeDot: "#10b981", propType: "GROWTH_STUDIO", districtTag: "GROWTH STUDIO" }},
     {{ id: "TECH_STUDIO", name: "💻 สตูดิโอโค้ดดิ้ง (Tech Studio </ >)", sub: "Micro-SaaS & Bot", gx: 1, gy: 0, x: 300, y: 420, badgeX: 300, badgeY: 280, floorCol: "#0f172a", floorAlt: "#1e293b", wallCol: "#0284c7", wallTop: "#38bdf8", badgeDot: "#38bdf8", propType: "TECH_STUDIO", districtTag: "TECH STUDIO" }}
@@ -7464,8 +7852,8 @@ function drawTechStudioZone(ctx) {{
 function drawOnlineShirtsZone(ctx) {{
     const zx = 440, zy = 610;
     drawCircularPicketFence(ctx, zx, zy, 110, 80);
-    drawWoodenArchGate(ctx, 490, 540, "STORE");
-    // Duplicate drawZonePillBanner removed to prevent overlapping labels. Clean badge rendered via ISO_ROOMS.
+    drawWoodenArchGate(ctx, 490, 540, "DAILY FINDS");
+    // Contract District Strings: ONLINE SHIRTS (THE DAILY FINDS)
     drawLighthouse(ctx, 330, 620);
     drawTownCottage(ctx, 410, 575, "Whiskers", "#15803d", "#dcfce7", "🐱", "STORE_AWNING");
     drawTownCottage(ctx, 480, 585, "Calico", "#16a34a", "#f0fdf4", "🐈", "STORE_AWNING");
@@ -7935,6 +8323,29 @@ function filterDailyFindsDeliverables(cat) {{
         }} else {{
             el.style.background = '#f5f0e8';
             el.style.color = '#3d352e';
+        }}
+    }});
+}}
+
+function filterDailyFindsPageCatalog(cat) {{
+    const cards = document.querySelectorAll('.tdf-page-prod-card');
+    cards.forEach(c => {{
+        if (cat === 'ALL' || c.getAttribute('data-cat') === cat) {{
+            c.style.display = 'flex';
+        }} else {{
+            c.style.display = 'none';
+        }}
+    }});
+    const btns = ['ALL', 'HOME', 'GADGET', 'STYLE'];
+    btns.forEach(b => {{
+        const el = document.getElementById(`tdfPageBtn_${{b}}`);
+        if (!el) return;
+        if (b === cat) {{
+            el.style.background = '#8c7a6b';
+            el.style.color = '#ffffff';
+        }} else {{
+            el.style.background = '#f5f0e8';
+            el.style.color = '#2d2825';
         }}
     }});
 }}
