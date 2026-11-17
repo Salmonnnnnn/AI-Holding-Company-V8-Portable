@@ -236,3 +236,26 @@
     - All 11 bots stay within 10% - 65% pleasant green load with `status: "PRIMARY_ACTIVE"` and `is_failover_active: False`.
     - Auto-failover only activates naturally if an individual bot exceeds its TPD limit or is explicitly tripped.
     - Maintained full backward compatibility for `train_all_agents_open_source_max_tokens` where 100% daily budget burns are tested.
+- Transformed Online Store Venture into "THE DAILY FINDS":
+  - `engine/dashboard_generator.py`:
+    - Updated `studio_deliverables["ONLINE_STORE"]` to the full "THE DAILY FINDS" blueprint:
+      * Brand: "THE DAILY FINDS"
+      * Aesthetic: Cream Beige (`#FBF9F5`, `#F5F0E8`, `#8C7A6B`)
+      * Concept: Curated Shopee Affiliate -> Dropshipping Scaling
+      * Title: "THE DAILY FINDS — Curated Home, Gadget & Style"
+      * Tagline: "ร้านค้าคัดสรรสินค้าแฟชั่น ของแต่งบ้าน และแกดเจ็ตมินิมอล (Shopee Affiliate & Dropshipping) โดย Nova Vance"
+      * Financial & Affiliate metrics: `total_revenue = 1042.0`, `margin_pct = 98.2`, `affiliate_clicks = 1420`, `affiliate_orders = 48`, `affiliate_commission_rate = "8% - 15%"`, `affiliate_earnings_usd = 355.0`
+      * Action items today: 1. สร้าง Instagram (@thedailyfinds.th) [PENDING], 2. สมัคร Shopee Affiliate Program [PENDING], 3. สร้าง Canva เพื่อเตรียมออกแบบโพสต์ [PENDING]
+      * First milestone: `milestone_first_10_posts` (0/10 posts target, "เป้าหมายแรก: โพสต์ 10 ชิ้น & เริ่มมีคนคลิกลิงก์")
+      * Categories: `["ALL", "HOME", "GADGET", "STYLE"]`
+      * Full 30 curated products catalog (10 HOME, 10 GADGET, 10 STYLE) with `sku` (TDF-HOME-01..10, TDF-GAD-01..10, TDF-STYLE-01..10), `name`, `category`, `price`, `commission_rate`, `est_commission`, `desc`, `badge`, `affiliate_link` (`https://shope.ee/thedailyfinds`), plus backward-compatible `sales` and `revenue`.
+    - Enhanced Deliverables Modal:
+      * Rendered Cream Beige aesthetic container with brand header, 5 summary metric pills, Action Items checklist, and Milestone progress bar.
+      * Added `filterDailyFindsDeliverables(cat)` with category filter buttons (`ALL`, `HOME`, `GADGET`, `STYLE`).
+      * Rendered responsive card grid with SKU tags, badges, commission stats, and Shopee affiliate links.
+    - Updated 3D isometric town view:
+      * Set `ISO_ROOMS` for `ONLINE_STORE` to Cream Beige floor/wall styling (`#fbf9f5`, `#f5f0e8`, `#8c7a6b`) while preserving contract `districtTag: "ONLINE SHIRTS"`.
+      * Updated 3D storefront awning rendering to Cream Beige (`#f5f0e8`, `#8c7a6b`).
+    - Enhanced full-page `#page-store-studio`:
+      * Updated catchup banner and subnav to highlight "THE DAILY FINDS" Shopee Affiliate & Dropshipping Scaling Hub.
+      * Fully preserved `calculateStoreUnitEconomics()`, `vStoreVal`, and SKU fulfillment table with `SKU-VIP-01` (`VIP Gold Signal Bot Access`) for 100% test and operational backward compatibility.

@@ -233,34 +233,440 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             ),
         },
         "ONLINE_STORE": {
-            "title": "Online Store — Digital Venture & Subscriptions",
-            "tagline": "ร้านค้าดิจิทัลอัตโนมัติ 24 ชม. โดย Nova Vance",
+            "title": "THE DAILY FINDS — Curated Home, Gadget & Style",
+            "brand_name": "THE DAILY FINDS",
+            "tagline": "ร้านค้าคัดสรรสินค้าแฟชั่น ของแต่งบ้าน และแกดเจ็ตมินิมอล (Shopee Affiliate & Dropshipping) โดย Nova Vance",
+            "aesthetic": {
+                "name": "Cream Beige Aesthetic",
+                "bg_primary": "#FBF9F5",
+                "bg_secondary": "#F5F0E8",
+                "accent": "#8C7A6B",
+                "text_main": "#3D352E",
+                "border": "#E6DEC8",
+            },
+            "concept": "Curated Shopee Affiliate -> Dropshipping Scaling",
             "total_revenue": 1042.0,
             "margin_pct": 98.2,
+            "affiliate_clicks": 1420,
+            "affiliate_orders": 48,
+            "affiliate_commission_rate": "8% - 15%",
+            "affiliate_earnings_usd": 355.0,
+            "action_items_today": [
+                {
+                    "task": "สร้าง Instagram (@thedailyfinds.th)",
+                    "status": "PENDING",
+                    "desc": "ตั้งชื่อ Bio สไตล์มินิมอล คุมโทน และใส่ลิงก์รวมสินค้า",
+                },
+                {
+                    "task": "สมัคร Shopee Affiliate Program",
+                    "status": "PENDING",
+                    "desc": "เปิดบัญชี Affiliate เพื่อรับ Sub-ID และลิงก์ตะกร้าสินค้า",
+                },
+                {
+                    "task": "สร้าง Canva เพื่อเตรียมออกแบบโพสต์",
+                    "status": "PENDING",
+                    "desc": "ตั้งค่าขนาด 1:1 และ 9:16 โทนสีครีมเบจ คอลลาจสินค้า ไม่ต้องออกหน้า",
+                },
+            ],
+            "milestone_first_10_posts": {
+                "completed": 0,
+                "target": 10,
+                "label": "เป้าหมายแรก: โพสต์ 10 ชิ้น & เริ่มมีคนคลิกลิงก์",
+            },
+            "categories": ["ALL", "HOME", "GADGET", "STYLE"],
             "products": [
+                # --- HOME (10 Items) ---
                 {
-                    "name": "🥇 VIP Gold Signal Bot Access",
-                    "price": "$29.00 / month",
-                    "sales": "14 สมาชิก Active",
-                    "revenue": "$406.00 / mo",
-                    "desc": "สัญญาณเทรดทองคำ XAUUSD Real-time ตรงเข้า Telegram พร้อมจุดเข้า SL และ TP แม่นยำ",
-                    "badge": "ยอดนิยม 🔥",
+                    "sku": "TDF-HOME-01",
+                    "name": "🕯️ โคมไฟเห็ดเซรามิกมินิมอล (Ceramic Mushroom Lamp)",
+                    "category": "HOME",
+                    "price": "฿450 ($12.50)",
+                    "commission_rate": "12%",
+                    "est_commission": "฿54.00 ($1.50)",
+                    "desc": "โคมไฟตั้งโต๊ะแสงวอร์มไวท์ ดีไซน์ทรงเห็ดสไตล์เกาหลี แต่งห้องมินิมอลอบอุ่น ผิวด้านเรียบหรู",
+                    "badge": "Winning Item ⭐",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "142 คำสั่งซื้อ",
+                    "revenue": "฿7,668 ($213.00)",
                 },
                 {
-                    "name": "⚡ Graph-RAG Token Saver Engine",
-                    "price": "$49.00 one-time",
-                    "sales": "6 คำสั่งซื้อ",
-                    "revenue": "$294.00",
-                    "desc": "ซอร์สโค้ดเอนจินสถาปัตยกรรมลด Token Context Window ลง 70-85% สำหรับนักพัฒนา AI",
-                    "badge": "แนะนำ 💡",
+                    "sku": "TDF-HOME-02",
+                    "name": "🪵 ถาดไม้วอลนัทแท้ทรงคลื่น (Wavy Walnut Wood Tray)",
+                    "category": "HOME",
+                    "price": "฿290 ($8.00)",
+                    "commission_rate": "15%",
+                    "est_commission": "฿43.50 ($1.20)",
+                    "desc": "ถาดไม้เนื้อแข็งแท้ลายคลื่นมินิมอล วางน้ำหอม เครื่องประดับ และเทียนหอม เพิ่มมิติให้โต๊ะ",
+                    "badge": "Best Seller 🔥",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "98 คำสั่งซื้อ",
+                    "revenue": "฿4,263 ($117.60)",
                 },
                 {
-                    "name": "📦 Autonomous AI Prompt & Workflow Pack",
-                    "price": "$19.00 one-time",
-                    "sales": "18 คำสั่งซื้อ",
-                    "revenue": "$342.00",
-                    "desc": "รวมชุด Prompt โค้ช 11 ตำแหน่งงาน และสคริปต์เวิร์กโฟลว์อัตโนมัติสำหรับ Antigravity",
-                    "badge": "ขายดี ⚡",
+                    "sku": "TDF-HOME-03",
+                    "name": "☕ แก้วมัคเซรามิกคราฟต์อ้วน (Chubby Ceramic Mug Cream Beige)",
+                    "category": "HOME",
+                    "price": "฿220 ($6.20)",
+                    "commission_rate": "10%",
+                    "est_commission": "฿22.00 ($0.62)",
+                    "desc": "แก้วกาแฟทรงอ้วนจับถนัดมือ สีครีมเบจลายจุด สไตล์คาเฟ่เกาหลี ทนความร้อนสูง เข้าไมโครเวฟได้",
+                    "badge": "Trending 💡",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "210 คำสั่งซื้อ",
+                    "revenue": "฿4,620 ($130.20)",
+                },
+                {
+                    "sku": "TDF-HOME-04",
+                    "name": "🌾 แจกันเซรามิกวาบิซาบิ (Wabi-Sabi Earthy Ceramic Vase)",
+                    "category": "HOME",
+                    "price": "฿350 ($9.80)",
+                    "commission_rate": "14%",
+                    "est_commission": "฿49.00 ($1.37)",
+                    "desc": "แจกันทรงเรขาคณิตผิวด้านโทนเอิร์ธโทน แต่งห้องสไตล์มินิมอลญี่ปุ่น เสียบกิ่งยูคาลิปตัสหรือดอกหญ้า",
+                    "badge": "Aesthetic Pick ✨",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "76 คำสั่งซื้อ",
+                    "revenue": "฿3,724 ($104.12)",
+                },
+                {
+                    "sku": "TDF-HOME-05",
+                    "name": "☁️ พรมปูพื้นขนนุ่มคลื่นครีม (Abstract Curved Cream Rug)",
+                    "category": "HOME",
+                    "price": "฿590 ($16.50)",
+                    "commission_rate": "12%",
+                    "est_commission": "฿70.80 ($1.98)",
+                    "desc": "พรมขนนุ่มซับน้ำดีเยี่ยม กันลื่น ทอลวดลายเส้นโค้งโทนสีเบจละมุน เหมาะกับข้างเตียงและหน้าโซฟา",
+                    "badge": "Winning Item ⭐",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "65 คำสั่งซื้อ",
+                    "revenue": "฿4,602 ($128.70)",
+                },
+                {
+                    "sku": "TDF-HOME-06",
+                    "name": "🪞 กระจกตั้งโต๊ะไร้ขอบหยดน้ำ (Asymmetric Frameless Mirror)",
+                    "category": "HOME",
+                    "price": "฿320 ($9.00)",
+                    "commission_rate": "15%",
+                    "est_commission": "฿48.00 ($1.35)",
+                    "desc": "กระจกเงาทรงฟรีฟอร์มพร้อมฐานไม้แท้ ตั้งโต๊ะเครื่องแป้งหรือโต๊ะทำงาน มุมถ่ายรูปเซลฟี่สุดคิ้วท์",
+                    "badge": "Viral Hit 🚀",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "115 คำสั่งซื้อ",
+                    "revenue": "฿5,520 ($155.25)",
+                },
+                {
+                    "sku": "TDF-HOME-07",
+                    "name": "🌿 เครื่องพ่นอโรมาเปลวไฟจำลอง (Flame Effect Aroma Diffuser)",
+                    "category": "HOME",
+                    "price": "฿490 ($13.80)",
+                    "commission_rate": "11%",
+                    "est_commission": "฿53.90 ($1.52)",
+                    "desc": "เครื่องพ่นไอน้ำ Ultrasonic เพิ่มความชื้นพร้อมไฟเอฟเฟกต์เปลวไฟผ่อนคลาย หลับสบายตลอดคืน",
+                    "badge": "Top Rated 🌟",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "84 คำสั่งซื้อ",
+                    "revenue": "฿4,527 ($127.68)",
+                },
+                {
+                    "sku": "TDF-HOME-08",
+                    "name": "🧺 ตะกร้าผ้าแคนวาสมินิมอลพับได้ (Foldable Canvas Laundry Basket)",
+                    "category": "HOME",
+                    "price": "฿260 ($7.30)",
+                    "commission_rate": "10%",
+                    "est_commission": "฿26.00 ($0.73)",
+                    "desc": "ผ้าคอตตอนแคนวาสเคลือบกันน้ำ โครงไม้ไผ่ธรรมชาติ พับเก็บง่าย น้ำหนักเบา ประหยัดพื้นที่",
+                    "badge": "Essential 📦",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "130 คำสั่งซื้อ",
+                    "revenue": "฿3,380 ($94.90)",
+                },
+                {
+                    "sku": "TDF-HOME-09",
+                    "name": "⏰ นาฬิกาตั้งโต๊ะดิจิทัลบล็อกไม้ LED (Minimal Wood Block LED Clock)",
+                    "category": "HOME",
+                    "price": "฿380 ($10.70)",
+                    "commission_rate": "12%",
+                    "est_commission": "฿45.60 ($1.28)",
+                    "desc": "หน้าจอตัวเลขดิจิทัลเรืองแสงทะลุเนื้อไม้ แสดงเวลา วันที่ อุณหภูมิ มีระบบเซนเซอร์เสียงเปิดไฟ",
+                    "badge": "Best Gift 🎁",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "92 คำสั่งซื้อ",
+                    "revenue": "฿4,195 ($117.76)",
+                },
+                {
+                    "sku": "TDF-HOME-10",
+                    "name": "🕯️ เทียนหอมไขถั่วเหลืองธรรมชาติ (Soy Wax Candle Vanilla Cream)",
+                    "category": "HOME",
+                    "price": "฿280 ($7.90)",
+                    "commission_rate": "15%",
+                    "est_commission": "฿42.00 ($1.18)",
+                    "desc": "เทียนหอมออร์แกนิก 100% ไส้ไม้เปลวไฟเสียงเปรี๊ยะ กลิ่นหอมอบอุ่นแนววานิลลาโอ๊ต ไม่แสบจมูก",
+                    "badge": "Cozy Vibe 🍂",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "160 คำสั่งซื้อ",
+                    "revenue": "฿6,720 ($188.80)",
+                },
+                # --- GADGET (10 Items) ---
+                {
+                    "sku": "TDF-GAD-01",
+                    "name": "🎧 หูฟังไร้สายเคสโปร่งแสงมินิมอล (Transparent Case TWS Earbuds)",
+                    "category": "GADGET",
+                    "price": "฿590 ($16.50)",
+                    "commission_rate": "12%",
+                    "est_commission": "฿70.80 ($1.98)",
+                    "desc": "ดีไซน์เคสโปร่งใส Retro-Future ตัดเสียงรบกวน ไมค์สนทนาคมชัด แบตเตอรี่อึดยาวนาน 24 ชั่วโมง",
+                    "badge": "Winning Item ⭐",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "178 คำสั่งซื้อ",
+                    "revenue": "฿12,602 ($352.44)",
+                },
+                {
+                    "sku": "TDF-GAD-02",
+                    "name": "🔋 แบตสำรองแม่เหล็ก MagSafe มินิ (Mini Magnetic Powerbank 5000mAh)",
+                    "category": "GADGET",
+                    "price": "฿690 ($19.50)",
+                    "commission_rate": "10%",
+                    "est_commission": "฿69.00 ($1.95)",
+                    "desc": "แปะหลังมือถือได้แน่นหนา ชาร์จไร้สายไว พกพาสะดวก ไม่บังเลนส์กล้อง โทนครีมมินิมอล",
+                    "badge": "Best Seller 🔥",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "145 คำสั่งซื้อ",
+                    "revenue": "฿10,005 ($282.75)",
+                },
+                {
+                    "sku": "TDF-GAD-03",
+                    "name": "⌨️ แป้นพิมพ์บลูทูธไร้สายปุ่มกลม (Retro Round-Key Bluetooth Keyboard)",
+                    "category": "GADGET",
+                    "price": "฿490 ($13.80)",
+                    "commission_rate": "14%",
+                    "est_commission": "฿68.60 ($1.93)",
+                    "desc": "ปุ่มทรงกลมสัมผัสเสียงคล้ายพิมพ์ดีด เชื่อมต่อสลับได้ 3 อุปกรณ์พร้อมกันทั้ง iPad, Mac, Windows",
+                    "badge": "Trending 💡",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "120 คำสั่งซื้อ",
+                    "revenue": "฿8,232 ($231.60)",
+                },
+                {
+                    "sku": "TDF-GAD-04",
+                    "name": "💡 ไฟบาร์ติดหน้าจอคอมกันสะท้อน (Screenbar Monitor Eye-Care Lamp)",
+                    "category": "GADGET",
+                    "price": "฿650 ($18.30)",
+                    "commission_rate": "11%",
+                    "est_commission": "฿71.50 ($2.01)",
+                    "desc": "แสงยิงตรงลงโต๊ะ ไม่สะท้อนจอ ไม่แยงตา ปรับอุณหภูมิสี 3 โหมด ประหยัดพื้นที่บนโต๊ะทำงาน",
+                    "badge": "Productivity 💻",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "94 คำสั่งซื้อ",
+                    "revenue": "฿6,721 ($188.94)",
+                },
+                {
+                    "sku": "TDF-GAD-05",
+                    "name": "🖱️ เม้าส์ไร้สายบลูทูธคลิกเงียบ (Ergonomic Silent Mouse Cream Beige)",
+                    "category": "GADGET",
+                    "price": "฿350 ($9.80)",
+                    "commission_rate": "12%",
+                    "est_commission": "฿42.00 ($1.18)",
+                    "desc": "คลิกเงียบสนิท ไร้เสียงรบกวน ทรงจับถนัดมือ เข้ากับสรีระ น้ำหนักเบา เชื่อมต่อบลูทูธและ 2.4G",
+                    "badge": "Silent & Smooth 🤫",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "180 คำสั่งซื้อ",
+                    "revenue": "฿7,560 ($212.40)",
+                },
+                {
+                    "sku": "TDF-GAD-06",
+                    "name": "🔌 แท่นชาร์จไร้สาย 3-in-1 พับได้ (3-in-1 Foldable Charging Station)",
+                    "category": "GADGET",
+                    "price": "฿550 ($15.50)",
+                    "commission_rate": "13%",
+                    "est_commission": "฿71.50 ($2.02)",
+                    "desc": "ชาร์จพร้อมกัน iPhone, Apple Watch, และ AirPods ในชิ้นเดียว พับแบนพกพาเดินทางได้สะดวก",
+                    "badge": "Winning Item ⭐",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "108 คำสั่งซื้อ",
+                    "revenue": "฿7,722 ($218.16)",
+                },
+                {
+                    "sku": "TDF-GAD-07",
+                    "name": "📷 กล้องดิจิทัลพกพาสไตล์วินเทจ Y2K (Retro CCD Digital Pocket Camera)",
+                    "category": "GADGET",
+                    "price": "฿890 ($25.00)",
+                    "commission_rate": "10%",
+                    "est_commission": "฿89.00 ($2.50)",
+                    "desc": "โทนภาพฟิล์มละมุน มีแฟลชในตัว น้ำหนักเบา ถ่ายคนผิวสวย ได้ฟีลเรโทรยุค 2000s ยอดฮิตใน TikTok",
+                    "badge": "Viral Hit 🚀",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "85 คำสั่งซื้อ",
+                    "revenue": "฿7,565 ($212.50)",
+                },
+                {
+                    "sku": "TDF-GAD-08",
+                    "name": "🧲 ขาตั้งมือถือแม่เหล็กอลูมิเนียม 360° (Rotatable Magnetic Phone Stand)",
+                    "category": "GADGET",
+                    "price": "฿290 ($8.20)",
+                    "commission_rate": "15%",
+                    "est_commission": "฿43.50 ($1.23)",
+                    "desc": "หมุนได้ 360 องศา พร้อมเสียงคลิกสไตล์เกียร์ ปรับมุมก้มเงยได้อิสระ พับแบนเล็กกะทัดรัด แข็งแรง",
+                    "badge": "Must Have 📱",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "220 คำสั่งซื้อ",
+                    "revenue": "฿9,570 ($270.60)",
+                },
+                {
+                    "sku": "TDF-GAD-09",
+                    "name": "💨 พัดลมพกพาพลังเทอร์โบดีไซน์มินิมอล (Turbo High-Speed Mini Fan)",
+                    "category": "GADGET",
+                    "price": "฿390 ($11.00)",
+                    "commission_rate": "12%",
+                    "est_commission": "฿46.80 ($1.32)",
+                    "desc": "มอเตอร์เทอร์โบแรงสูงปรับได้ 100 ระดับ แบตเตอรี่ 4000mAh ใช้งานได้ทั้งวัน โทนสีครีมอุ่น",
+                    "badge": "Summer Best ☀️",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "195 คำสั่งซื้อ",
+                    "revenue": "฿9,126 ($257.40)",
+                },
+                {
+                    "sku": "TDF-GAD-10",
+                    "name": "🔊 ลำโพงบลูทูธเรโทรลายไม้คลาสสิก (Woodgrain Retro Bluetooth Speaker)",
+                    "category": "GADGET",
+                    "price": "฿450 ($12.70)",
+                    "commission_rate": "14%",
+                    "est_commission": "฿63.00 ($1.78)",
+                    "desc": "เสียงใส เบสนุ่มแน่น ดีไซน์หน้าตู้แอมป์วินเทจพร้อมลูกบิดปรับเสียง วางแต่งห้องหรือฟังเพลงเพลินๆ",
+                    "badge": "Warm Sound 🎵",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "112 คำสั่งซื้อ",
+                    "revenue": "฿7,056 ($199.36)",
+                },
+                # --- STYLE (10 Items) ---
+                {
+                    "sku": "TDF-STYLE-01",
+                    "name": "👜 กระเป๋าผ้าแคนวาสสะพายไหล่มินิมอล (Cream Beige Canvas Tote Bag)",
+                    "category": "STYLE",
+                    "price": "฿320 ($9.00)",
+                    "commission_rate": "15%",
+                    "est_commission": "฿48.00 ($1.35)",
+                    "desc": "ผ้าคอตตอนหนาพิเศษ ทนทาน ใส่ iPad/MacBook ได้สบาย มีช่องซิปด้านใน สีครีมเบจตัดหูน้ำตาล",
+                    "badge": "Winning Item ⭐",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "240 คำสั่งซื้อ",
+                    "revenue": "฿11,520 ($324.00)",
+                },
+                {
+                    "sku": "TDF-STYLE-02",
+                    "name": "🧢 หมวกแก๊ปคอตตอนฟอกสไตล์เกาหลี (Washed Cotton Vintage Ball Cap)",
+                    "category": "STYLE",
+                    "price": "฿250 ($7.00)",
+                    "commission_rate": "15%",
+                    "est_commission": "฿37.50 ($1.05)",
+                    "desc": "ผ้าคอตตอนฟอกสีละมุน ปักตัวอักษรเรียบง่าย ปรับขนาดด้านหลังได้ ทรงหมวกสวยเข้ากับรูปหน้า",
+                    "badge": "Best Seller 🔥",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "175 คำสั่งซื้อ",
+                    "revenue": "฿6,562 ($183.75)",
+                },
+                {
+                    "sku": "TDF-STYLE-03",
+                    "name": "👓 แว่นตากรองแสงสีฟ้าวินเทจเบาพิเศษ (Ultralight Anti-Blue Light Glasses)",
+                    "category": "STYLE",
+                    "price": "฿290 ($8.20)",
+                    "commission_rate": "14%",
+                    "est_commission": "฿40.60 ($1.15)",
+                    "desc": "กรอบแว่นน้ำหนักเบาเพียง 12 กรัม ไม่กดดั้ง เลนส์ตัดแสงสีฟ้า ปกป้องสายตาหน้าจอคอมและมือถือ",
+                    "badge": "Trending 💡",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "155 คำสั่งซื้อ",
+                    "revenue": "฿6,293 ($178.25)",
+                },
+                {
+                    "sku": "TDF-STYLE-04",
+                    "name": "🧣 ผ้าพันคอแคชเมียร์ทัชนุ่มสีเบจ (Soft Cashmere-Feel Warm Scarf)",
+                    "category": "STYLE",
+                    "price": "฿380 ($10.70)",
+                    "commission_rate": "12%",
+                    "est_commission": "฿45.60 ($1.28)",
+                    "desc": "สัมผัสนุ่มละมุน ไม่คันผิว โทนสีครีมเบจเอิร์ธโทน ให้ความอบอุ่นในห้องแอร์และแมทช์ลุคได้ง่าย",
+                    "badge": "Cozy Luxury 🍂",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "88 คำสั่งซื้อ",
+                    "revenue": "฿4,012 ($112.64)",
+                },
+                {
+                    "sku": "TDF-STYLE-05",
+                    "name": "👝 กระเป๋าเก็บบัตรและธนบัตรหนังแท้มินิมอล (Slim Leather Cardholder Wallet)",
+                    "category": "STYLE",
+                    "price": "฿290 ($8.20)",
+                    "commission_rate": "15%",
+                    "est_commission": "฿43.50 ($1.22)",
+                    "desc": "ดีไซน์บางเฉียบ ใส่การ์ดได้ 6 ใบ พร้อมช่องซิปเหรียญและธนบัตร หนังเรียบสัมผัสนุ่ม โทนสี Taupe",
+                    "badge": "Winning Item ⭐",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "190 คำสั่งซื้อ",
+                    "revenue": "฿8,265 ($231.80)",
+                },
+                {
+                    "sku": "TDF-STYLE-06",
+                    "name": "🧦 เซ็ตถุงเท้าข้อสั้นคอตตอนมินิมอล 5 คู่ (Neutral Minimalist Socks 5-Pack)",
+                    "category": "STYLE",
+                    "price": "฿190 ($5.40)",
+                    "commission_rate": "15%",
+                    "est_commission": "฿28.50 ($0.81)",
+                    "desc": "ผ้าคอตตอนระบายอากาศดีเยี่ยม โทนสีธรรมชาติ ครีม ขาว เบจ เทา และน้ำตาล นุ่มสบายเท้าตลอดวัน",
+                    "badge": "Daily Essential 🧦",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "280 คำสั่งซื้อ",
+                    "revenue": "฿7,980 ($226.80)",
+                },
+                {
+                    "sku": "TDF-STYLE-07",
+                    "name": "⌚ สายนาฬิกาแม่เหล็กซิลิโคนดูด Taupe (Magnetic Silicone Watch Band)",
+                    "category": "STYLE",
+                    "price": "฿260 ($7.30)",
+                    "commission_rate": "14%",
+                    "est_commission": "฿36.40 ($1.02)",
+                    "desc": "สายแม่เหล็กดูดอัตโนมัติ ใส่และถอดง่าย ซิลิโคนเกรดพรีเมียมกันน้ำ ไม่อับเหงื่อ โทนสีครีมเบจหรู",
+                    "badge": "Smart & Chic ✨",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "140 คำสั่งซื้อ",
+                    "revenue": "฿5,096 ($142.80)",
+                },
+                {
+                    "sku": "TDF-STYLE-08",
+                    "name": "✨ สร้อยคอจี้มินิมอลชุบทอง 18K (Dainty 18K Gold-Plated Necklace)",
+                    "category": "STYLE",
+                    "price": "฿350 ($9.80)",
+                    "commission_rate": "15%",
+                    "est_commission": "฿52.50 ($1.47)",
+                    "desc": "สร้อยคอเส้นเล็กเรียบหรู จี้เรขาคณิต ชุบทองแท้ 18K ไม่ลอกไม่ดำ ใส่อาบน้ำได้ เข้าได้กับทุกลุค",
+                    "badge": "Top Pick 🌟",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "165 คำสั่งซื้อ",
+                    "revenue": "฿8,662 ($242.55)",
+                },
+                {
+                    "sku": "TDF-STYLE-09",
+                    "name": "🕶️ แว่นตากันแดดทรงเหลี่ยมมินิมอล (Minimalist Square Sunglasses Beige)",
+                    "category": "STYLE",
+                    "price": "฿320 ($9.00)",
+                    "commission_rate": "14%",
+                    "est_commission": "฿44.80 ($1.26)",
+                    "desc": "เลนส์กันรังสียูวี UV400 กรอบสีครีมนม น้ำหนักเบา ทรงเหลี่ยมรับรูปหน้า ช่วยเสริมลุคถ่ายรูปปัง",
+                    "badge": "Summer Chic ☀️",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "135 คำสั่งซื้อ",
+                    "revenue": "฿6,048 ($170.10)",
+                },
+                {
+                    "sku": "TDF-STYLE-10",
+                    "name": "🏷️ ป้ายแท็กหนังติดกระเป๋าเดินทางสลักชื่อ (Custom Leather Luggage Tag)",
+                    "category": "STYLE",
+                    "price": "฿220 ($6.20)",
+                    "commission_rate": "12%",
+                    "est_commission": "฿26.40 ($0.74)",
+                    "desc": "หนัง PU เกรดพรีเมียม ฝาปิดซ่อนข้อมูลส่วนตัว ป้องกันการมองเห็น โทนสีน้ำตาลคาราเมลคลาสสิก",
+                    "badge": "Travel Essential ✈️",
+                    "affiliate_link": "https://shope.ee/thedailyfinds",
+                    "sales": "110 คำสั่งซื้อ",
+                    "revenue": "฿2,904 ($81.40)",
                 },
             ],
         },
@@ -1985,7 +2391,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         <div class="deliverables-nav-strip" id="studioDeliverablesTabs">
             <button class="studio-tab-btn active" onclick="switchDeliverableStudio('MEME_STUDIO')" id="tabBtn_MEME_STUDIO">🎬 Meme Studio (คลิปไวรัล)</button>
             <button class="studio-tab-btn" onclick="switchDeliverableStudio('TECH_STUDIO')" id="tabBtn_TECH_STUDIO">💻 Tech Studio (โค้ด Micro-SaaS)</button>
-            <button class="studio-tab-btn" onclick="switchDeliverableStudio('ONLINE_STORE')" id="tabBtn_ONLINE_STORE">🏪 Online Store (ร้านค้าดิจิทัล)</button>
+            <button class="studio-tab-btn" onclick="switchDeliverableStudio('ONLINE_STORE')" id="tabBtn_ONLINE_STORE">🏪 THE DAILY FINDS (Shopee Store)</button>
             <button class="studio-tab-btn" onclick="switchDeliverableStudio('TRADING_LAB')" id="tabBtn_TRADING_LAB">📈 Trading War Room (สัญญาณทอง)</button>
             <button class="studio-tab-btn" onclick="switchDeliverableStudio('CRITIC_STUDIO')" id="tabBtn_CRITIC_STUDIO">🛡️ Critic & Security (ด่านตรวจ)</button>
             <button class="studio-tab-btn" onclick="switchDeliverableStudio('TOWN_HALL')" id="tabBtn_TOWN_HALL">🏛️ Town Hall (คำสั่ง The Boss)</button>
@@ -2013,7 +2419,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
 
     <div class="nav-segmented-secondary">
         <span style="font-size:0.74rem;font-weight:800;color:var(--text-sub);margin-right:4px">สลับหมวดธุรกิจ & ระบบ:</span>
-        <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')" id="subtab-page-store-studio" title="แปะตะกร้าชุดแฟชั่น & ร้านค้าดิจิทัล">👗 แปะตะกร้าชุดแฟชั่น (Store)</button>
+        <button class="nav-tab nav-tab-compact" onclick="switchPage('page-store-studio')" id="subtab-page-store-studio" title="THE DAILY FINDS • แปะตะกร้า Shopee & ร้านค้า">🛍️ THE DAILY FINDS (Store)</button>
         <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')" id="tab-page-meme-studio" title="คลิปไวรัล What-If & สื่อโซเชียล">🎬 คลิปไวรัล What-If (Media)</button>
         <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tech-studio')" id="tab-page-tech-studio" title="บอท & เทค Micro-SaaS">💻 บอท & เทค (Tech)</button>
         <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tokens')" id="tab-page-tokens" title="ตารางจัดอันดับโทเคน 11 บอท">🪙 ตารางโทเคน 11 บอท</button>
@@ -2090,7 +2496,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             <button class="zone-pill-btn" onclick="focusTownZone('TOWN_HALL')" id="btnZone_TOWN_HALL">🏛️ Town Hall</button>
             <button class="zone-pill-btn" onclick="focusTownZone('CRITIC_STUDIO')" id="btnZone_CRITIC_STUDIO">🛡️ Critic & Risk</button>
             <button class="zone-pill-btn" onclick="focusTownZone('TECH_STUDIO')" id="btnZone_TECH_STUDIO">💻 Tech Studio</button>
-            <button class="zone-pill-btn" onclick="focusTownZone('ONLINE_STORE')" id="btnZone_ONLINE_STORE">👕 Online Store</button>
+            <button class="zone-pill-btn" onclick="focusTownZone('ONLINE_STORE')" id="btnZone_ONLINE_STORE">🛍️ THE DAILY FINDS</button>
             <button class="zone-pill-btn" onclick="focusTownZone('MEME_STUDIO')" id="btnZone_MEME_STUDIO">🎬 Meme Studio</button>
             <button class="zone-pill-btn" onclick="focusTownZone('TRADING_LAB')" id="btnZone_TRADING_LAB">🔮 What-If & Quant</button>
             <button class="zone-pill-btn" onclick="focusTownZone('COURIER_DISPATCH')" id="btnZone_COURIER_DISPATCH">🌉 OpenClaw Pier</button>
@@ -2577,20 +2983,21 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     <div class="ventures-subnav-bar">
         <div style="font-weight:900;font-size:0.88rem;color:var(--text-main)">🎬 หมวดธุรกิจหารายได้ (Ventures Workspace):</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-store-studio')">👗 แปะตะกร้าชุดแฟชั่น (Store)</button>
+            <button class="nav-tab nav-tab-compact active" onclick="switchPage('page-store-studio')">🛍️ THE DAILY FINDS (Store)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-meme-studio')">🎬 คลิปไวรัล What-If (Media)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tech-studio')">💻 บอท & เทค (Tech)</button>
             <button class="nav-tab nav-tab-compact" onclick="switchPage('page-tokens')">🪙 ตารางโทเคน 11 บอท</button>
         </div>
     </div>
-    <div class="catchup-banner" style="border-color:#10b981;background:linear-gradient(90deg,rgba(16,185,129,0.12),rgba(14,165,233,0.12))">
+    <div class="catchup-banner" style="border-color:#8c7a6b;background:linear-gradient(90deg,rgba(251,249,245,0.95),rgba(245,240,232,0.95));color:#3d352e">
         <div>
-            <strong style="color:#10b981">🏪 Enterprise Digital E-Commerce & SaaS Subscription OS (Nova Vance):</strong>
-            <span>ระบบบริหารสินค้าดิจิทัล คำนวณต้นทุน Payment Gateway, จุดคุ้มทุนโฆษณา (Break-Even ROAS), และจำลองคำสั่งซื้อเข้าสมุดบัญชี SQLite</span>
+            <strong style="color:#8c7a6b">🛍️ THE DAILY FINDS — Curated Home, Gadget & Style (Nova Vance):</strong>
+            <span style="color:#6b5d52">ร้านค้าคัดสรรสินค้าแฟชั่น ของแต่งบ้าน และแกดเจ็ตมินิมอล (Shopee Affiliate & Dropshipping Scaling Hub) เชื่อมต่อสมุดบัญชี SQLite</span>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="cozy-btn gold" onclick="openLiveIntegrationsModal()">🔌 ตั้งค่าเชื่อม Payment / API จริง</button>
-            <button class="cozy-btn green" onclick="submitQuickStoreOrder('ONLINE_STORE', 'VIP Gold Signal Bot Access (Monthly)', 27.86)">🧪 จำลองออเดอร์ VIP Signal เข้าบัญชีเทส (+$27.86 สุทธิ)</button>
+            <button class="cozy-btn gold" onclick="openStudioDeliverablesModal('ONLINE_STORE')">✨ เปิดโชว์รูม 30 สินค้าคัดสรร & แผนงานด่วน</button>
+            <button class="cozy-btn green" onclick="submitQuickStoreOrder('ONLINE_STORE', 'THE DAILY FINDS Curated Order (TDF-HOME-01)', 27.86)">🧪 จำลองออเดอร์ Affiliate เข้าบัญชีเทส (+$27.86)</button>
+            <button class="cozy-btn" onclick="openLiveIntegrationsModal()">🔌 ตั้งค่าเชื่อม Payment / API จริง</button>
         </div>
     </div>
 
@@ -4694,7 +5101,7 @@ const ISO_ROOMS = [
     {{ id: "CRITIC_STUDIO", name: "🛡️ สตูดิโอตรวจงาน (Critic & Risk)", sub: "Audit คุณภาพ 100%", gx: 1, gy: 1, x: 450, y: 275, badgeX: 450, badgeY: 185, floorCol: "#fce7f3", floorAlt: "#fbcfe8", wallCol: "#db2777", wallTop: "#fdf2f8", badgeDot: "#10b981", propType: "CRITIC_STUDIO", districtTag: "CRITIC & RISK" }},
     {{ id: "COURIER_DISPATCH", name: "🌉 ท่าเรือ OpenClaw (OpenClaw Pier)", sub: "ซิงค์ API & ลิควิดิตี้", gx: 3, gy: 1, x: 1260, y: 220, badgeX: 1260, badgeY: 145, floorCol: "#f3e8ff", floorAlt: "#e9d5ff", wallCol: "#7c3aed", wallTop: "#faf5ff", badgeDot: "#10b981", propType: "COURIER_DISPATCH", districtTag: "OpenClaw Pier" }},
     {{ id: "TRADING_LAB", name: "🔮 วอร์รูม & ควอนต์ (What-If & Quant)", sub: "เทรดทองคำ XAUUSD", gx: 0, gy: 1, x: 1180, y: 420, badgeX: 1180, badgeY: 275, floorCol: "#e0f2fe", floorAlt: "#bae6fd", wallCol: "#2563eb", wallTop: "#eff6ff", badgeDot: "#10b981", propType: "TRADING_LAB", districtTag: "WHAT IF STUDIO" }},
-    {{ id: "ONLINE_STORE", name: "🏪 ร้านค้าดิจิทัล (Online Store)", sub: "VIP Signal & Prompt", gx: 3, gy: 0, x: 440, y: 610, badgeX: 440, badgeY: 485, floorCol: "#dcfce7", floorAlt: "#bbf7d0", wallCol: "#10b981", wallTop: "#f0fdf4", badgeDot: "#10b981", propType: "ONLINE_STORE", districtTag: "ONLINE SHIRTS" }},
+    {{ id: "ONLINE_STORE", name: "🛍️ THE DAILY FINDS (Online Store)", sub: "Shopee Affiliate & Dropship", gx: 3, gy: 0, x: 440, y: 610, badgeX: 440, badgeY: 485, floorCol: "#fbf9f5", floorAlt: "#f5f0e8", wallCol: "#8c7a6b", wallTop: "#fbf9f5", badgeDot: "#8c7a6b", propType: "ONLINE_STORE", districtTag: "ONLINE SHIRTS" }},
     {{ id: "MEME_STUDIO", name: "🎬 มีมสตูดิโอ (Meme Studio)", sub: "คลิปไวรัล Reels/TikTok", gx: 2, gy: 0, x: 1000, y: 610, badgeX: 1000, badgeY: 485, floorCol: "#ffe4e6", floorAlt: "#fecdd3", wallCol: "#f43f5e", wallTop: "#fff1f2", badgeDot: "#f43f5e", propType: "MEME_STUDIO", districtTag: "MEME STUDIO" }},
     {{ id: "GROWTH_STUDIO", name: "⚡ สตูดิโอยิงการตลาด (Growth)", sub: "แคมเปญไวรัล & ชุมชน", gx: 2, gy: 1, x: 980, y: 310, badgeX: 980, badgeY: 205, floorCol: "#ffedd5", floorAlt: "#fed7aa", wallCol: "#ea580c", wallTop: "#fff7ed", badgeDot: "#10b981", propType: "GROWTH_STUDIO", districtTag: "GROWTH STUDIO" }},
     {{ id: "TECH_STUDIO", name: "💻 สตูดิโอโค้ดดิ้ง (Tech Studio </ >)", sub: "Micro-SaaS & Bot", gx: 1, gy: 0, x: 300, y: 420, badgeX: 300, badgeY: 280, floorCol: "#0f172a", floorAlt: "#1e293b", wallCol: "#0284c7", wallTop: "#38bdf8", badgeDot: "#38bdf8", propType: "TECH_STUDIO", districtTag: "TECH STUDIO" }}
@@ -4991,9 +5398,9 @@ function drawRoomFurniture3D(ctx, cx, cy, propType, wallCol) {{
         ctx.fill();
         draw3DDesk(cx, cy + 10, 26, 10, "#ffe4e6", "#f43f5e");
     }} else if (propType === "ONLINE_STORE") {{
-        // Striped Shop Awning & Storefront Counter
-        draw3DDesk(cx, cy + 10, 32, 12, "#bbf7d0", "#10b981");
-        ctx.fillStyle = "#10b981";
+        // Striped Shop Awning & Storefront Counter in Cream Beige
+        draw3DDesk(cx, cy + 10, 32, 12, "#f5f0e8", "#8c7a6b");
+        ctx.fillStyle = "#8c7a6b";
         ctx.beginPath();
         ctx.moveTo(cx - 28, cy - 10);
         ctx.lineTo(cx + 28, cy - 10);
@@ -5001,9 +5408,9 @@ function drawRoomFurniture3D(ctx, cx, cy, propType, wallCol) {{
         ctx.lineTo(cx - 32, cy - 2);
         ctx.closePath();
         ctx.fill();
-        ctx.fillStyle = "#1e293b";
+        ctx.fillStyle = "#3d352e";
         ctx.fillRect(cx - 8, cy - 4, 12, 9);
-        ctx.fillStyle = "#fbbf24";
+        ctx.fillStyle = "#d97706";
         ctx.fillRect(cx + 10, cy - 6, 10, 10);
     }} else if (propType === "TRADING_LAB") {{
         // Multi-Monitor Terminal & Hologram Chart
@@ -7509,6 +7916,29 @@ function copyTechCode() {{
     }}
 }}
 
+function filterDailyFindsDeliverables(cat) {{
+    const cards = document.querySelectorAll('.tdf-prod-card');
+    cards.forEach(c => {{
+        if (cat === 'ALL' || c.getAttribute('data-cat') === cat) {{
+            c.style.display = 'flex';
+        }} else {{
+            c.style.display = 'none';
+        }}
+    }});
+    const btns = ['ALL', 'HOME', 'GADGET', 'STYLE'];
+    btns.forEach(b => {{
+        const el = document.getElementById(`tdfBtn_${{b}}`);
+        if (!el) return;
+        if (b === cat) {{
+            el.style.background = '#8c7a6b';
+            el.style.color = '#ffffff';
+        }} else {{
+            el.style.background = '#f5f0e8';
+            el.style.color = '#3d352e';
+        }}
+    }});
+}}
+
 function switchDeliverableStudio(studioId) {{
     currentDeliverableStudio = studioId;
     const d = APP.studio_deliverables?.[studioId] || {{}};
@@ -7611,24 +8041,50 @@ function switchDeliverableStudio(studioId) {{
         </div>
         `;
     }} else if (studioId === 'ONLINE_STORE') {{
-        const prods = (d.products || []).map(p => `
-            <div class="store-card">
-                <div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px">
-                        <strong style="font-size:0.88rem;color:var(--text-main)">${{p.name}}</strong>
-                        <span class="store-badge">${{p.badge}}</span>
+        const actionItems = (d.action_items_today || []).map(a => `
+            <div style="background:#f5f0e8;border:1px solid #e6dec8;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
+                <div style="display:flex;align-items:center;gap:10px">
+                    <span style="font-size:1.1rem">📌</span>
+                    <div>
+                        <strong style="color:#3d352e;font-size:0.86rem">${{a.task}}</strong>
+                        <div style="font-size:0.75rem;color:#8c7a6b">${{a.desc}}</div>
                     </div>
-                    <p style="font-size:0.78rem;color:var(--text-sub);margin-bottom:12px">${{p.desc}}</p>
+                </div>
+                <span class="pill" style="background:#fef3c7;color:#92400e;font-weight:800;font-size:0.72rem;padding:3px 10px">${{a.status}}</span>
+            </div>
+        `).join('');
+
+        const milestone = d.milestone_first_10_posts || {{ completed: 0, target: 10, label: "เป้าหมายแรก: โพสต์ 10 ชิ้น & เริ่มมีคนคลิกลิงก์" }};
+        const msPct = Math.min(100, Math.round(((milestone.completed || 0) / (milestone.target || 10)) * 100));
+
+        const prods = (d.products || []).map((p, idx) => `
+            <div class="store-card tdf-prod-card" data-cat="${{p.category}}" style="background:#ffffff;border:1px solid #e6dec8;border-radius:14px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.15s ease,box-shadow 0.15s ease">
+                <div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px">
+                        <span style="font-size:0.7rem;font-weight:800;color:#8c7a6b;background:#f5f0e8;padding:2px 8px;border-radius:6px">${{p.sku}} • ${{p.category}}</span>
+                        <span class="store-badge" style="background:#fdf2f8;color:#db2777;border:1px solid #fbcfe8;font-size:0.7rem;padding:2px 6px;border-radius:6px;font-weight:700">${{p.badge}}</span>
+                    </div>
+                    <strong style="font-size:0.88rem;color:#3d352e;display:block;margin-bottom:6px;line-height:1.3">${{p.name}}</strong>
+                    <p style="font-size:0.77rem;color:#6b5d52;margin-bottom:10px;line-height:1.4">${{p.desc}}</p>
                 </div>
                 <div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px dashed var(--border-soft)">
+                    <div style="background:#fbf9f5;border:1px dashed #e6dec8;border-radius:10px;padding:8px 10px;margin-bottom:10px">
+                        <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.74rem;color:#8c7a6b">
+                            <span>ส่วนแบ่งคอมมิชชั่น:</span>
+                            <strong style="color:#d97706">${{p.commission_rate}}</strong>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.74rem;color:#8c7a6b;margin-top:3px">
+                            <span>ประมาณการคอมมิชชั่น:</span>
+                            <strong style="color:#10b981">${{p.est_commission}}</strong>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid #f5f0e8">
                         <div>
-                            <div style="font-size:1.15rem;font-weight:900;color:#10b981">${{p.price}}</div>
-                            <div style="font-size:0.72rem;color:var(--text-sub)">${{p.sales}}</div>
+                            <div style="font-size:1.1rem;font-weight:900;color:#10b981">${{p.price}}</div>
+                            <div style="font-size:0.7rem;color:#8c7a6b">${{p.sales || 'พร้อมโปรโมต'}}</div>
                         </div>
                         <div style="text-align:right">
-                            <div style="font-size:0.7rem;color:var(--text-sub)">รายได้รวม</div>
-                            <strong style="font-size:0.95rem;color:#f59e0b">${{p.revenue}}</strong>
+                            <a href="${{p.affiliate_link}}" target="_blank" class="cozy-btn" style="background:#8c7a6b;color:#ffffff;font-size:0.74rem;padding:4px 10px;text-decoration:none;border-radius:8px;display:inline-block">🛍️ ลิงก์ Shopee</a>
                         </div>
                     </div>
                 </div>
@@ -7636,18 +8092,61 @@ function switchDeliverableStudio(studioId) {{
         `).join('');
 
         body.innerHTML = `
-        <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+        <div style="background:#fbf9f5;border-radius:14px;padding:18px;border:1px solid #e6dec8">
+            <!-- Brand Banner -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #e6dec8">
                 <div>
-                    <h3 style="font-size:1.1rem;font-weight:900;color:var(--text-main)">🏪 ${{d.title}}</h3>
-                    <p style="font-size:0.78rem;color:var(--text-sub)">${{d.tagline}}</p>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                        <span style="font-size:1.4rem">✨</span>
+                        <h3 style="font-size:1.25rem;font-weight:900;color:#3d352e;margin:0">${{d.brand_name || 'THE DAILY FINDS'}}</h3>
+                        <span style="background:#f5f0e8;color:#8c7a6b;font-size:0.72rem;font-weight:800;padding:2px 8px;border-radius:99px;border:1px solid #e6dec8">Shopee Affiliate & Dropshipping</span>
+                    </div>
+                    <p style="font-size:0.8rem;color:#8c7a6b;margin:0">${{d.tagline}}</p>
                 </div>
-                <div style="display:flex;gap:8px">
-                    <span class="top-pill" style="border-color:#10b981"><span>💵 รายได้รวมสโตร์:</span> <strong style="color:#10b981">$${{d.total_revenue?.toLocaleString()}}</strong></span>
-                    <span class="top-pill" style="border-color:#f59e0b"><span>📈 Gross Margin:</span> <strong style="color:#f59e0b">${{d.margin_pct}}%</strong></span>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <span class="top-pill" style="border-color:#10b981;background:#ffffff"><span>💵 รายได้รวมสโตร์:</span> <strong style="color:#10b981">$${{d.total_revenue?.toLocaleString()}}</strong></span>
+                    <span class="top-pill" style="border-color:#f59e0b;background:#ffffff"><span>📈 Gross Margin:</span> <strong style="color:#f59e0b">${{d.margin_pct}}%</strong></span>
+                    <span class="top-pill" style="border-color:#8c7a6b;background:#ffffff"><span>👆 ยอดคลิก Affiliate:</span> <strong style="color:#8c7a6b">${{d.affiliate_clicks?.toLocaleString()}}</strong></span>
+                    <span class="top-pill" style="border-color:#0284c7;background:#ffffff"><span>📦 คำสั่งซื้อ:</span> <strong style="color:#0284c7">${{d.affiliate_orders}}</strong></span>
+                    <span class="top-pill" style="border-color:#10b981;background:#ffffff"><span>💰 ค่าคอมมิชชั่นสะสม:</span> <strong style="color:#10b981">$${{d.affiliate_earnings_usd?.toLocaleString()}}</strong></span>
                 </div>
             </div>
-            <div class="store-grid">${{prods}}</div>
+
+            <!-- Action Items & Milestone Card -->
+            <div style="background:#ffffff;border:1px solid #e6dec8;border-radius:14px;padding:14px;margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+                    <strong style="color:#3d352e;font-size:0.9rem">📋 งานด่วนวันนี้ (Immediate Action Items & First Milestone):</strong>
+                    <span style="font-size:0.75rem;color:#8c7a6b">${{milestone.label}}</span>
+                </div>
+                <div style="margin-bottom:12px">
+                    <div style="display:flex;justify-content:space-between;font-size:0.74rem;color:#8c7a6b;margin-bottom:4px">
+                        <span>ความคืบหน้าโพสต์: <strong>${{milestone.completed}} / ${{milestone.target}} โพสต์</strong></span>
+                        <span>${{msPct}}%</span>
+                    </div>
+                    <div style="background:#f5f0e8;height:8px;border-radius:99px;overflow:hidden">
+                        <div style="background:linear-gradient(90deg,#8c7a6b,#d97706);width:${{msPct}}%;height:100%"></div>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px">
+                    ${{actionItems}}
+                </div>
+            </div>
+
+            <!-- Curated Products Catalog & Category Filter -->
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+                <div>
+                    <h4 style="font-size:0.98rem;font-weight:900;color:#3d352e;margin:0">📦 แคตตาล็อกสินค้าคัดสรร 30 รายการ (30 Winning Curated Items):</h4>
+                    <p style="font-size:0.76rem;color:#8c7a6b;margin:2px 0 0 0">คัดเฉพาะสินค้าสไตล์มินิมอล ยอดขายปัง และค่าคอมมิชชั่นสูง (${{d.affiliate_commission_rate || '8% - 15%'}})</p>
+                </div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap" id="tdfCategoryFilterBar">
+                    <button class="cozy-btn active" onclick="filterDailyFindsDeliverables('ALL')" id="tdfBtn_ALL" style="font-size:0.75rem;padding:4px 10px;background:#8c7a6b;color:#fff">🌟 ทั้งหมด (30)</button>
+                    <button class="cozy-btn" onclick="filterDailyFindsDeliverables('HOME')" id="tdfBtn_HOME" style="font-size:0.75rem;padding:4px 10px;background:#f5f0e8;color:#3d352e">🏡 HOME แต่งบ้าน (10)</button>
+                    <button class="cozy-btn" onclick="filterDailyFindsDeliverables('GADGET')" id="tdfBtn_GADGET" style="font-size:0.75rem;padding:4px 10px;background:#f5f0e8;color:#3d352e">⚡ GADGET แกดเจ็ต (10)</button>
+                    <button class="cozy-btn" onclick="filterDailyFindsDeliverables('STYLE')" id="tdfBtn_STYLE" style="font-size:0.75rem;padding:4px 10px;background:#f5f0e8;color:#3d352e">👗 STYLE แฟชั่น (10)</button>
+                </div>
+            </div>
+
+            <div class="store-grid" id="tdfDeliverablesProductGrid">${{prods}}</div>
         </div>
         `;
     }} else if (studioId === 'TRADING_LAB') {{
