@@ -503,5 +503,22 @@
     * Regenerated `reports/latest_dashboard.html` (1,213,029 bytes).
     * Validated via `node --check` across all extracted inline scripts returning 0 errors.
 
+- **Island Screen Right HUD & Top Header Anti-Wrap Overhaul (November 2026)**:
+  - **AI Island HUD Layout Fixes (`.town-top-nav-bar`, `.town-top-left-bar`, `.town-top-right-bar`, `.comic-hud-pill`)**:
+    * `.town-top-nav-bar`: enforced `flex-wrap: nowrap !important; justify-content: space-between; align-items: center; overflow: visible;`.
+    * `.town-top-left-bar`: set `flex-wrap: nowrap !important; flex-shrink: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; gap: 4px;` with hidden scrollbar. Removed redundant `btnTownEnterpriseMenu` (`🪙 ตารางโทเคน 11 บอท`) from the island canvas (already accessible via the top status bar and bottom tabs), saving ~140px width.
+    * `.town-top-right-bar`: removed restrictive `max-width: 48%;`, enforced `flex-wrap: nowrap !important; flex-shrink: 0; max-width: none; white-space: nowrap !important; margin-left: auto; justify-content: flex-end; gap: 6px;`.
+    * `.comic-hud-pill`: styled with `white-space: nowrap !important; flex-shrink: 0; padding: 4px 10px; font-size: 0.72rem;` ensuring the HUD pill and `📈 ไม้สด` button NEVER wrap or drop down on any screen size.
+    * `@media (max-width: 1300px)`: updated media query to maintain `flex-wrap: nowrap !important;`, `white-space: nowrap !important;`, and `max-width: none;`.
+  - **Top Header Status Pills Consolidation (`.status-pills-bar`)**:
+    * Unified `topBtnLivePositions`, `topBtnClosedTrades`, and `topAutoTradeBadge` into a single sleek badge `#topAutoTradeBadge`:
+      - Shows `🟢 AUTO-TRADE: ON • ไม้สด (<span id="topLivePositionsCountBadge">2</span>) • ประวัติ (<span id="topClosedTradesCountBadge">18</span>)` with stopPropagation on history click.
+      - Retains span IDs for continuous real-time telemetry updates while freeing ~240px width on MacBook / Safari viewports.
+  - **Verification**:
+    * Python compile: `python3 -m py_compile engine/dashboard_generator.py` passed with 0 errors.
+    * Regenerated `reports/latest_dashboard.html` (1.2MB).
+    * Node check: `node --check /tmp/dash_script_*.js` verified all extracted `<script>` blocks with 0 syntax errors.
+
+
 
 

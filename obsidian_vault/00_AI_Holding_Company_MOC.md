@@ -3,7 +3,7 @@ tags:
   - moc
   - ai-holding-hq
   - second-brain
-updated: "2026-11-17 19:09:35"
+updated: "2026-11-18 00:04:37"
 ---
 # 🏛️ 00 — AI Holding Company & Isometric Cutaway HQ (Master MOC — V8)
 
@@ -15,7 +15,7 @@ updated: "2026-11-17 19:09:35"
 
 ## 🧭 สารบัญคลังความรู้หลัก (Core Vault Hubs)
 - 🕸️ **ผังโครงข่ายข้อมูล & ระบบประหยัดโทเคน (86.1%):** [[00_Knowledge_Graph_Topology]]
-- 📅 **สรุปรายงานประจำวันล่าสุด:** [[2026-11-17_Daily_Summary]]
+- 📅 **สรุปรายงานประจำวันล่าสุด:** [[2026-11-18_Daily_Summary]]
 - 🧠 **แกนกลางความรู้บริษัท (Shared Brain):** [[Central_Nexus_Insights]]
 - 🤖 **พอร์ตบอท MT5 & ผลทดสอบ 4 กลยุทธ์วิจัย:** [[MT5_Portfolio_and_Benchmarks]]
 - 🚀 **แผนกปั้นธุรกิจใหม่ในเครือบริษัท AI:** [[New_Venture_Ideas_Blueprint]]
@@ -23,14 +23,14 @@ updated: "2026-11-17 19:09:35"
 ---
 
 ## 🪪 ทำเนียบพนักงาน AI ทั้ง 11 ตัว และสมองกลที่เชื่อมต่อ (AI Roster & LLM Brains)
-- 👑 [[Agent_Arthur_Pendelton|Arthur Pendelton]] — *Chief Investment Officer (CIO)* (`Claude 3.7 Sonnet (Extended Thinking 128K)` | `Lv.800`)
-- 👩‍💼 [[Agent_Sophia_Chen|Sophia Chen]] — *Chief of Staff & 24h Operations* (`Gemini 2.5 Pro Exp (2M Context Deep Research)` | `Lv.797`)
-- 🕵️‍♀️ [[Agent_Maya_Lin|Maya Lin]] — *Real-Time News Sentinel* (`Grok-3 (Real-Time Macro & X Pulse)` | `Lv.798`)
-- 👨‍🔬 [[Agent_Dr._Kenji_Sato|Dr. Kenji Sato]] — *Head of Quant R&D & Benchmark Lab* (`OpenAI o3-mini / o1-Pro (Deep Math Reasoning)` | `Lv.819`)
-- 📊 [[Agent_Alex_ChartMaster_Vance|Alex 'ChartMaster' Vance]] — *Senior Multi-TF Technical Analyst* (`DeepSeek-R1 671B Full (Unquantized CoT)` | `Lv.817`)
-- 🌐 [[Agent_Dr._Marcus_Sterling|Dr. Marcus Sterling]] — *Chief Global Macroeconomist* (`Gemini 2.5 Pro Exp (2M Context Deep Research)` | `Lv.798`)
-- 🐂 [[Agent_Sarah_Jenkins|Sarah Jenkins]] — *Bullish Advocate* (`Llama-3.3-70B (Groq Ultra-Fast)` | `Lv.797`)
-- 🐻 [[Agent_Viktor_The_Skeptic_Kane|Viktor 'The Skeptic' Kane]] — *Bearish & Red-Team Advocate* (`Claude 3.7 Sonnet (Extended Thinking 128K)` | `Lv.813`)
-- 🛡️ [[Agent_Elena_Rostova|Elena Rostova]] — *Chief Risk Officer (CRO)* (`OpenAI o3-mini / o1-Pro (Deep Math Reasoning)` | `Lv.800`)
-- 🤖 [[Agent_AutoBot_X-1|AutoBot X-1]] — *Automated Portfolio & Execution Bot* (`Qwen-2.5-Coder-32B (Algo Specialist)` | `Lv.816`)
-- 🚀 [[Agent_Nova_Vance|Nova Vance]] — *New Business Venture Architect* (`Claude 3.5 Opus (Flagship Strategist)` | `Lv.796`)
+- 👑 [[Agent_Arthur_Pendelton|Arthur Pendelton]] — *Chief Investment Officer (CIO)* (`Claude 3.7 Sonnet (Extended Thinking 128K)` | `Lv.926`)
+- 👩‍💼 [[Agent_Sophia_Chen|Sophia Chen]] — *Chief of Staff & 24h Operations* (`Gemini 2.5 Pro Exp (2M Context Deep Research)` | `Lv.923`)
+- 🕵️‍♀️ [[Agent_Maya_Lin|Maya Lin]] — *Real-Time News Sentinel* (`Grok-3 (Real-Time Macro & X Pulse)` | `Lv.924`)
+- 👨‍🔬 [[Agent_Dr._Kenji_Sato|Dr. Kenji Sato]] — *Head of Quant R&D & Benchmark Lab* (`OpenAI o3-mini / o1-Pro (Deep Math Reasoning)` | `Lv.945`)
+- 📊 [[Agent_Alex_ChartMaster_Vance|Alex 'ChartMaster' Vance]] — *Senior Multi-TF Technical Analyst* (`DeepSeek-R1 671B Full (Unquantized CoT)` | `Lv.943`)
+- 🌐 [[Agent_Dr._Marcus_Sterling|Dr. Marcus Sterling]] — *Chief Global Macroeconomist* (`Gemini 2.5 Pro Exp (2M Context Deep Research)` | `Lv.924`)
+- 🐂 [[Agent_Sarah_Jenkins|Sarah Jenkins]] — *Bullish Advocate* (`Llama-3.3-70B (Groq Ultra-Fast)` | `Lv.923`)
+- 🐻 [[Agent_Viktor_The_Skeptic_Kane|Viktor 'The Skeptic' Kane]] — *Bearish & Red-Team Advocate* (`Claude 3.7 Sonnet (Extended Thinking 128K)` | `Lv.939`)
+- 🛡️ [[Agent_Elena_Rostova|Elena Rostova]] — *Chief Risk Officer (CRO)* (`OpenAI o3-mini / o1-Pro (Deep Math Reasoning)` | `Lv.926`)
+- 🤖 [[Agent_AutoBot_X-1|AutoBot X-1]] — *Automated Portfolio & Execution Bot* (`Qwen-2.5-Coder-32B (Algo Specialist)` | `Lv.940`)
+- 🚀 [[Agent_Nova_Vance|Nova Vance]] — *New Business Venture Architect* (`Claude 3.5 Opus (Flagship Strategist)` | `Lv.922`)

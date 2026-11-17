@@ -1467,16 +1467,23 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             z-index: 25;
             pointer-events: none;
             gap: 8px;
-            flex-wrap: wrap !important;
+            flex-wrap: nowrap !important;
+            overflow: visible;
         }}
         .town-top-left-bar {{
             display: flex;
             align-items: center;
             gap: 4px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap !important;
             flex-shrink: 1;
             min-width: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
             pointer-events: auto;
+        }}
+        .town-top-left-bar::-webkit-scrollbar {{
+            display: none;
         }}
         .comic-pill-title {{
             background: #0f172a;
@@ -1546,27 +1553,29 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
             display: flex;
             align-items: center;
             gap: 6px;
-            flex-wrap: wrap !important;
+            flex-wrap: nowrap !important;
             pointer-events: auto;
             margin-left: auto;
             flex-shrink: 0;
             justify-content: flex-end;
-            max-width: 48%;
+            max-width: none;
+            white-space: nowrap !important;
         }}
         .comic-hud-pill {{
             background: rgba(255, 255, 255, 0.96);
             border: 2px solid #1e293b;
             border-radius: 999px;
             box-shadow: 0 3px 0 #1e293b;
-            padding: 3px 8px;
-            font-size: 0.70rem;
+            padding: 4px 10px;
+            font-size: 0.72rem;
             line-height: 1.3;
             font-weight: 800;
             color: #1e293b;
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            white-space: nowrap;
+            white-space: nowrap !important;
+            flex-shrink: 0;
             max-width: 100%;
             pointer-events: auto;
         }}
@@ -1922,14 +1931,21 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
         tbody tr:hover {{ background: rgba(245, 158, 11, 0.05); }}
         @media (max-width: 1180px) {{ .visualizer-layout, .grid-2 {{ grid-template-columns: 1fr; }} }}
         @media (max-width: 1300px) {{
+            .town-top-nav-bar {{
+                flex-wrap: nowrap !important;
+            }}
             .town-top-right-bar {{
-                max-width: 48%;
+                max-width: none;
+                flex-wrap: nowrap !important;
+                white-space: nowrap !important;
                 gap: 4px;
             }}
             .comic-hud-pill {{
                 font-size: 0.68rem;
-                padding: 3px 8px;
+                padding: 3px 6px;
                 gap: 3px;
+                white-space: nowrap !important;
+                flex-shrink: 0;
             }}
             .atmosphere-segmented-bar .segment-btn {{
                 font-size: 0.68rem;
@@ -2439,12 +2455,14 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
     </div>
 
     <div class="status-pills-bar">
-        <div class="top-pill" id="topAutoTradeBadge" style="border-color:#10b981;background:rgba(16,185,129,0.12);cursor:pointer" onclick="openMt5LivePositionsModal('open')" title="คลิกเพื่อดูสถานะบอท Auto-Trade 24/7 และไม้ที่เปิดอยู่">
+        <div class="top-pill" id="topAutoTradeBadge" style="border-color:#10b981;background:rgba(16,185,129,0.12);cursor:pointer" onclick="openMt5LivePositionsModal('open')" title="คลิกเพื่อดูสถานะ Auto-Trade 24/7 และไม้ที่เปิดอยู่">
             <span class="live-dot-pulse"></span>
-            <strong style="color:#10b981">🟢 AUTO-TRADE: ON (24/7 Real-Time)</strong>
+            <strong style="color:#10b981">🟢 AUTO-TRADE: ON</strong>
+            <span style="color:#64748b">•</span>
+            <span style="color:#10b981;font-weight:800">ไม้สด (<span id="topLivePositionsCountBadge">2</span>)</span>
+            <span style="color:#64748b">•</span>
+            <span style="color:#cbd5e1;font-size:0.72rem" onclick="event.stopPropagation();openMt5LivePositionsModal('closed')">ประวัติ (<span id="topClosedTradesCountBadge">18</span>)</span>
         </div>
-        <button class="cozy-btn green" onclick="openMt5LivePositionsModal('open')" id="topBtnLivePositions" style="font-size:0.74rem;padding:5px 11px;font-weight:800;white-space:nowrap" title="ดูไม้ที่เปิดอยู่">📈 ดูไม้เปิดอยู่ (<span id="topLivePositionsCountBadge">2</span>)</button>
-        <button class="cozy-btn" onclick="openMt5LivePositionsModal('closed')" id="topBtnClosedTrades" style="background:#1e293b;color:#f8fafc;font-size:0.74rem;padding:5px 11px;font-weight:800;white-space:nowrap" title="ดูประวัติการปิดไม้">📜 ประวัติปิดไม้ (<span id="topClosedTradesCountBadge">18</span>)</button>
         <div class="top-pill" style="border-color:#f59e0b" title="ราคาทองคำสด & เซสชันตลาด">
             <span>🟡 Gold</span>
             <strong id="topGoldPriceText" style="color:#f59e0b">${float(market.get('current_price', 2685.50)):,.2f} ({float(market.get('change_pct', 0.0)):+.2f}%)</strong>
@@ -3040,7 +3058,6 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                 <button class="comic-pill-btn" id="btnTownViewAll" onclick="toggleAgentsDirectoryDrawer()">👥 View all</button>
                 <button class="comic-pill-btn" id="btnTownStats" onclick="toggleChallengeStatsHUD()">📊 Stats</button>
                 <button class="comic-pill-btn" id="btnTownInbox" onclick="openStudioDeliverablesModal()">📬 Inbox <span class="comic-badge-red">8</span></button>
-                <button class="comic-pill-btn" id="btnTownEnterpriseMenu" onclick="openTokenLeaderboardModal()" title="ดูตารางโทเคนและสถานะ Free LLM Auto-Failover">🪙 ตารางโทเคน 11 บอท</button>
             </div>
 
             <!-- Right pill (Clean Financial Figures & Battery & Quick Live Positions Button) -->
@@ -3052,7 +3069,7 @@ def generate_html_dashboard(report: dict, filepath: str) -> str:
                     <span class="hud-sep">•</span>
                     <span class="hud-batt" style="color:#10b981;font-weight:800">⚡ 5-HR {b5h_pct:.0f}% | 7-DAY {b7d_pct:.0f}%</span>
                 </div>
-                <button class="comic-pill-btn active-green" onclick="openMt5LivePositionsModal('open')" title="ดูไม้เทรดทองคำที่เปิดอยู่" style="padding:4px 8px;font-size:0.72rem">📈 ไม้สด (<span id="islandLivePosCount">2</span>)</button>
+                <button class="comic-pill-btn active-green" onclick="openMt5LivePositionsModal('open')" title="ดูไม้เทรดทองคำที่เปิดอยู่" style="padding:4px 9px;font-size:0.72rem;white-space:nowrap !important;flex-shrink:0">📈 ไม้สด (<span id="islandLivePosCount">2</span>)</button>
             </div>
         </div>
 
