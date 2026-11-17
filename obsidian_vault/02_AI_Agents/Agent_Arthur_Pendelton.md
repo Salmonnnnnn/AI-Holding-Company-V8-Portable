@@ -4,10 +4,10 @@ tags:
   - gold-trading-firm
   - executive-board
 agent_id: ag_cio
-level: 708
+level: 732
 mastery: 99.9
 llm_brain: "Claude 3.7 Sonnet (Extended Thinking 128K)"
-updated: "2026-11-17 16:53:05"
+updated: "2026-11-17 17:10:47"
 ---
 # 👑 Arthur Pendelton
 **ตำแหน่ง:** Chief Investment Officer (CIO)  
@@ -25,7 +25,7 @@ updated: "2026-11-17 16:53:05"
 - **ความเข้าใจตลาดมหภาค (Macro Insight):** `97/100`
 - **ความคิดสร้างสรรค์/กลยุทธ์ (Creativity):** `96/100`
 
-## 🎓 สกิลที่ติดตั้ง (Equipped Skill Tree — Lv.708)
+## 🎓 สกิลที่ติดตั้ง (Equipped Skill Tree — Lv.732)
 1. **Primary Skill:** `Bayesian Consensus Synthesis`
 2. **Secondary Skill:** `microsoft/qlib + AI4Finance-Foundation/FinRL`
 3. **Ultimate Skill:** `Qlib + FinRL Bayesian Ensemble Consensus Gate (80%+ Confidence)`
@@ -33,4 +33,4 @@ updated: "2026-11-17 16:53:05"
 ## ⚡ ภารกิจล่าสุดที่ส่งเข้า [[Central_Nexus_Insights]]
 - สถานะปัจจุบัน: `DECISION ISSUED`
 - งานที่ทำล่าสุด: ออกมติ 'BUY (LONG)' @ $2,685.50 (ความเชื่อมั่น 81%)
-- จำนวนภารกิจสำเร็จวันนี้: `829 งาน`
+- จำนวนภารกิจสำเร็จวันนี้: `857 งาน`

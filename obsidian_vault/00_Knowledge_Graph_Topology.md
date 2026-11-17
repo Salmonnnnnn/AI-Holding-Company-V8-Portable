@@ -3,7 +3,7 @@ tags:
   - knowledge-graph
   - token-saving-rag
   - obsidian-topology
-updated: "2026-11-17 16:53:05"
+updated: "2026-11-17 17:10:47"
 ---
 # 🕸️ 00 — ผังโครงข่ายข้อมูล Obsidian Knowledge Graph & ระบบประหยัดโทเคน (Graph-RAG)
 เชื่อมโยงกับ: [[00_AI_Holding_Company_MOC]] | [[Central_Nexus_Insights]] | [[MT5_Portfolio_and_Benchmarks]] | [[2026-11-17_Daily_Summary]]
